@@ -1,0 +1,130 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{053A9486-888A-46DB-BE40-EA361A0511BC}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>GrobExp.Compiler</RootNamespace>
+    <AssemblyName>GrobExp.Compiler</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="GrEmit">
+      <HintPath>..\..\Assemblies\GrEmit.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AnonymousTypeBuilder.cs" />
+    <Compile Include="ClosureSubstituter.cs" />
+    <Compile Include="CompiledLambda.cs" />
+    <Compile Include="AdvancedDebugViewWriter.cs" />
+    <Compile Include="EmittingContext.cs" />
+    <Compile Include="ExpressionAnonymousTypeReplacer.cs" />
+    <Compile Include="ExpressionClosureBuilder.cs" />
+    <Compile Include="ExpressionClosureResolver.cs" />
+    <Compile Include="ExpressionEmitters\BinaryArithmeticOperationExpressionEmitter.cs" />
+    <Compile Include="ExpressionEmitters\ArrayIndexExpressionEmitter.cs" />
+    <Compile Include="ExpressionEmitters\ArrayLengthExpressionEmitter.cs" />
+    <Compile Include="ExpressionEmitters\AssignExpressionEmitter.cs" />
+    <Compile Include="ExpressionEmitters\BlockExpressionEmitter.cs" />
+    <Compile Include="ExpressionEmitters\CallExpressionEmitter.cs" />
+    <Compile Include="ExpressionEmitters\CoalesceExpressionEmitter.cs" />
+    <Compile Include="ExpressionEmitters\ComparisonExpressionEmitter.cs" />
+    <Compile Include="ExpressionEmitters\ConditionalExpressionEmitter.cs" />
+    <Compile Include="ExpressionEmitters\ConstantExpressionEmitter.cs" />
+    <Compile Include="ExpressionEmitters\ConvertExpressionEmitter.cs" />
+    <Compile Include="ExpressionEmitters\DebugInfoExpressionEmitter.cs" />
+    <Compile Include="ExpressionEmitters\InvocationExpressionEmitter.cs" />
+    <Compile Include="ExpressionEmitters\ListInitExpressionEmitter.cs" />
+    <Compile Include="ExpressionEmitters\LoopExpressionEmitter.cs" />
+    <Compile Include="ExpressionEmitters\RuntimeVariables.cs" />
+    <Compile Include="ExpressionEmitters\SwitchExpressionEmitter.cs" />
+    <Compile Include="ExpressionEmitters\ThrowExpressionEmitter.cs" />
+    <Compile Include="ExpressionEmitters\TryExpressionEmitter.cs" />
+    <Compile Include="ExpressionEmitters\TypeAsExpressionEmitter.cs" />
+    <Compile Include="ExpressionEmitters\TypeEqualExpressionEmitter.cs" />
+    <Compile Include="ExpressionEmitters\DefaultExpressionEmitter.cs" />
+    <Compile Include="ExpressionEmitters\DynamicMethodInvokerBuilder.cs" />
+    <Compile Include="ExpressionEmitters\EqualityExpressionEmitter.cs" />
+    <Compile Include="ExpressionEmitters\ExpressionEmitter.cs" />
+    <Compile Include="ExpressionEmittersCollection.cs" />
+    <Compile Include="ExpressionEmitters\GotoExpressionEmitter.cs" />
+    <Compile Include="ExpressionEmitters\IndexExpressionEmitter.cs" />
+    <Compile Include="ExpressionEmitters\LabelExpressionEmitter.cs" />
+    <Compile Include="ExpressionEmitters\LambdaExpressionEmitter.cs" />
+    <Compile Include="ExpressionEmitters\LogicalExpressionEmitter.cs" />
+    <Compile Include="ExpressionEmitters\MemberAccessExpressionEmitter.cs" />
+    <Compile Include="ExpressionEmitters\MemberInitExpressionEmitter.cs" />
+    <Compile Include="ExpressionEmitters\NewArrayBoundsExpressionEmitter.cs" />
+    <Compile Include="ExpressionEmitters\NewArrayInitExpressionEmitter.cs" />
+    <Compile Include="ExpressionEmitters\NewExpressionEmitter.cs" />
+    <Compile Include="ExpressionEmitters\NotExpressionEmitter.cs" />
+    <Compile Include="ExpressionEmitters\ParameterExpressionEmitter.cs" />
+    <Compile Include="ExpressionEmitters\TypeIsExpressionEmitter.cs" />
+    <Compile Include="ExpressionEmitters\UnaryAritmeticOperationExpressionEmitter.cs" />
+    <Compile Include="ExpressionEmitters\UnaryAssignExpressionEmitter.cs" />
+    <Compile Include="ExpressionEmitters\UnboxExpressionEmitter.cs" />
+    <Compile Include="ExpressionHashCalculator.cs" />
+    <Compile Include="ExpressionPrivateMembersAccessor.cs" />
+    <Compile Include="ExpressionQuoter.cs" />
+    <Compile Include="Extensions.cs" />
+    <Compile Include="CompilerOptions.cs" />
+    <Compile Include="ExpressionEmitters\IExpressionEmitter.cs" />
+    <Compile Include="LabelsCloner.cs" />
+    <Compile Include="LambdaCompiler.cs" />
+    <Compile Include="LambdaExpressionCreator.cs" />
+    <Compile Include="LambdaPreparer.cs" />
+    <Compile Include="MethodInvokerBuilder.cs" />
+    <Compile Include="ParametersExtractor.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ResultType.cs" />
+    <Compile Include="RuntimeVariablesInliner.cs" />
+    <Compile Include="TypedDebugInfoExpression.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>copy $(TargetDir)$(TargetName).dll $(SolutionDir)..\Assemblies\
+copy $(TargetDir)$(TargetName).pdb $(SolutionDir)..\Assemblies\
+</PostBuildEvent>
+  </PropertyGroup>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

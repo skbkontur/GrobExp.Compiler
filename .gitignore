@@ -1,0 +1,10 @@
+bin
+obj
+[Dd]ebug
+[Rr]elease
+*.user
+*.suo
+_ReSharper.GrobExp
+Assemblies/GrobExp.Compiler.dll
+Assemblies/GrobExp.Compiler.pdb
+Output/

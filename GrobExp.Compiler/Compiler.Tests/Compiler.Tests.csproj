@@ -1,0 +1,214 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{21167EA9-3A09-4231-A006-B4D8D7A4E871}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Compiler.Tests</RootNamespace>
+    <AssemblyName>Compiler.Tests</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="GrEmit">
+      <HintPath>..\..\Assemblies\GrEmit.dll</HintPath>
+    </Reference>
+    <Reference Include="nunit.framework">
+      <HintPath>..\..\Assemblies\nunit.framework.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="TestBase.cs" />
+    <Compile Include="ArithmeticTests\TestBitwiseOperations.cs" />
+    <Compile Include="ArithmeticTests\TestDecrement.cs" />
+    <Compile Include="ArithmeticTests\TestIncrement.cs" />
+    <Compile Include="ArithmeticTests\TestIsTrueFalse.cs" />
+    <Compile Include="ArithmeticTests\TestShifts.cs" />
+    <Compile Include="ArithmeticTests\TestModulo.cs" />
+    <Compile Include="ArithmeticTests\TestDivide.cs" />
+    <Compile Include="ArithmeticTests\TestMultiply.cs" />
+    <Compile Include="ArithmeticTests\TestSubtract.cs" />
+    <Compile Include="ArithmeticTests\TestAdd.cs" />
+    <Compile Include="ArithmeticTests\TestUnaryPlusMinus.cs" />
+    <Compile Include="AssignTests\AddAssign\TestComplexProperty.cs" />
+    <Compile Include="AssignTests\AddAssign\TestMultiDimensionalArray.cs" />
+    <Compile Include="AssignTests\AddAssign\TestSimpleArray.cs" />
+    <Compile Include="AssignTests\AddAssign\TestStaticMember.cs" />
+    <Compile Include="AssignTests\AddAssign\TestInstanceMember.cs" />
+    <Compile Include="AssignTests\AddAssign\TestParameter.cs" />
+    <Compile Include="AssignTests\AndAssign\TestComplexProperty.cs" />
+    <Compile Include="AssignTests\AndAssign\TestInstanceMember.cs" />
+    <Compile Include="AssignTests\AndAssign\TestMultiDimensionalArray.cs" />
+    <Compile Include="AssignTests\AndAssign\TestParameter.cs" />
+    <Compile Include="AssignTests\AndAssign\TestSimpleArray.cs" />
+    <Compile Include="AssignTests\AndAssign\TestStaticMember.cs" />
+    <Compile Include="AssignTests\Assign\TestAssignArray.cs" />
+    <Compile Include="AssignTests\DivideAssign\TestComplexProperty.cs" />
+    <Compile Include="AssignTests\DivideAssign\TestInstanceMember.cs" />
+    <Compile Include="AssignTests\DivideAssign\TestMultiDimensionalArray.cs" />
+    <Compile Include="AssignTests\DivideAssign\TestParameter.cs" />
+    <Compile Include="AssignTests\DivideAssign\TestSimpleArray.cs" />
+    <Compile Include="AssignTests\DivideAssign\TestStaticMember.cs" />
+    <Compile Include="AssignTests\ExclusiveOrAssign\TestComplexProperty.cs" />
+    <Compile Include="AssignTests\ExclusiveOrAssign\TestInstanceMember.cs" />
+    <Compile Include="AssignTests\ExclusiveOrAssign\TestMultiDimensionalArray.cs" />
+    <Compile Include="AssignTests\ExclusiveOrAssign\TestParameter.cs" />
+    <Compile Include="AssignTests\ExclusiveOrAssign\TestSimpleArray.cs" />
+    <Compile Include="AssignTests\ExclusiveOrAssign\TestStaticMember.cs" />
+    <Compile Include="AssignTests\LeftShiftAssign\TestComplexProperty.cs" />
+    <Compile Include="AssignTests\LeftShiftAssign\TestInstanceMember.cs" />
+    <Compile Include="AssignTests\LeftShiftAssign\TestMultiDimensionalArray.cs" />
+    <Compile Include="AssignTests\LeftShiftAssign\TestParameter.cs" />
+    <Compile Include="AssignTests\LeftShiftAssign\TestSimpleArray.cs" />
+    <Compile Include="AssignTests\LeftShiftAssign\TestStaticMember.cs" />
+    <Compile Include="AssignTests\ModuloAssign\TestComplexProperty.cs" />
+    <Compile Include="AssignTests\ModuloAssign\TestInstanceMember.cs" />
+    <Compile Include="AssignTests\ModuloAssign\TestMultiDimensionalArray.cs" />
+    <Compile Include="AssignTests\ModuloAssign\TestParameter.cs" />
+    <Compile Include="AssignTests\ModuloAssign\TestSimpleArray.cs" />
+    <Compile Include="AssignTests\ModuloAssign\TestStaticMember.cs" />
+    <Compile Include="AssignTests\MultiplyAssign\TestComplexProperty.cs" />
+    <Compile Include="AssignTests\MultiplyAssign\TestInstanceMember.cs" />
+    <Compile Include="AssignTests\MultiplyAssign\TestMultiDimensionalArray.cs" />
+    <Compile Include="AssignTests\MultiplyAssign\TestParameter.cs" />
+    <Compile Include="AssignTests\MultiplyAssign\TestSimpleArray.cs" />
+    <Compile Include="AssignTests\MultiplyAssign\TestStaticMember.cs" />
+    <Compile Include="AssignTests\OrAssign\TestComplexProperty.cs" />
+    <Compile Include="AssignTests\OrAssign\TestInstanceMember.cs" />
+    <Compile Include="AssignTests\OrAssign\TestMultiDimensionalArray.cs" />
+    <Compile Include="AssignTests\OrAssign\TestParameter.cs" />
+    <Compile Include="AssignTests\OrAssign\TestSimpleArray.cs" />
+    <Compile Include="AssignTests\OrAssign\TestStaticMember.cs" />
+    <Compile Include="AssignTests\PostDecrementAssign\TestComplexProperty.cs" />
+    <Compile Include="AssignTests\PostDecrementAssign\TestInstanceMember.cs" />
+    <Compile Include="AssignTests\PostDecrementAssign\TestMultiDimensionalArray.cs" />
+    <Compile Include="AssignTests\PostDecrementAssign\TestParameter.cs" />
+    <Compile Include="AssignTests\PostDecrementAssign\TestSimpleArray.cs" />
+    <Compile Include="AssignTests\PostDecrementAssign\TestStaticMember.cs" />
+    <Compile Include="AssignTests\PostIncrementAssign\TestComplexProperty.cs" />
+    <Compile Include="AssignTests\PostIncrementAssign\TestInstanceMember.cs" />
+    <Compile Include="AssignTests\PostIncrementAssign\TestMultiDimensionalArray.cs" />
+    <Compile Include="AssignTests\PostIncrementAssign\TestParameter.cs" />
+    <Compile Include="AssignTests\PostIncrementAssign\TestSimpleArray.cs" />
+    <Compile Include="AssignTests\PostIncrementAssign\TestStaticMember.cs" />
+    <Compile Include="AssignTests\PowerAssign\TestComplexProperty.cs" />
+    <Compile Include="AssignTests\PowerAssign\TestInstanceMember.cs" />
+    <Compile Include="AssignTests\PowerAssign\TestMultiDimensionalArray.cs" />
+    <Compile Include="AssignTests\PowerAssign\TestParameter.cs" />
+    <Compile Include="AssignTests\PowerAssign\TestSimpleArray.cs" />
+    <Compile Include="AssignTests\PowerAssign\TestStaticMember.cs" />
+    <Compile Include="AssignTests\PreDecrementAssign\TestComplexProperty.cs" />
+    <Compile Include="AssignTests\PreDecrementAssign\TestInstanceMember.cs" />
+    <Compile Include="AssignTests\PreDecrementAssign\TestMultiDimensionalArray.cs" />
+    <Compile Include="AssignTests\PreDecrementAssign\TestParameter.cs" />
+    <Compile Include="AssignTests\PreDecrementAssign\TestSimpleArray.cs" />
+    <Compile Include="AssignTests\PreDecrementAssign\TestStaticMember.cs" />
+    <Compile Include="AssignTests\PreIncrementAssign\TestComplexProperty.cs" />
+    <Compile Include="AssignTests\PreIncrementAssign\TestInstanceMember.cs" />
+    <Compile Include="AssignTests\PreIncrementAssign\TestMultiDimensionalArray.cs" />
+    <Compile Include="AssignTests\PreIncrementAssign\TestParameter.cs" />
+    <Compile Include="AssignTests\PreIncrementAssign\TestSimpleArray.cs" />
+    <Compile Include="AssignTests\PreIncrementAssign\TestStaticMember.cs" />
+    <Compile Include="AssignTests\RightShiftAssign\TestComplexProperty.cs" />
+    <Compile Include="AssignTests\RightShiftAssign\TestInstanceMember.cs" />
+    <Compile Include="AssignTests\RightShiftAssign\TestMultiDimensionalArray.cs" />
+    <Compile Include="AssignTests\RightShiftAssign\TestParameter.cs" />
+    <Compile Include="AssignTests\RightShiftAssign\TestSimpleArray.cs" />
+    <Compile Include="AssignTests\RightShiftAssign\TestStaticMember.cs" />
+    <Compile Include="AssignTests\SubtractAssign\TestComplexProperty.cs" />
+    <Compile Include="AssignTests\SubtractAssign\TestInstanceMember.cs" />
+    <Compile Include="AssignTests\SubtractAssign\TestMultiDimensionalArray.cs" />
+    <Compile Include="AssignTests\SubtractAssign\TestParameter.cs" />
+    <Compile Include="AssignTests\SubtractAssign\TestSimpleArray.cs" />
+    <Compile Include="AssignTests\SubtractAssign\TestStaticMember.cs" />
+    <Compile Include="ExtensionTests\ForEachExpression.cs" />
+    <Compile Include="ExtensionTests\TestForEach.cs" />
+    <Compile Include="TestConvertChecked.cs" />
+    <Compile Include="TestDynamic.cs" />
+    <Compile Include="TestExtensionMethod.cs" />
+    <Compile Include="TestInvoke.cs" />
+    <Compile Include="TestListInit.cs" />
+    <Compile Include="TestLoop.cs" />
+    <Compile Include="TestQuote.cs" />
+    <Compile Include="TestRuntimeVariables.cs" />
+    <Compile Include="TestSwitch.cs" />
+    <Compile Include="TestThrow.cs" />
+    <Compile Include="TryCatchTests\TestFault.cs" />
+    <Compile Include="TryCatchTests\FilterExceptionTest.cs" />
+    <Compile Include="TryCatchTests\TestTryCatchFinally.cs" />
+    <Compile Include="TestTypeAs.cs" />
+    <Compile Include="TestTypeEqual.cs" />
+    <Compile Include="TestBlock.cs" />
+    <Compile Include="TestConstant.cs" />
+    <Compile Include="TestConvert.cs" />
+    <Compile Include="TestCustomOperators.cs" />
+    <Compile Include="TestIndex.cs" />
+    <Compile Include="ParameterReplacer.cs" />
+    <Compile Include="TestCheckArrayIndex.cs" />
+    <Compile Include="TestCheckNullReference.cs" />
+    <Compile Include="TestLabels.cs" />
+    <Compile Include="TestLogical.cs" />
+    <Compile Include="TestPerformance.cs" />
+    <Compile Include="TestSubLambda.cs" />
+    <Compile Include="TestComparison.cs" />
+    <Compile Include="ArithmeticTests\TestPower.cs" />
+    <Compile Include="TestNewObjectCreation.cs" />
+    <Compile Include="TestNotEqual.cs" />
+    <Compile Include="TestEqual.cs" />
+    <Compile Include="AssignTests\Assign\TestAssign.cs" />
+    <Compile Include="TestArrayLength.cs" />
+    <Compile Include="Test.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TestMemberAccess.cs" />
+    <Compile Include="TestTypeIs.cs" />
+    <Compile Include="TestUnbox.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Compiler\Compiler.csproj">
+      <Project>{053A9486-888A-46DB-BE40-EA361A0511BC}</Project>
+      <Name>GrobExp</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
