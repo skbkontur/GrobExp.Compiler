@@ -14,6 +14,8 @@ using System.Threading;
 using GrEmit;
 
 using GrobExp.Compiler;
+using GrobExp.Compiler.Closures;
+using GrobExp.Compiler.ExpressionEmitters;
 
 using NUnit.Framework;
 
@@ -78,7 +80,7 @@ namespace Compiler.Tests
                 il.Ret();
             }
             method.CreateDelegate(typeof(Func<object, object>));
-            var pointer = dynamicMethodPointerExtractor(method);
+            var pointer = DynamicMethodInvokerBuilder.DynamicMethodPointerExtractor(method);
             var b = (byte*)pointer;
             //var zzz = Convert.FromBase64String(@"VldVU0FSTInOSItsJFhIi3wkYEGJyonRRInDRInQVQ8oBg8oZhAPKMgPKOwPKNAPKPQPKNgPKPwPWUUAD1llEA9ZTTAPWW1AD1lVYA9ZdXAPWZ2QAAAAD1m9oAAAAPIPfMHyD3zl8g980/IPfPfyD3zC8g985g9Y4A8oRiAPKMgPKNAPKNgPWUUgD1lNUA9ZlYAAAAAPWZ2wAAAA8g98wfIPfNPyD3zCD1jgD1ilwAAAAA8rJ0iBxdAAAABIg8cQ/8gPhVf///9Ig8YwXf/LD4VG////Z0ONBFJnQY0EgsHgBEiYSAHF/8kPhSn///9BWltdX17D");
             var zzz = Convert.FromBase64String(@"VldVU0FSTInOSItsJFBIi3wkWEGJyonRRInDRInQVQ8oBg8oZhAPKMgPKOwPKNAPKPQPKNgPKPwPWUUAD1llEA9ZTTAPWW1AD1lVYA9ZdXAPWZ2QAAAAD1m9oAAAAPIPfMHyD3zl8g980/IPfPfyD3zC8g985g9Y4A8oRiAPKMgPKNAPKNgPWUUgD1lNUA9ZlYAAAAAPWZ2wAAAA8g98wfIPfNPyD3zCD1jgD1ilwAAAAA8rJ0iBxdAAAABIg8cQ/8gPhVf///9Ig8YwXf/LD4VG////Z0ONBFJnQY0EgsHgBEiYSAHF/8kPhSn///9BWltdX17D");
@@ -106,7 +108,7 @@ namespace Compiler.Tests
             }
             var func = (Func<double, int>)method.CreateDelegate(typeof(Func<double, int>));
             Console.WriteLine(func(3000000000));
-            var pointer = dynamicMethodPointerExtractor(method);
+            var pointer = DynamicMethodInvokerBuilder.DynamicMethodPointerExtractor(method);
             var b = (byte*)pointer;
             for(int i = 0; i < 20; ++i)
             {
@@ -132,7 +134,7 @@ namespace Compiler.Tests
             il.Emit(OpCodes.Ret);
             
             method.CreateDelegate(typeof(Func<IntPtr>));
-            var pointer = dynamicMethodPointerExtractor(method);
+            var pointer = DynamicMethodInvokerBuilder.DynamicMethodPointerExtractor(method);
             var b = (byte*)pointer;
             for(int i = 0; i < 20; ++i)
             {
@@ -156,7 +158,7 @@ namespace Compiler.Tests
             il.EmitCalli(OpCodes.Calli, CallingConvention.StdCall, typeof(void), new[] {typeof(IntPtr), typeof(int)});
             il.Emit(OpCodes.Ret);
             method.CreateDelegate(typeof(Action<IntPtr, int>));
-            var pointer = dynamicMethodPointerExtractor(method);
+            var pointer = DynamicMethodInvokerBuilder.DynamicMethodPointerExtractor(method);
             var b = (byte*)pointer;
             for (int i = 0; i < 20; ++i)
             {
@@ -198,7 +200,7 @@ namespace Compiler.Tests
             il.EmitCalli(OpCodes.Calli, CallingConventions.Standard, typeof(int), new[] { typeof(int), typeof(int), typeof(int), typeof(int), typeof(int), typeof(int), typeof(int), typeof(int), typeof(int), typeof(int), }, null);
             il.Emit(OpCodes.Ret);
             var func = (Func<int, int, int, int, int>)method.CreateDelegate(typeof(Func<int, int, int, int, int>));
-            var pointer = dynamicMethodPointerExtractor(method);
+            var pointer = DynamicMethodInvokerBuilder.DynamicMethodPointerExtractor(method);
 
             Console.WriteLine("{0:X}", pointer.ToInt64());
 
@@ -411,17 +413,23 @@ namespace Compiler.Tests
             MeasureSpeed(exp.Compile(), a, 100000000, ethalon);
         }
 
+        public static void Main()
+        {
+            var test = new TestPerformance();
+            test.TestSubLambda2();
+        }
+
         [Test, Ignore]
         public void TestSubLambda1()
         {
             Expression<Func<TestClassA, bool>> exp = o => o.ArrayB.Any(b => b.S == o.S);
             var a = new TestClassA {S = "zzz", ArrayB = new[] {new TestClassB {S = "zzz"},}};
             Console.WriteLine("Sharp");
-            var ethalon = MeasureSpeed(Func2, a, 100000000, null);
+            var ethalon = MeasureSpeed(Func2, a, 10000000, null);
             Console.WriteLine("GroboCompile without checking");
-            MeasureSpeed(LambdaCompiler.Compile(exp, CompilerOptions.None), a, 100000000, ethalon);
+            MeasureSpeed(LambdaCompiler.Compile(exp, CompilerOptions.None), a, 10000000, ethalon);
             Console.WriteLine("GroboCompile with checking");
-            MeasureSpeed(LambdaCompiler.Compile(exp, CompilerOptions.All), a, 100000000, ethalon);
+            MeasureSpeed(LambdaCompiler.Compile(exp, CompilerOptions.All), a, 10000000, ethalon);
             Console.WriteLine("Compile");
             MeasureSpeed(exp.Compile(), a, 1000000, ethalon);
         }
@@ -463,13 +471,13 @@ namespace Compiler.Tests
                         }
                 };
             Console.WriteLine("Sharp");
-            var ethalon = MeasureSpeed(Func3, a, 100000000, null);
+            var ethalon = MeasureSpeed(Func3, a, 10000000, null);
             Console.WriteLine("GroboCompile without checking");
-            MeasureSpeed(LambdaCompiler.Compile(exp, CompilerOptions.None), a, 100000000, ethalon);
+            MeasureSpeed(LambdaCompiler.Compile(exp, CompilerOptions.None), a, 10000000, ethalon);
             Console.WriteLine("GroboCompile with checking");
-            MeasureSpeed(LambdaCompiler.Compile(exp, CompilerOptions.All), a, 100000000, ethalon);
+            MeasureSpeed(LambdaCompiler.Compile(exp, CompilerOptions.All), a, 1000000, ethalon);
             Console.WriteLine("Compile");
-            MeasureSpeed(exp.Compile(), a, 1000000, ethalon);
+            MeasureSpeed(exp.Compile(), a, 100000, ethalon);
         }
 
         [Test, Ignore]
@@ -478,13 +486,13 @@ namespace Compiler.Tests
             Expression<Func<TestClassA, int>> exp = o => func(o.Y, o.Z);
             var a = new TestClassA {Y = 1, Z = 2};
             Console.WriteLine("Compile");
-            var ethalon = MeasureSpeed(exp.Compile(), a, 100000000, null);
+            var ethalon = MeasureSpeed(exp.Compile(), a, 10000000, null);
             Console.WriteLine("Sharp");
-            MeasureSpeed(Func4, a, 100000000, ethalon);
+            MeasureSpeed(Func4, a, 10000000, ethalon);
             Console.WriteLine("GroboCompile without checking");
-            MeasureSpeed(LambdaCompiler.Compile(exp, CompilerOptions.None), a, 100000000, ethalon);
+            MeasureSpeed(LambdaCompiler.Compile(exp, CompilerOptions.None), a, 10000000, ethalon);
             Console.WriteLine("GroboCompile with checking");
-            MeasureSpeed(LambdaCompiler.Compile(exp, CompilerOptions.All), a, 100000000, ethalon);
+            MeasureSpeed(LambdaCompiler.Compile(exp, CompilerOptions.All), a, 10000000, ethalon);
         }
 
         [Test, Ignore]
@@ -953,7 +961,7 @@ namespace Compiler.Tests
             typeBuilder.DefineMethodOverride(method, typeof(ITest).GetMethod("DoNothing"));
             typeBuilder.AddInterfaceImplementation(typeof(ITest));
             var type = typeBuilder.CreateType();
-            return (ITest)Activator.CreateInstance(type, new object[] {dynamicMethodPointerExtractor((DynamicMethod)action.Item2), action.Item1});
+            return (ITest)Activator.CreateInstance(type, new object[] { DynamicMethodInvokerBuilder.DynamicMethodPointerExtractor((DynamicMethod)action.Item2), action.Item1 });
         }
 
         private Tuple<Action, MethodInfo> Build()
@@ -1165,33 +1173,6 @@ namespace Compiler.Tests
             return (Func<string, string>)dynamicMethod.CreateDelegate(typeof(Func<string, string>));
         }
 
-        private static Func<DynamicMethod, IntPtr> EmitDynamicMethodPointerExtractor()
-        {
-            var method = new DynamicMethod("DynamicMethodPointerExtractor", typeof(IntPtr), new[] {typeof(DynamicMethod)}, Module, true);
-            using(var il = new GroboIL(method))
-            {
-                il.Ldarg(0); // stack: [dynamicMethod]
-                MethodInfo getMethodDescriptorMethod = typeof(DynamicMethod).GetMethod("GetMethodDescriptor", BindingFlags.Instance | BindingFlags.NonPublic);
-                if(getMethodDescriptorMethod == null)
-                    throw new MissingMethodException(typeof(DynamicMethod).Name, "GetMethodDescriptor");
-                il.Call(getMethodDescriptorMethod); // stack: [dynamicMethod.GetMethodDescriptor()]
-                var runtimeMethodHandle = il.DeclareLocal(typeof(RuntimeMethodHandle));
-                il.Stloc(runtimeMethodHandle);
-                il.Ldloc(runtimeMethodHandle);
-                MethodInfo prepareMethodMethod = typeof(RuntimeHelpers).GetMethod("PrepareMethod", new[] {typeof(RuntimeMethodHandle)});
-                if(prepareMethodMethod == null)
-                    throw new MissingMethodException(typeof(RuntimeHelpers).Name, "PrepareMethod");
-                il.Call(prepareMethodMethod);
-                MethodInfo getFunctionPointerMethod = typeof(RuntimeMethodHandle).GetMethod("GetFunctionPointer", BindingFlags.Instance | BindingFlags.Public);
-                if(getFunctionPointerMethod == null)
-                    throw new MissingMethodException(typeof(RuntimeMethodHandle).Name, "GetFunctionPointer");
-                il.Ldloca(runtimeMethodHandle);
-                il.Call(getFunctionPointerMethod); // stack: [dynamicMethod.GetMethodDescriptor().GetFunctionPointer()]
-                il.Ret();
-            }
-            return (Func<DynamicMethod, IntPtr>)method.CreateDelegate(typeof(Func<DynamicMethod, IntPtr>));
-        }
-
         private void MeasureSpeed(ITest test, int iter)
         {
             var stopwatch = Stopwatch.StartNew();
@@ -1218,6 +1199,5 @@ namespace Compiler.Tests
         private volatile bool stop;
 
         private static readonly FieldInfo xField = (FieldInfo)((MemberExpression)((Expression<Func<int>>)(() => x)).Body).Member;
-        private static readonly Func<DynamicMethod, IntPtr> dynamicMethodPointerExtractor = EmitDynamicMethodPointerExtractor();
     }
 }
