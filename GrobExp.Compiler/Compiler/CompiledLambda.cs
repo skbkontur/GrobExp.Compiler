@@ -11,6 +11,7 @@ namespace GrobExp.Compiler
     {
         public Delegate Delegate { get; set; }
         public MethodInfo Method { get; set; }
+        public int Index { get; set; }
     }
 
     internal class ParsedLambda

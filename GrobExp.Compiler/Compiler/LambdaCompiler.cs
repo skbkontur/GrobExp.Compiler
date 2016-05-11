@@ -20,7 +20,7 @@ namespace GrobExp.Compiler
             CheckLambdaParameters(lambda);
             CompiledLambda[] subLambdas;
             var debugInfoGenerator = string.IsNullOrEmpty(DebugOutputDirectory) ? null : DebugInfoGenerator.CreatePdbGenerator();
-            return CompileInternal(lambda, debugInfoGenerator, out subLambdas, options).Delegate;
+            return CompileInternal(lambda, debugInfoGenerator, out subLambdas, options);
         }
 
         public static TDelegate Compile<TDelegate>(Expression<TDelegate> lambda, CompilerOptions options) where TDelegate : class
@@ -28,7 +28,7 @@ namespace GrobExp.Compiler
             CheckLambdaParameters(lambda);
             CompiledLambda[] subLambdas;
             var debugInfoGenerator = string.IsNullOrEmpty(DebugOutputDirectory) ? null : DebugInfoGenerator.CreatePdbGenerator();
-            return (TDelegate)(object)CompileInternal(lambda, debugInfoGenerator, out subLambdas, options).Delegate;
+            return (TDelegate)(object)CompileInternal(lambda, debugInfoGenerator, out subLambdas, options);
         }
 
         public static void CompileToMethod(LambdaExpression lambda, MethodBuilder method, CompilerOptions options)
@@ -61,10 +61,11 @@ namespace GrobExp.Compiler
             DebugInfoGenerator debugInfoGenerator,
             ParsedLambda parsedLambda,
             CompilerOptions options,
+            bool internalCall,
             List<CompiledLambda> compiledLambdas)
         {
             if(debugInfoGenerator == null)
-                return CompileToDynamicMethod(lambda, parsedLambda, options, compiledLambdas);
+                return CompileToDynamicMethod(lambda, parsedLambda, options, internalCall, compiledLambdas);
 
             var parameters = lambda.Parameters.ToArray();
             var parameterTypes = parameters.Select(parameter => parameter.Type).ToArray();
@@ -87,7 +88,8 @@ namespace GrobExp.Compiler
             }
             return new CompiledLambda
                 {
-                    Delegate = dynamicMethod.CreateDelegate(Extensions.GetDelegateType(parsedLambda.ConstantsParameter == null ? parameterTypes : parameterTypes.Skip(1).ToArray(), returnType), parsedLambda.Constants),
+                    Delegate = Extensions.IsMono && internalCall ? dynamicMethod.CreateDelegate(Extensions.GetDelegateType(parameterTypes, returnType))
+                    : dynamicMethod.CreateDelegate(Extensions.GetDelegateType(parsedLambda.ConstantsParameter == null ? parameterTypes : parameterTypes.Skip(1).ToArray(), lambda.ReturnType), parsedLambda.Constants),
                     Method = method
                 };
         }
@@ -174,6 +176,7 @@ namespace GrobExp.Compiler
             LambdaExpression lambda,
             ParsedLambda parsedLambda,
             CompilerOptions options,
+            bool internalCall,
             List<CompiledLambda> compiledLambdas)
         {
             var parameters = lambda.Parameters.ToArray();
@@ -197,7 +200,8 @@ namespace GrobExp.Compiler
             }
             return new CompiledLambda
             {
-                Delegate = method.CreateDelegate(Extensions.GetDelegateType(parsedLambda.ConstantsParameter == null ? parameterTypes : parameterTypes.Skip(1).ToArray(), returnType), parsedLambda.Constants),
+                Delegate = Extensions.IsMono && internalCall ? method.CreateDelegate(Extensions.GetDelegateType(parameterTypes, returnType))
+                    : method.CreateDelegate(Extensions.GetDelegateType(parsedLambda.ConstantsParameter == null ? parameterTypes : parameterTypes.Skip(1).ToArray(), lambda.ReturnType), parsedLambda.Constants),
                 Method = method
             };
         }
@@ -217,7 +221,7 @@ namespace GrobExp.Compiler
             return assemblyBuilder;
         }
 
-        private static CompiledLambda CompileInternal(LambdaExpression lambda, DebugInfoGenerator debugInfoGenerator, out CompiledLambda[] subLambdas, CompilerOptions options)
+        private static Delegate CompileInternal(LambdaExpression lambda, DebugInfoGenerator debugInfoGenerator, out CompiledLambda[] subLambdas, CompilerOptions options)
         {
             var compiledLambdas = new List<CompiledLambda>();
             ParsedLambda parsedLambda;
@@ -228,11 +232,11 @@ namespace GrobExp.Compiler
                 resolvedLambda = AdvancedDebugViewWriter.WriteToModifying(resolvedLambda, parsedLambda.ConstantsType,
                                                                           parsedLambda.ConstantsParameter, parsedLambda.Constants, GenerateFileName(resolvedLambda));
             }
-            var compiledLambda = CompileInternal(resolvedLambda, debugInfoGenerator, parsedLambda, options, compiledLambdas);
+            var compiledLambda = CompileInternal(resolvedLambda, debugInfoGenerator, parsedLambda, options, false, compiledLambdas);
             subLambdas = compiledLambdas.ToArray();
             if(compiledLambdas.Count > 0 && emitToDynamicMethod)
                 BuildDelegatesFoister(parsedLambda)(parsedLambda.Constants, compiledLambdas.Select(compIledLambda => compIledLambda.Delegate).ToArray());
-            return compiledLambda;
+            return compiledLambda.Delegate;
         }
 
         private static void CompileToMethodInternal(LambdaExpression lambda, MethodBuilder method, DebugInfoGenerator debugInfoGenerator, CompilerOptions options)

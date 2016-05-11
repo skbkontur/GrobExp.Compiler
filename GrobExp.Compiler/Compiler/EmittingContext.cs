@@ -29,6 +29,17 @@ namespace GrobExp.Compiler
             }
         }
 
+        public void LoadCompiledLambda(CompiledLambda compiledLambda)
+        {
+            if (ParsedLambda.ConstantsParameter == null)
+                throw new InvalidOperationException("There is no constants parameter. Cannot load sublambda");
+            Type temp;
+            var delegatesAccessor = ParsedLambda.ConstantsBuilder.MakeAccess(ParsedLambda.ConstantsParameter, ParsedLambda.DelegatesFieldId);
+            ExpressionEmittersCollection.Emit(delegatesAccessor, this, out temp);
+            Il.Ldc_I4(compiledLambda.Index);
+            Il.Ldelem(typeof(Delegate));
+        }
+
         public void MarkHiddenSP()
         {
             if (DebugInfoGenerator != null)
@@ -78,8 +89,9 @@ namespace GrobExp.Compiler
 
         public void EmitHasValueAccess(Type type)
         {
+            string hasValueFieldName = Extensions.IsMono ? "has_value" : "hasValue";
             Type memberType;
-            MemberInfo member = SkipVisibility ? (MemberInfo)type.GetField("hasValue", BindingFlags.NonPublic | BindingFlags.Instance) : type.GetProperty("HasValue", BindingFlags.Public | BindingFlags.Instance);
+            MemberInfo member = SkipVisibility ? (MemberInfo)type.GetField(hasValueFieldName, BindingFlags.NonPublic | BindingFlags.Instance) : type.GetProperty("HasValue", BindingFlags.Public | BindingFlags.Instance);
             EmitMemberAccess(type, member, ResultType.Value, out memberType);
         }
 

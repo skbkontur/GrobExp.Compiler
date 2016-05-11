@@ -24,7 +24,7 @@ namespace GrobExp.Compiler.ExpressionEmitters
             var lambda = Expression.Lambda(Extensions.GetDelegateType(parameters.Select(parameter => parameter.Type).ToArray(), node.ReturnType), node.Body, node.Name, node.TailCall, parameters);
             CompiledLambda compiledLambda;
             if(context.TypeBuilder == null)
-                compiledLambda = LambdaCompiler.CompileInternal(lambda, context.DebugInfoGenerator, context.ParsedLambda, context.Options, context.CompiledLambdas);
+                compiledLambda = LambdaCompiler.CompileInternal(lambda, context.DebugInfoGenerator, context.ParsedLambda, context.Options, true, context.CompiledLambdas);
             else
             {
                 var method = context.TypeBuilder.DefineMethod(Guid.NewGuid().ToString(), MethodAttributes.Public | MethodAttributes.Static, lambda.ReturnType, lambda.Parameters.Select(parameter => parameter.Type).ToArray());
@@ -33,6 +33,7 @@ namespace GrobExp.Compiler.ExpressionEmitters
                 LambdaCompiler.CompileToMethodInternal(lambda, context.DebugInfoGenerator, context.ParsedLambda, context.Options, context.CompiledLambdas, method);
                 compiledLambda = new CompiledLambda {Method = method};
             }
+            compiledLambda.Index = context.CompiledLambdas.Count;
             context.CompiledLambdas.Add(compiledLambda);
             if(needConstants)
             {
@@ -56,12 +57,23 @@ namespace GrobExp.Compiler.ExpressionEmitters
             var compiledLambda = CompileAndLoadConstants(node, context, out constantTypes);
 
             var il = context.Il;
-            context.LoadCompiledLambdaPointer(compiledLambda);
+            Type rawSubLambdaType;
+            if(!Extensions.IsMono)
+            {
+                context.LoadCompiledLambdaPointer(compiledLambda);
+                rawSubLambdaType = typeof(IntPtr);
+            }
+            else
+            {
+                rawSubLambdaType = Extensions.GetDelegateType(constantTypes.Concat(parameterTypes).ToArray(), node.ReturnType);
+                context.LoadCompiledLambda(compiledLambda);
+                il.Castclass(rawSubLambdaType);
+            }
 
             resultType = Extensions.GetDelegateType(parameterTypes, node.ReturnType);
-            var types = constantTypes.Concat(new[] {typeof(IntPtr)}).ToArray();
+            var types = constantTypes.Concat(new[] {rawSubLambdaType}).ToArray();
             var module = (ModuleBuilder)(context.TypeBuilder == null ? null : context.TypeBuilder.Module);
-            var subLambdaInvoker = DynamicMethodInvokerBuilder.BuildDynamicMethodInvoker(module, constantTypes, node.Body.Type, parameterTypes);
+            var subLambdaInvoker = DynamicMethodInvokerBuilder.BuildDynamicMethodInvoker(module, constantTypes, node.ReturnType, parameterTypes);
             il.Newobj(subLambdaInvoker.GetConstructor(types));
             il.Ldftn(subLambdaInvoker.GetMethod("Invoke"));
             il.Newobj(resultType.GetConstructor(new[] {typeof(object), typeof(IntPtr)}));

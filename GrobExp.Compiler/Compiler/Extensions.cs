@@ -6,6 +6,10 @@ namespace GrobExp.Compiler
 {
     public static class Extensions
     {
+        private static readonly bool isMono = Type.GetType("Mono.Runtime") != null;
+
+        public static bool IsMono { get { return isMono; } }
+
         public static bool IsNullable(this Type type)
         {
             return type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>);
