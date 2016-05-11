@@ -5,7 +5,7 @@ using System.Linq.Expressions;
 using System.Reflection;
 using System.Reflection.Emit;
 
-namespace GrobExp.Compiler
+namespace GrobExp.Compiler.Closures
 {
     internal class ExpressionAnonymousTypeReplacer : ExpressionVisitor
     {

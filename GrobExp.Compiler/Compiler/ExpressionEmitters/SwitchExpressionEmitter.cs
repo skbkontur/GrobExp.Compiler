@@ -21,8 +21,8 @@ namespace GrobExp.Compiler.ExpressionEmitters
             using(var switchValue = context.DeclareLocal(node.SwitchValue.Type))
             {
                 il.Stloc(switchValue);
-                Tuple<FieldInfo, FieldInfo, int> switchCase;
-                if(context.Switches.TryGetValue(node, out switchCase))
+                Tuple<int, int, int> switchCase;
+                if (context.ParsedLambda.ParsedSwitches.TryGetValue(node, out switchCase))
                 {
                     // use simplified hashtable to locate the proper case
                     var labels = new List<GroboIL.Label>();
@@ -55,9 +55,8 @@ namespace GrobExp.Compiler.ExpressionEmitters
                         context.EmitValueAccess(node.SwitchValue.Type);
                         il.Stloc(pureSwitchValue);
                     }
-                    Type constantsType;
-                    ExpressionEmittersCollection.Emit(context.ConstantsParameter, context, out constantsType);
-                    il.Ldfld(switchCase.Item1);
+                    Type temp;
+                    ExpressionEmittersCollection.Emit(context.ParsedLambda.ConstantsBuilder.MakeAccess(context.ParsedLambda.ConstantsParameter, switchCase.Item1), context, out temp);
                     var type = node.SwitchValue.Type.IsNullable() ? node.SwitchValue.Type.GetGenericArguments()[0] : node.SwitchValue.Type;
                     var typeCode = Type.GetTypeCode(type);
                     switch(typeCode)
@@ -99,8 +98,7 @@ namespace GrobExp.Compiler.ExpressionEmitters
                         else
                             il.Ceq();
                         il.Brfalse(defaultLabel);
-                        ExpressionEmittersCollection.Emit(context.ConstantsParameter, context, out constantsType);
-                        il.Ldfld(switchCase.Item2);
+                        ExpressionEmittersCollection.Emit(context.ParsedLambda.ConstantsBuilder.MakeAccess(context.ParsedLambda.ConstantsParameter, switchCase.Item2), context, out temp);
                         il.Ldloc(index);
                         il.Ldelem(typeof(int));
                         il.Switch(labels.ToArray());

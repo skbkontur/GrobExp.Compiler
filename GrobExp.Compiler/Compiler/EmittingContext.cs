@@ -144,7 +144,7 @@ namespace GrobExp.Compiler
                         il.Ldloca(temp);
                     }
                 }
-                if(checkNullReferences && node.Expression != ClosureParameter && node.Expression != ConstantsParameter)
+                if (checkNullReferences && node.Expression != ParsedLambda.ClosureParameter && node.Expression != ParsedLambda.ConstantsParameter)
                     result |= EmitNullChecking(node.Expression.Type, returnDefaultValueLabel);
             }
             extend &= CanAssign(node.Member);
@@ -517,11 +517,7 @@ namespace GrobExp.Compiler
         public MethodInfo Method { get; set; }
         public bool SkipVisibility { get; set; }
         public ParameterExpression[] Parameters { get; set; }
-        public Type ClosureType { get; set; }
-        public ParameterExpression ClosureParameter { get; set; }
-        public Type ConstantsType { get; set; }
-        public ParameterExpression ConstantsParameter { get; set; }
-        public Dictionary<SwitchExpression, Tuple<FieldInfo, FieldInfo, int>> Switches { get; set; }
+        public ParsedLambda ParsedLambda { get; set; }
         public List<CompiledLambda> CompiledLambdas { get; set; }
         public GroboIL Il { get; set; }
         public Dictionary<ParameterExpression, GroboIL.Local> VariablesToLocals { get { return variablesToLocals; } }

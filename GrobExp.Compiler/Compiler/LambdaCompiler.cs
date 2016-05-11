@@ -9,6 +9,8 @@ using System.Runtime.CompilerServices;
 
 using GrEmit;
 
+using GrobExp.Compiler.Closures;
+
 namespace GrobExp.Compiler
 {
     public static class LambdaCompiler
@@ -57,17 +59,12 @@ namespace GrobExp.Compiler
         internal static CompiledLambda CompileInternal(
             LambdaExpression lambda,
             DebugInfoGenerator debugInfoGenerator,
-            Type closureType,
-            ParameterExpression closureParameter,
-            Type constantsType,
-            ParameterExpression constantsParameter,
-            object constants,
-            Dictionary<SwitchExpression, Tuple<FieldInfo, FieldInfo, int>> switches,
+            ParsedLambda parsedLambda,
             CompilerOptions options,
             List<CompiledLambda> compiledLambdas)
         {
             if(debugInfoGenerator == null)
-                return CompileToDynamicMethod(lambda, closureType, closureParameter, constantsType, constantsParameter, constants, switches, options, compiledLambdas);
+                return CompileToDynamicMethod(lambda, parsedLambda, options, compiledLambdas);
 
             var parameters = lambda.Parameters.ToArray();
             var parameterTypes = parameters.Select(parameter => parameter.Type).ToArray();
@@ -77,7 +74,7 @@ namespace GrobExp.Compiler
             var method = typeBuilder.DefineMethod(lambda.Name ?? Guid.NewGuid().ToString(), MethodAttributes.Static | MethodAttributes.Public, returnType, parameterTypes);
             for(var i = 0; i < parameters.Length; ++i)
                 method.DefineParameter(i + 1, ParameterAttributes.None, parameters[i].Name);
-            CompileToMethodInternal(lambda, debugInfoGenerator, closureType, closureParameter, constantsType, constantsParameter, switches, options, compiledLambdas, method);
+            CompileToMethodInternal(lambda, debugInfoGenerator, parsedLambda, options, compiledLambdas, method);
 
             var type = typeBuilder.CreateType();
             var dynamicMethod = new DynamicMethod(Guid.NewGuid().ToString(), returnType, parameterTypes, Module, true);
@@ -90,7 +87,7 @@ namespace GrobExp.Compiler
             }
             return new CompiledLambda
                 {
-                    Delegate = dynamicMethod.CreateDelegate(Extensions.GetDelegateType(constantsParameter == null ? parameterTypes : parameterTypes.Skip(1).ToArray(), returnType), constants),
+                    Delegate = dynamicMethod.CreateDelegate(Extensions.GetDelegateType(parsedLambda.ConstantsParameter == null ? parameterTypes : parameterTypes.Skip(1).ToArray(), returnType), parsedLambda.Constants),
                     Method = method
                 };
         }
@@ -98,11 +95,7 @@ namespace GrobExp.Compiler
         internal static void CompileToMethodInternal(
             LambdaExpression lambda,
             DebugInfoGenerator debugInfoGenerator,
-            Type closureType,
-            ParameterExpression closureParameter,
-            Type constantsType,
-            ParameterExpression constantsParameter,
-            Dictionary<SwitchExpression, Tuple<FieldInfo, FieldInfo, int>> switches,
+            ParsedLambda parsedLambda,
             CompilerOptions options,
             List<CompiledLambda> compiledLambdas,
             MethodBuilder method)
@@ -121,11 +114,7 @@ namespace GrobExp.Compiler
                         Method = method,
                         SkipVisibility = false,
                         Parameters = lambda.Parameters.ToArray(),
-                        ClosureType = closureType,
-                        ClosureParameter = closureParameter,
-                        ConstantsType = constantsType,
-                        ConstantsParameter = constantsParameter,
-                        Switches = switches,
+                        ParsedLambda = parsedLambda,
                         CompiledLambdas = compiledLambdas,
                         Il = il
                     };
@@ -183,12 +172,7 @@ namespace GrobExp.Compiler
 
         private static CompiledLambda CompileToDynamicMethod(
             LambdaExpression lambda,
-            Type closureType,
-            ParameterExpression closureParameter,
-            Type constantsType,
-            ParameterExpression constantsParameter,
-            object constants,
-            Dictionary<SwitchExpression, Tuple<FieldInfo, FieldInfo, int>> switches,
+            ParsedLambda parsedLambda,
             CompilerOptions options,
             List<CompiledLambda> compiledLambdas)
         {
@@ -205,11 +189,7 @@ namespace GrobExp.Compiler
                         Method = method,
                         SkipVisibility = true,
                         Parameters = parameters,
-                        ClosureType = closureType,
-                        ClosureParameter = closureParameter,
-                        ConstantsType = constantsType,
-                        ConstantsParameter = constantsParameter,
-                        Switches = switches,
+                        ParsedLambda = parsedLambda,
                         CompiledLambdas = compiledLambdas,
                         Il = il
                     };
@@ -217,7 +197,7 @@ namespace GrobExp.Compiler
             }
             return new CompiledLambda
             {
-                Delegate = method.CreateDelegate(Extensions.GetDelegateType(constantsParameter == null ? parameterTypes : parameterTypes.Skip(1).ToArray(), returnType), constants),
+                Delegate = method.CreateDelegate(Extensions.GetDelegateType(parsedLambda.ConstantsParameter == null ? parameterTypes : parameterTypes.Skip(1).ToArray(), returnType), parsedLambda.Constants),
                 Method = method
             };
         }
@@ -240,63 +220,51 @@ namespace GrobExp.Compiler
         private static CompiledLambda CompileInternal(LambdaExpression lambda, DebugInfoGenerator debugInfoGenerator, out CompiledLambda[] subLambdas, CompilerOptions options)
         {
             var compiledLambdas = new List<CompiledLambda>();
-            Type closureType;
-            ParameterExpression closureParameter;
-            Type constantsType;
-            ParameterExpression constantsParameter;
-            object constants;
-            Dictionary<SwitchExpression, Tuple<FieldInfo, FieldInfo, int>> switches;
+            ParsedLambda parsedLambda;
             var emitToDynamicMethod = debugInfoGenerator == null;
-            var resolvedLambda = new ExpressionClosureResolver(lambda, Module, emitToDynamicMethod).Resolve(out closureType, out closureParameter, out constantsType, out constantsParameter, out constants, out switches);
+            var resolvedLambda = new ExpressionClosureResolver(lambda, Module, emitToDynamicMethod, options).Resolve(out parsedLambda);
             if(!string.IsNullOrEmpty(DebugOutputDirectory))
             {
-                resolvedLambda = AdvancedDebugViewWriter.WriteToModifying(resolvedLambda, constantsType,
-                                                                          constantsParameter, constants, GenerateFileName(resolvedLambda));
+                resolvedLambda = AdvancedDebugViewWriter.WriteToModifying(resolvedLambda, parsedLambda.ConstantsType,
+                                                                          parsedLambda.ConstantsParameter, parsedLambda.Constants, GenerateFileName(resolvedLambda));
             }
-            var compiledLambda = CompileInternal(resolvedLambda, debugInfoGenerator, closureType, closureParameter, constantsType, constantsParameter, constants, switches, options, compiledLambdas);
+            var compiledLambda = CompileInternal(resolvedLambda, debugInfoGenerator, parsedLambda, options, compiledLambdas);
             subLambdas = compiledLambdas.ToArray();
             if(compiledLambdas.Count > 0 && emitToDynamicMethod)
-                BuildDelegatesFoister(constantsType)(constants, compiledLambdas.Select(compIledLambda => compIledLambda.Delegate).ToArray());
+                BuildDelegatesFoister(parsedLambda)(parsedLambda.Constants, compiledLambdas.Select(compIledLambda => compIledLambda.Delegate).ToArray());
             return compiledLambda;
         }
 
         private static void CompileToMethodInternal(LambdaExpression lambda, MethodBuilder method, DebugInfoGenerator debugInfoGenerator, CompilerOptions options)
         {
             var compiledLambdas = new List<CompiledLambda>();
-            Type closureType;
-            ParameterExpression closureParameter;
-            Type constantsType;
-            ParameterExpression constantsParameter;
-            object constants;
-            Dictionary<SwitchExpression, Tuple<FieldInfo, FieldInfo, int>> switches;
+            ParsedLambda parsedLambda;
             var module = method.Module as ModuleBuilder;
             if(module == null)
                 throw new ArgumentException("Unable to obtain module builder of the method", "method");
             method.SetReturnType(lambda.ReturnType);
             method.SetParameters(lambda.Parameters.Select(parameter => parameter.Type).ToArray());
-            var resolvedLambda = new ExpressionClosureResolver(lambda, module, false).Resolve(out closureType, out closureParameter, out constantsType, out constantsParameter, out constants, out switches);
+            var resolvedLambda = new ExpressionClosureResolver(lambda, module, false, options).Resolve(out parsedLambda);
             if(!string.IsNullOrEmpty(DebugOutputDirectory))
             {
-                resolvedLambda = AdvancedDebugViewWriter.WriteToModifying(resolvedLambda, constantsType,
-                                                                          constantsParameter, constants, GenerateFileName(resolvedLambda));
+                resolvedLambda = AdvancedDebugViewWriter.WriteToModifying(resolvedLambda, parsedLambda.ConstantsType,
+                                                                          parsedLambda.ConstantsParameter, parsedLambda.Constants, GenerateFileName(resolvedLambda));
             }
-            if(constantsParameter != null)
+            if (parsedLambda.ConstantsParameter != null)
                 throw new InvalidOperationException("Non-trivial constants are not allowed for compilation to method");
-            CompileToMethodInternal(resolvedLambda, debugInfoGenerator, closureType, closureParameter, null, null, switches, options, compiledLambdas, method);
+            CompileToMethodInternal(resolvedLambda, debugInfoGenerator, parsedLambda, options, compiledLambdas, method);
         }
 
-        private static Action<object, Delegate[]> BuildDelegatesFoister(Type type)
+        private static Action<object, Delegate[]> BuildDelegatesFoister(ParsedLambda parsedLambda)
         {
-            var method = new DynamicMethod(Guid.NewGuid().ToString(), MethodAttributes.Public | MethodAttributes.Static, CallingConventions.Standard, typeof(void), new[] {typeof(object), typeof(Delegate[])}, Module, true);
-            using(var il = new GroboIL(method))
-            {
-                il.Ldarg(0);
-                il.Castclass(type);
-                il.Ldarg(1);
-                il.Stfld(type.GetField("delegates"));
-                il.Ret();
-            }
-            return (Action<object, Delegate[]>)method.CreateDelegate(typeof(Action<object, Delegate[]>));
+            var constants = Expression.Parameter(typeof(object));
+            var delegates = Expression.Parameter(typeof(Delegate[]));
+            var castedConstants = Expression.Parameter(parsedLambda.ConstantsType);
+            var body = Expression.Block(new[] {castedConstants},
+                             Expression.Assign(castedConstants, Expression.Convert(constants, parsedLambda.ConstantsType)),
+                             parsedLambda.ConstantsBuilder.Assign(castedConstants, parsedLambda.DelegatesFieldId, delegates));
+            var lambda = Expression.Lambda<Action<object, Delegate[]>>(body, constants, delegates);
+            return Compile(lambda, CompilerOptions.None);
         }
     }
 }

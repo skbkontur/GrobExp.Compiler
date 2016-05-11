@@ -47,14 +47,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AnonymousTypeBuilder.cs" />
-    <Compile Include="ClosureSubstituter.cs" />
+    <Compile Include="Closures\AnonymousTypeBuilder.cs" />
+    <Compile Include="Closures\ClosureSubstituter.cs" />
+    <Compile Include="Closures\DynamicClosureBuilder.cs" />
+    <Compile Include="Closures\IClosureBuilder.cs" />
+    <Compile Include="Closures\StaticClosureBuilder.cs" />
     <Compile Include="CompiledLambda.cs" />
     <Compile Include="AdvancedDebugViewWriter.cs" />
     <Compile Include="EmittingContext.cs" />
-    <Compile Include="ExpressionAnonymousTypeReplacer.cs" />
-    <Compile Include="ExpressionClosureBuilder.cs" />
-    <Compile Include="ExpressionClosureResolver.cs" />
+    <Compile Include="Closures\ExpressionAnonymousTypeReplacer.cs" />
+    <Compile Include="Closures\ExpressionClosureBuilder.cs" />
+    <Compile Include="Closures\ExpressionClosureResolver.cs" />
     <Compile Include="ExpressionEmitters\BinaryArithmeticOperationExpressionEmitter.cs" />
     <Compile Include="ExpressionEmitters\ArrayIndexExpressionEmitter.cs" />
     <Compile Include="ExpressionEmitters\ArrayLengthExpressionEmitter.cs" />
@@ -98,8 +101,8 @@
     <Compile Include="ExpressionEmitters\UnaryAssignExpressionEmitter.cs" />
     <Compile Include="ExpressionEmitters\UnboxExpressionEmitter.cs" />
     <Compile Include="ExpressionHashCalculator.cs" />
-    <Compile Include="ExpressionPrivateMembersAccessor.cs" />
-    <Compile Include="ExpressionQuoter.cs" />
+    <Compile Include="Closures\ExpressionPrivateMembersAccessor.cs" />
+    <Compile Include="Closures\ExpressionQuoter.cs" />
     <Compile Include="Extensions.cs" />
     <Compile Include="CompilerOptions.cs" />
     <Compile Include="ExpressionEmitters\IExpressionEmitter.cs" />
@@ -107,12 +110,14 @@
     <Compile Include="LambdaCompiler.cs" />
     <Compile Include="LambdaExpressionCreator.cs" />
     <Compile Include="LambdaPreparer.cs" />
-    <Compile Include="MethodInvokerBuilder.cs" />
+    <Compile Include="Closures\MethodInvokerBuilder.cs" />
     <Compile Include="ParametersExtractor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ResultType.cs" />
-    <Compile Include="RuntimeVariablesInliner.cs" />
+    <Compile Include="Closures\RuntimeVariablesInliner.cs" />
+    <Compile Include="StaticClosures.cs" />
     <Compile Include="TypedDebugInfoExpression.cs" />
+    <Compile Include="Stuple.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

@@ -3,7 +3,7 @@ using System.Linq.Expressions;
 
 using GrobExp.Compiler.ExpressionEmitters;
 
-namespace GrobExp.Compiler
+namespace GrobExp.Compiler.Closures
 {
     internal class RuntimeVariablesInliner : ExpressionVisitor
     {

@@ -11,6 +11,7 @@ namespace GrobExp.Compiler
         ExtendOnAssign = 4,
         UseTernaryLogic = 8,
         CheckDictionaryKeys = 16,
-        All = CheckNullReferences | CheckArrayIndexes | ExtendOnAssign | UseTernaryLogic | CheckDictionaryKeys
+        CreateDynamicClosure = 32,
+        All = CheckNullReferences | CheckArrayIndexes | ExtendOnAssign | UseTernaryLogic | CheckDictionaryKeys | CreateDynamicClosure
     }
 }

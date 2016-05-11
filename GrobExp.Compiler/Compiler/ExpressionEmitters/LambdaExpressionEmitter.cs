@@ -13,36 +13,36 @@ namespace GrobExp.Compiler.ExpressionEmitters
     {
         public static CompiledLambda CompileAndLoadConstants(LambdaExpression node, EmittingContext context, out Type[] constantTypes)
         {
-            var needClosure = context.ClosureParameter != null;
-            var needConstants = context.ConstantsParameter != null;
+            var needClosure = context.ParsedLambda.ClosureParameter != null;
+            var needConstants = context.ParsedLambda.ConstantsParameter != null;
             var constantParameters = new List<ParameterExpression>();
             if(needConstants)
-                constantParameters.Add(context.ConstantsParameter);
+                constantParameters.Add(context.ParsedLambda.ConstantsParameter);
             if(needClosure)
-                constantParameters.Add(context.ClosureParameter);
+                constantParameters.Add(context.ParsedLambda.ClosureParameter);
             var parameters = constantParameters.Concat(node.Parameters).ToList();
             var lambda = Expression.Lambda(Extensions.GetDelegateType(parameters.Select(parameter => parameter.Type).ToArray(), node.ReturnType), node.Body, node.Name, node.TailCall, parameters);
             CompiledLambda compiledLambda;
             if(context.TypeBuilder == null)
-                compiledLambda = LambdaCompiler.CompileInternal(lambda, context.DebugInfoGenerator, context.ClosureType, context.ClosureParameter, context.ConstantsType, context.ConstantsParameter, null, context.Switches, context.Options, context.CompiledLambdas);
+                compiledLambda = LambdaCompiler.CompileInternal(lambda, context.DebugInfoGenerator, context.ParsedLambda, context.Options, context.CompiledLambdas);
             else
             {
                 var method = context.TypeBuilder.DefineMethod(Guid.NewGuid().ToString(), MethodAttributes.Public | MethodAttributes.Static, lambda.ReturnType, lambda.Parameters.Select(parameter => parameter.Type).ToArray());
                 for(var i = 0; i < parameters.Count; ++i)
                     method.DefineParameter(i + 1, ParameterAttributes.None, parameters[i].Name);
-                LambdaCompiler.CompileToMethodInternal(lambda, context.DebugInfoGenerator, context.ClosureType, context.ClosureParameter, context.ConstantsType, context.ConstantsParameter, context.Switches, context.Options, context.CompiledLambdas, method);
+                LambdaCompiler.CompileToMethodInternal(lambda, context.DebugInfoGenerator, context.ParsedLambda, context.Options, context.CompiledLambdas, method);
                 compiledLambda = new CompiledLambda {Method = method};
             }
             context.CompiledLambdas.Add(compiledLambda);
             if(needConstants)
             {
                 Type constantsType;
-                ExpressionEmittersCollection.Emit(context.ConstantsParameter, context, out constantsType);
+                ExpressionEmittersCollection.Emit(context.ParsedLambda.ConstantsParameter, context, out constantsType);
             }
             if(needClosure)
             {
                 Type closureType;
-                ExpressionEmittersCollection.Emit(context.ClosureParameter, context, out closureType);
+                ExpressionEmittersCollection.Emit(context.ParsedLambda.ClosureParameter, context, out closureType);
             }
             constantTypes = constantParameters.Select(exp => exp.Type).ToArray();
             return compiledLambda;
