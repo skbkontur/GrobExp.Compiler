@@ -16,7 +16,8 @@ namespace GrobExp.Compiler.ExpressionEmitters
                 return false;
             }
             ConstructorInfo constructor = node.Type.GetConstructor(Type.EmptyTypes);
-            extend &= node != context.ParsedLambda.ClosureParameter && node != context.ParsedLambda.ConstantsParameter && ((node.Type.IsClass && constructor != null) || node.Type.IsArray);
+            extend &= node != context.ParsedLambda.ClosureParameter && node != context.ParsedLambda.ConstantsParameter && !node.Type.IsStaticClosure()
+                && ((node.Type.IsClass && constructor != null) || node.Type.IsArray);
             int index = Array.IndexOf(context.Parameters, node);
             if(index >= 0)
             {

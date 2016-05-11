@@ -156,7 +156,7 @@ namespace GrobExp.Compiler
                         il.Ldloca(temp);
                     }
                 }
-                if (checkNullReferences && node.Expression != ParsedLambda.ClosureParameter && node.Expression != ParsedLambda.ConstantsParameter)
+                if (checkNullReferences && node.Expression != ParsedLambda.ClosureParameter && node.Expression != ParsedLambda.ConstantsParameter && !node.Expression.Type.IsStaticClosure())
                     result |= EmitNullChecking(node.Expression.Type, returnDefaultValueLabel);
             }
             extend &= CanAssign(node.Member);

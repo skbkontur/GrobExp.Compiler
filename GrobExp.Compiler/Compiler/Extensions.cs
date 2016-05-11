@@ -30,6 +30,11 @@ namespace GrobExp.Compiler
             return type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Dictionary<,>);
         }
 
+        public static bool IsStaticClosure(this Type type)
+        {
+            return type.IsNested && type.DeclaringType == typeof(StaticClosures);
+        }
+
         public static bool Unsigned(this Type type)
         {
             if(type == typeof(IntPtr))

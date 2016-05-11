@@ -39,7 +39,7 @@ namespace GrobExp.Compiler.ExpressionEmitters
                 }
                 else
                 {
-                    bool closureAssign = memberExpression.Expression == context.ParsedLambda.ClosureParameter;
+                    bool closureAssign = memberExpression.Expression == context.ParsedLambda.ClosureParameter || memberExpression.Expression.Type.IsStaticClosure();
                     checkNullReferences &= !closureAssign;
                     if(node.NodeType != ExpressionType.Assign && context.CanReturn)
                         result |= ExpressionEmittersCollection.Emit(memberExpression.Expression, context, returnDefaultValueLabel, ResultType.ByRefValueTypesOnly, extend, out assigneeType);
