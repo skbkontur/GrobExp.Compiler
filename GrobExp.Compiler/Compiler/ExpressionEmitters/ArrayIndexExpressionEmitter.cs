@@ -26,7 +26,7 @@ namespace GrobExp.Compiler.ExpressionEmitters
             var itemType = isArray ? arrayType.GetElementType() : arrayType.GetGenericArguments()[0];
             GroboIL il = context.Il;
             EmittingContext.LocalHolder arrayIndex = null;
-            bool extendArray = extend && CanAssign(zarr) || !isArray;
+            bool extendArray = extend && (CanAssign(zarr) || !isArray);
             bool extendArrayElement = extend && itemType.IsClass;
             var result = false;
             if(!extendArray)
@@ -55,7 +55,7 @@ namespace GrobExp.Compiler.ExpressionEmitters
                     il.Ldc_I4(0); // stack: [array, arrayIndex, 0]
                     il.Blt(returnDefaultValueLabel, false); // if(arrayIndex < 0) goto returnDefaultValue; stack: [array]
                 }
-                else if(extendArrayElement)
+                else if(extendArrayElement || !isArray)
                 {
                     arrayIndex = context.DeclareLocal(typeof(int));
                     il.Stloc(arrayIndex); // arrayIndex = index; stack: [array]
