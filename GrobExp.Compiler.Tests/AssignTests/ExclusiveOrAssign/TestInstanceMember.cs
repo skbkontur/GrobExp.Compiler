@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Linq.Expressions;
 
-using GrobExp.Compiler;
-
 using NUnit.Framework;
 
-namespace Compiler.Tests.AssignTests.ExclusiveOrAssign
+namespace GrobExp.Compiler.Tests.AssignTests.ExclusiveOrAssign
 {
     [TestFixture]
     public class TestInstanceMember

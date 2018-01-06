@@ -1,13 +1,11 @@
 ﻿using System;
 using System.Linq.Expressions;
 
-using GrobExp.Compiler;
-
 using Microsoft.CSharp.RuntimeBinder;
 
 using NUnit.Framework;
 
-namespace Compiler.Tests
+namespace GrobExp.Compiler.Tests
 {
     [TestFixture]
     public class TestDynamic

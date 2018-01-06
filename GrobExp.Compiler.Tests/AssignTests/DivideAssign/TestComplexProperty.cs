@@ -2,11 +2,9 @@
 using System.Collections.Generic;
 using System.Linq.Expressions;
 
-using GrobExp.Compiler;
-
 using NUnit.Framework;
 
-namespace Compiler.Tests.AssignTests.DivideAssign
+namespace GrobExp.Compiler.Tests.AssignTests.DivideAssign
 {
     [TestFixture]
     public class TestComplexProperty

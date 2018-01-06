@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Linq.Expressions;
 
-using GrobExp.Compiler;
-
 using NUnit.Framework;
 
-namespace Compiler.Tests.AssignTests.MultiplyAssign
+namespace GrobExp.Compiler.Tests.AssignTests.MultiplyAssign
 {
     [TestFixture]
     public class TestInstanceMember

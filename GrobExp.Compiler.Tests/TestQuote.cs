@@ -3,11 +3,9 @@ using System.Linq.Expressions;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 
-using GrobExp.Compiler;
-
 using NUnit.Framework;
 
-namespace Compiler.Tests
+namespace GrobExp.Compiler.Tests
 {
     [TestFixture]
     public class TestQuote

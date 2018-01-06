@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Linq.Expressions;
 
-using GrobExp.Compiler;
-
 using NUnit.Framework;
 
-namespace Compiler.Tests.AssignTests.RightShiftAssign
+namespace GrobExp.Compiler.Tests.AssignTests.RightShiftAssign
 {
     [TestFixture]
     public class TestStaticMember

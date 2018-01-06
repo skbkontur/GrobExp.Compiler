@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Linq.Expressions;
 
-using GrobExp.Compiler;
-
 using NUnit.Framework;
 
-namespace Compiler.Tests.ArithmeticTests
+namespace GrobExp.Compiler.Tests.ArithmeticTests
 {
     public class TestUnaryPlusMinus : TestBase
     {

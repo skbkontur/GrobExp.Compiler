@@ -1,12 +1,9 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Linq.Expressions;
-
-using GrobExp.Compiler;
 
 using NUnit.Framework;
 
-namespace Compiler.Tests
+namespace GrobExp.Compiler.Tests
 {
     [TestFixture]
     public class TestLogical

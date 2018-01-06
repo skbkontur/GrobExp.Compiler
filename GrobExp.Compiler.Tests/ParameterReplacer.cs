@@ -1,6 +1,6 @@
 ﻿using System.Linq.Expressions;
 
-namespace Compiler.Tests
+namespace GrobExp.Compiler.Tests
 {
     public class ParameterReplacer : ExpressionVisitor
     {

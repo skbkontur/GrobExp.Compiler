@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Linq.Expressions;
 
-using GrobExp.Compiler;
-
 using NUnit.Framework;
 
-namespace Compiler.Tests.ExtensionTests
+namespace GrobExp.Compiler.Tests.ExtensionTests
 {
     [TestFixture]
     public class TestForEach

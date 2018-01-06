@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Linq.Expressions;
 
-using GrobExp.Compiler;
-
 using NUnit.Framework;
 
-namespace Compiler.Tests.TryCatchTests
+namespace GrobExp.Compiler.Tests.TryCatchTests
 {
     public class TestFault : TestBase
     {

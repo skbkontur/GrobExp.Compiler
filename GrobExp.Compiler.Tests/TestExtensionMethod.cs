@@ -1,13 +1,10 @@
 ﻿using System;
+using System.Linq;
 using System.Linq.Expressions;
-
-using GrobExp.Compiler;
 
 using NUnit.Framework;
 
-using System.Linq;
-
-namespace Compiler.Tests
+namespace GrobExp.Compiler.Tests
 {
     [TestFixture]
     public class TestExtensionMethod

@@ -6,11 +6,9 @@ using System.Reflection.Emit;
 
 using GrEmit;
 
-using GrobExp.Compiler;
-
 using NUnit.Framework;
 
-namespace Compiler.Tests
+namespace GrobExp.Compiler.Tests
 {
     [TestFixture]
     public class TestBase

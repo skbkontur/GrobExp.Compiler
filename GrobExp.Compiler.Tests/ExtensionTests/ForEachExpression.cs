@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Reflection;
 
-namespace Compiler.Tests.ExtensionTests
+namespace GrobExp.Compiler.Tests.ExtensionTests
 {
     public class ForEachExpression : Expression
     {

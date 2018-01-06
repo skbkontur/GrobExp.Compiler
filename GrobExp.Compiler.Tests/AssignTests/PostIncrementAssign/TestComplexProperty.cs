@@ -2,11 +2,9 @@
 using System.Collections.Generic;
 using System.Linq.Expressions;
 
-using GrobExp.Compiler;
-
 using NUnit.Framework;
 
-namespace Compiler.Tests.AssignTests.PostIncrementAssign
+namespace GrobExp.Compiler.Tests.AssignTests.PostIncrementAssign
 {
     [TestFixture]
     public class TestComplexProperty

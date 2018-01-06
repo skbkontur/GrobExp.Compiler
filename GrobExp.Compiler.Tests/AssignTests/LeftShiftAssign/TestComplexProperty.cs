@@ -2,11 +2,9 @@
 using System.Collections.Generic;
 using System.Linq.Expressions;
 
-using GrobExp.Compiler;
-
 using NUnit.Framework;
 
-namespace Compiler.Tests.AssignTests.LeftShiftAssign
+namespace GrobExp.Compiler.Tests.AssignTests.LeftShiftAssign
 {
     [TestFixture]
     public class TestComplexProperty

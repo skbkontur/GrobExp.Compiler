@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Linq.Expressions;
 
-using GrobExp.Compiler;
-
 using NUnit.Framework;
 
-namespace Compiler.Tests.AssignTests.AndAssign
+namespace GrobExp.Compiler.Tests.AssignTests.AndAssign
 {
     [TestFixture]
     public class TestMultiDimensionalArray
