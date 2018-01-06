@@ -1,28 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Diagnostics.SymbolStore;
-using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Reflection.Emit;
 using System.Runtime.CompilerServices;
-using System.Text;
 using System.Threading;
-using System.Xml.Linq;
 
 using GrEmit;
 
-using GrobExp.Compiler;
-
-using Microsoft.CSharp.RuntimeBinder;
-
 using NUnit.Framework;
 
-using Binder = Microsoft.CSharp.RuntimeBinder.Binder;
-
-namespace Compiler.Tests
+namespace GrobExp.Compiler.Tests
 {
     public class TestSubLambda : TestBase
     {
@@ -45,6 +35,24 @@ namespace Compiler.Tests
         }
 
         [Test]
+        public void Test()
+        {
+            if(asdfsadf())
+            {
+                Console.WriteLine("zzz");
+            }
+            else
+            {
+                Console.WriteLine("qxx");
+            }
+        }
+
+        private static bool asdfsadf()
+        {
+            return 1 == 1;
+        }
+
+        [Test]
         public void TestSubLambda2()
         {
             Expression<Func<TestClassA, IEnumerable<TestClassB>>> exp = a => a.ArrayB.Where(b => b.S == a.S);
@@ -59,7 +67,9 @@ namespace Compiler.Tests
             Assert.IsTrue(f(new TestClassA {S = "qzz", ArrayB = new[] {new TestClassB {S = "zzz"},}}));
         }
 
-        [Test, Ignore]
+#if !NETCOREAPP2_0
+        [Test]
+        [Ignore("Is used for debugging")]
         public void CompileAndSave()
         {
             /*Expression<Func<TestStructA, IEnumerable<TestStructB>>> exp = a => a.ArrayB.Where(b => b.S == a.S);
@@ -111,12 +121,30 @@ namespace Compiler.Tests
             CompileAndSave(exp);
         }
 
+        private void CompileAndSave<TDelegate>(Expression<TDelegate> lambda) where TDelegate : class
+        {
+            var da = AssemblyBuilder.DefineDynamicAssembly(
+                new AssemblyName("dyn"), // call it whatever you want
+                AssemblyBuilderAccess.Save);
+
+            var dm = da.DefineDynamicModule("dyn_mod", "dyn.dll");
+            var dt = dm.DefineType("dyn_type");
+            var method = dt.DefineMethod("Foo", MethodAttributes.Public | MethodAttributes.Static, lambda.ReturnType, lambda.Parameters.Select(parameter => parameter.Type).ToArray());
+
+            //lambda.CompileToMethod(method);
+            LambdaCompiler.CompileToMethod(lambda, method, CompilerOptions.All);
+            dt.CreateType();
+
+            da.Save("dyn.dll");
+        }
+
         private static readonly MethodInfo threadSleepMethod = ((MethodCallExpression)((Expression<Action>)(() => Thread.Sleep(0))).Body).Method;
 
-        [Test, Ignore]
+        [Test]
+        [Ignore("Is used for debugging")]
         public void TestDebugInfo()
         {
-            var asm = AppDomain.CurrentDomain.DefineDynamicAssembly(new AssemblyName("foo"), AssemblyBuilderAccess.RunAndSave);
+            var asm = AssemblyBuilder.DefineDynamicAssembly(new AssemblyName("foo"), AssemblyBuilderAccess.RunAndSave);
 
             var mod = asm.DefineDynamicModule("mymod", "tmp.dll", true);
             var type = mod.DefineType("baz", TypeAttributes.Public | TypeAttributes.Class);
@@ -145,10 +173,11 @@ namespace Compiler.Tests
             Console.WriteLine(" ");
         }
 
-        [Test, Ignore]
+        [Test]
+        [Ignore("Is used for debugging")]
         public void TestDebugInfo123()
         {
-            var asm = AppDomain.CurrentDomain.DefineDynamicAssembly(new AssemblyName("foo"), AssemblyBuilderAccess.RunAndSave);
+            var asm = AssemblyBuilder.DefineDynamicAssembly(new AssemblyName("foo"), AssemblyBuilderAccess.RunAndSave);
 
             var mod = asm.DefineDynamicModule("mymod", "tmp2.dll", true);
             var type = mod.DefineType("baz", TypeAttributes.Public | TypeAttributes.Class);
@@ -202,7 +231,7 @@ namespace Compiler.Tests
         [Test]
         public void TestZzz()
         {
-            var asm = AppDomain.CurrentDomain.DefineDynamicAssembly(new AssemblyName("foo"), AssemblyBuilderAccess.RunAndSave);
+            var asm = AssemblyBuilder.DefineDynamicAssembly(new AssemblyName("foo"), AssemblyBuilderAccess.RunAndSave);
 
             var mod = asm.DefineDynamicModule("mymod", "tmp.dll", true);
             var type = mod.DefineType("baz", TypeAttributes.Public | TypeAttributes.Class);
@@ -281,27 +310,9 @@ namespace Compiler.Tests
         }
 
         [Test]
-        public void Test()
-        {
-            if(asdfsadf())
-            {
-                Console.WriteLine("zzz");
-            }
-            else
-            {
-                Console.WriteLine("qxx");
-            }
-        }
-
-        private static bool asdfsadf()
-        {
-            return 1 == 1;
-        }
-
-        [Test]
         public void TestZzz2()
         {
-            var asm = AppDomain.CurrentDomain.DefineDynamicAssembly(new AssemblyName("foo"), AssemblyBuilderAccess.RunAndSave);
+            var asm = AssemblyBuilder.DefineDynamicAssembly(new AssemblyName("foo"), AssemblyBuilderAccess.RunAndSave);
 
             var mod = asm.DefineDynamicModule("mymod", "tmp.dll", true);
             var type = mod.DefineType("baz", TypeAttributes.Public | TypeAttributes.Class);
@@ -387,10 +398,11 @@ namespace Compiler.Tests
             Console.WriteLine(" ");
         }
 
-        [Test, Ignore]
+        [Test]
+        [Ignore("Is used for debugging")]
         public void TestDebugInfo2()
         {
-            var asm = AppDomain.CurrentDomain.DefineDynamicAssembly(new AssemblyName("foo"), AssemblyBuilderAccess.RunAndSave);
+            var asm = AssemblyBuilder.DefineDynamicAssembly(new AssemblyName("foo"), AssemblyBuilderAccess.RunAndSave);
 
             var mod = asm.DefineDynamicModule("mymod", "tmp.dll", true);
             var type = mod.DefineType("baz", TypeAttributes.Public | TypeAttributes.Class);
@@ -424,10 +436,11 @@ namespace Compiler.Tests
             Console.WriteLine(" ");
         }
 
-        [Test, Ignore]
+        [Test]
+        [Ignore("Is used for debugging")]
         public void TestDebugInfo3()
         {
-            var asm = AppDomain.CurrentDomain.DefineDynamicAssembly(new AssemblyName("foo"), AssemblyBuilderAccess.RunAndSave);
+            var asm = AssemblyBuilder.DefineDynamicAssembly(new AssemblyName("foo"), AssemblyBuilderAccess.RunAndSave);
 
             var mod = asm.DefineDynamicModule("mymod", "tmp.dll", true);
             var type = mod.DefineType("baz", TypeAttributes.Public | TypeAttributes.Class);
@@ -460,11 +473,12 @@ namespace Compiler.Tests
             Console.WriteLine(" ");
         }
 
-        [Test, Ignore]
+        [Test]
+        [Ignore("Is used for debugging")]
         public void TestDebug2()
         {
-  // create a dynamic assembly and module 
-            AssemblyBuilder assemblyBuilder = AppDomain.CurrentDomain.DefineDynamicAssembly(new AssemblyName("foo"), AssemblyBuilderAccess.RunAndSave);
+            // create a dynamic assembly and module 
+            AssemblyBuilder assemblyBuilder = AssemblyBuilder.DefineDynamicAssembly(new AssemblyName("foo"), AssemblyBuilderAccess.RunAndSave);
 
         ModuleBuilder module = assemblyBuilder.DefineDynamicModule("zzz", "HelloWorld.dll", true); // <-- pass 'true' to track debug info.
 
@@ -520,6 +534,7 @@ namespace Compiler.Tests
         // This now calls the newly generated method. We can step into this and debug our emitted code!! 
         helloWorldType.GetMethod("Main").Invoke(null, new string[] { null }); // <-- step into        
         }
+#endif
 
         [Test]
         public void TestSubLambda2x()
@@ -660,23 +675,6 @@ namespace Compiler.Tests
                                 },
                         }
                 }));
-        }
-
-        private void CompileAndSave<TDelegate>(Expression<TDelegate> lambda) where TDelegate : class
-        {
-            var da = AppDomain.CurrentDomain.DefineDynamicAssembly(
-                new AssemblyName("dyn"), // call it whatever you want
-                AssemblyBuilderAccess.Save);
-
-            var dm = da.DefineDynamicModule("dyn_mod", "dyn.dll");
-            var dt = dm.DefineType("dyn_type");
-            var method = dt.DefineMethod("Foo", MethodAttributes.Public | MethodAttributes.Static, lambda.ReturnType, lambda.Parameters.Select(parameter => parameter.Type).ToArray());
-
-            //lambda.CompileToMethod(method);
-            LambdaCompiler.CompileToMethod(lambda, method, CompilerOptions.All);
-            dt.CreateType();
-
-            da.Save("dyn.dll");
         }
 
         private static readonly MethodInfo anyMethod = ((MethodCallExpression)((Expression<Func<IEnumerable<int>, bool>>)(ints => ints.Any())).Body).Method.GetGenericMethodDefinition();

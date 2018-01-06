@@ -21,7 +21,7 @@ namespace GrobExp.Compiler.Closures
 
         public Type Create()
         {
-            return typeBuilder == null ? typeof(object) : typeBuilder.CreateType();
+            return typeBuilder == null ? typeof(object) : typeBuilder.CreateTypeInfo();
         }
 
         public Expression MakeAccess(ParameterExpression root, int id)

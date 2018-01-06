@@ -66,7 +66,7 @@ namespace GrobExp.Compiler.Closures
                 constructorIl.Emit(OpCodes.Call, setter); // this.setter(arg_i)
             }
             constructorIl.Emit(OpCodes.Ret);
-            return typeBuilder.CreateType();
+            return typeBuilder.CreateTypeInfo();
         }
 
         private static readonly Hashtable anonymousTypes = new Hashtable();

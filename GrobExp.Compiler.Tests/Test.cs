@@ -6,11 +6,9 @@ using System.Reflection;
 using System.Reflection.Emit;
 using System.Threading;
 
-using GrobExp.Compiler;
-
 using NUnit.Framework;
 
-namespace Compiler.Tests
+namespace GrobExp.Compiler.Tests
 {
     [TestFixture]
     public class Test // todo растащить на куски
@@ -57,7 +55,8 @@ namespace Compiler.Tests
             Assert.AreEqual(6, y);
         }
 
-        [Test, Ignore]
+        [Test]
+        [Ignore("Is used for debugging")]
         public void TestPinning1()
         {
             Expression<Func<TestClassA, bool>> path = a => a.StructAArray[0].S == GetString();
@@ -77,7 +76,8 @@ namespace Compiler.Tests
             }
         }
 
-        [Test, Ignore]
+        [Test]
+        [Ignore("Is used for debugging")]
         public void TestPinning2()
         {
             Expression<Func<TestClassA, bool>> path = a => a.StringArray[1] == GetString();
@@ -156,7 +156,8 @@ namespace Compiler.Tests
             Assert.IsFalse(wasBug);
         }
 
-        [Test, Ignore]
+        [Test]
+        [Ignore("Is used for debugging")]
         public void TestPopInt32()
         {
             var method = new DynamicMethod(Guid.NewGuid().ToString(), typeof(string), new[] {typeof(TestClassA)}, typeof(Test).Module, true);

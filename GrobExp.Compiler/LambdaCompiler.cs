@@ -77,7 +77,7 @@ namespace GrobExp.Compiler
                 method.DefineParameter(i + 1, ParameterAttributes.None, parameters[i].Name);
             CompileToMethodInternal(lambda, debugInfoGenerator, parsedLambda, options, compiledLambdas, method);
 
-            var type = typeBuilder.CreateType();
+            var type = typeBuilder.CreateTypeInfo();
             var dynamicMethod = new DynamicMethod(Guid.NewGuid().ToString(), returnType, parameterTypes, Module, true);
             using(var il = new GroboIL(dynamicMethod))
             {
@@ -125,7 +125,12 @@ namespace GrobExp.Compiler
         }
 
         internal static readonly AssemblyBuilder Assembly = CreateAssembly();
+
+#if NETSTANDARD2_0
+        internal static readonly ModuleBuilder Module = Assembly.DefineDynamicModule(Guid.NewGuid().ToString());
+#else
         internal static readonly ModuleBuilder Module = Assembly.DefineDynamicModule(Guid.NewGuid().ToString(), true);
+#endif
 
         private static string GenerateFileName(Expression expression)
         {
@@ -208,7 +213,7 @@ namespace GrobExp.Compiler
 
         private static AssemblyBuilder CreateAssembly()
         {
-            var assemblyBuilder = AppDomain.CurrentDomain.DefineDynamicAssembly(new AssemblyName(Guid.NewGuid().ToString()), AssemblyBuilderAccess.Run);
+            var assemblyBuilder = AssemblyBuilder.DefineDynamicAssembly(new AssemblyName(Guid.NewGuid().ToString()), AssemblyBuilderAccess.Run);
 
 //            Type daType = typeof(AssemblyFlagsAttribute);
 //            ConstructorInfo daCtor = daType.GetConstructor(new[] {typeof(AssemblyNameFlags)});

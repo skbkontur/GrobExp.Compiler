@@ -92,7 +92,6 @@ namespace GrobExp.Compiler
         private const int Tab = 4;
         private const int MaxColumn = 120;
 
-        private TextWriter _out;
         private int _column;
 
         private Stack<int> _stack = new Stack<int>();

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Linq.Expressions;
@@ -8,18 +7,15 @@ using System.Reflection.Emit;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Text;
-using System.Text.RegularExpressions;
 using System.Threading;
 
 using GrEmit;
 
-using GrobExp.Compiler;
-using GrobExp.Compiler.Closures;
 using GrobExp.Compiler.ExpressionEmitters;
 
 using NUnit.Framework;
 
-namespace Compiler.Tests
+namespace GrobExp.Compiler.Tests
 {
     [TestFixture]
     public class TestPerformance
@@ -69,7 +65,8 @@ namespace Compiler.Tests
 
         static int Add(int x, double y) { return (int)(x + y); }
 
-        [Test, Ignore]
+        [Test]
+        [Ignore("Is used for perf teststing")]
         public unsafe void TestWriteAssemblerCode()
         {
             var method = new DynamicMethod(Guid.NewGuid().ToString(), typeof(object), new[] {typeof(object)}, typeof(string), true);
@@ -96,7 +93,8 @@ namespace Compiler.Tests
             }
         }
 
-        [Test, Ignore]
+        [Test]
+        [Ignore("Is used for perf teststing")]
         public unsafe void TestWriteAssemblerCode0()
         {
             var method = new DynamicMethod(Guid.NewGuid().ToString(), typeof(int), new[] {typeof(double)}, typeof(string), true);
@@ -118,7 +116,8 @@ namespace Compiler.Tests
             }
         }
 
-        [Test, Ignore]
+        [Test]
+        [Ignore("Is used for perf teststing")]
         public unsafe void TestWriteAssemblerCode2()
         {
             var method = new DynamicMethod(Guid.NewGuid().ToString(), typeof(IntPtr), Type.EmptyTypes, typeof(string), true);
@@ -144,7 +143,9 @@ namespace Compiler.Tests
             }
         }
 
-        [Test, Ignore]
+#if !NETCOREAPP2_0
+        [Test]
+        [Ignore("Is used for perf teststing")]
         public unsafe void TestWriteAssemblerCode3()
         {
             var method = new DynamicMethod(Guid.NewGuid().ToString(), typeof(void), new[] { typeof(IntPtr), typeof(int) }, typeof(string), true);
@@ -168,8 +169,10 @@ namespace Compiler.Tests
             }
             Console.WriteLine(TestStind_i4(123456678)[1]);
         }
+#endif
 
-        [Test, Ignore]
+        [Test]
+        [Ignore("Is used for perf teststing")]
         public unsafe void TestWriteAssemblerCode4()
         {
             var method = new DynamicMethod(Guid.NewGuid().ToString(), typeof(int), new[] { typeof(int), typeof(int), typeof(int), typeof(int) }, typeof(string), true);
@@ -281,7 +284,7 @@ namespace Compiler.Tests
             Decommit = 0x4000, Release = 0x8000
         }
 
-        [UnmanagedFunctionPointerAttribute(CallingConvention.StdCall)]
+        [UnmanagedFunctionPointer(CallingConvention.StdCall)]
         private unsafe delegate int ZzzUnmanagedDelegate(int x, int y);
 
         private static class NativeMethods
@@ -398,7 +401,8 @@ namespace Compiler.Tests
             System.IO.File.WriteAllText(@"c:\temp\big.in", output.ToString());
         }
 
-        [Test, Ignore]
+        [Test]
+        [Ignore("Is used for perf teststing")]
         public void TestSimple()
         {
             Expression<Func<TestClassA, int?>> exp = o => o.ArrayB[0].C.ArrayD[0].X;
@@ -413,13 +417,8 @@ namespace Compiler.Tests
             MeasureSpeed(exp.Compile(), a, 100000000, ethalon);
         }
 
-        public static void Main()
-        {
-            var test = new TestPerformance();
-            test.TestSubLambda2();
-        }
-
-        [Test, Ignore]
+        [Test]
+        [Ignore("Is used for perf teststing")]
         public void TestSubLambda1()
         {
             Expression<Func<TestClassA, bool>> exp = o => o.ArrayB.Any(b => b.S == o.S);
@@ -434,7 +433,8 @@ namespace Compiler.Tests
             MeasureSpeed(exp.Compile(), a, 1000000, ethalon);
         }
 
-        [Test, Ignore]
+        [Test]
+        [Ignore("Is used for perf teststing")]
         public void TestSubLambda1WithGarbageCollecting()
         {
             Expression<Func<TestClassA, bool>> exp = o => o.ArrayB.Any(b => b.S == o.S);
@@ -447,7 +447,8 @@ namespace Compiler.Tests
             stop = true;
         }
 
-        [Test, Ignore]
+        [Test]
+        [Ignore("Is used for perf teststing")]
         public void TestSubLambda2()
         {
             Expression<Func<TestClassA, bool>> exp = o => o.ArrayB.Any(b => b.S == o.S && b.C.ArrayD.All(d => d.S == b.S && d.ArrayE.Any(e => e.S == o.S && e.S == b.S && e.S == d.S)));
@@ -480,7 +481,8 @@ namespace Compiler.Tests
             MeasureSpeed(exp.Compile(), a, 100000, ethalon);
         }
 
-        [Test, Ignore]
+        [Test]
+        [Ignore("Is used for perf teststing")]
         public void TestInvoke1()
         {
             Expression<Func<TestClassA, int>> exp = o => func(o.Y, o.Z);
@@ -495,7 +497,8 @@ namespace Compiler.Tests
             MeasureSpeed(LambdaCompiler.Compile(exp, CompilerOptions.All), a, 10000000, ethalon);
         }
 
-        [Test, Ignore]
+        [Test]
+        [Ignore("Is used for perf teststing")]
         public void TestInvoke2()
         {
             Expression<Func<int, int, int>> lambda = (x, y) => x + y;
@@ -520,7 +523,8 @@ namespace Compiler.Tests
             MeasureSpeed(build2, a, 100000000, ethalon);
         }
 
-        [Test, Ignore]
+        [Test]
+        [Ignore("Is used for perf teststing")]
         public void TestInvoke3()
         {
             Expression<Func<int, int, int>> sum = (x, y) => x + y;
@@ -546,7 +550,8 @@ namespace Compiler.Tests
 //            MeasureSpeed(build2, a, 100000000, ethalon);
         }
 
-        [Test, Ignore]
+        [Test]
+        [Ignore("Is used for perf teststing")]
         public void TestFactorial()
         {
             ParameterExpression value = Expression.Parameter(typeof(int), "value");
@@ -580,7 +585,8 @@ namespace Compiler.Tests
             MeasureSpeed(compile, 5, 100000000, ethalon);
         }
 
-        [Test, Ignore]
+        [Test]
+        [Ignore("Is used for perf teststing")]
         public void TestSwitch1()
         {
             Console.WriteLine("Sharp");
@@ -611,7 +617,8 @@ namespace Compiler.Tests
             MeasureSpeed(exp.Compile(), 2, 1000000000, ethalon);
         }
 
-        [Test, Ignore]
+        [Test]
+        [Ignore("Is used for perf teststing")]
         public void TestSwitch2()
         {
             Console.WriteLine("Sharp");
@@ -639,7 +646,8 @@ namespace Compiler.Tests
             MeasureSpeed(exp.Compile(), "1000000", 100000000, ethalon);
         }
 
-        [Test, Ignore]
+        [Test]
+        [Ignore("Is used for perf teststing")]
         public void TestCalls()
         {
             var test = (ITest)new TestImpl();
@@ -660,7 +668,8 @@ namespace Compiler.Tests
             Console.WriteLine(x);
         }
 
-        [Test, Ignore]
+        [Test]
+        [Ignore("Is used for perf teststing")]
         public void TestCalliWithGarbageCollecting()
         {
             stop = false;
@@ -676,7 +685,7 @@ namespace Compiler.Tests
         }
 
         public static int x;
-        public static readonly AssemblyBuilder Assembly = AppDomain.CurrentDomain.DefineDynamicAssembly(new AssemblyName(Guid.NewGuid().ToString()), AssemblyBuilderAccess.Run);
+        public static readonly AssemblyBuilder Assembly = AssemblyBuilder.DefineDynamicAssembly(new AssemblyName(Guid.NewGuid().ToString()), AssemblyBuilderAccess.Run);
         public static readonly ModuleBuilder Module = Assembly.DefineDynamicModule(Guid.NewGuid().ToString());
 
         public class TestImpl : ITest

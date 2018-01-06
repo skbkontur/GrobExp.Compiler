@@ -11,7 +11,7 @@ using GrEmit;
 
 namespace GrobExp.Compiler.ExpressionEmitters
 {
-    internal static class DynamicMethodInvokerBuilder
+    public static class DynamicMethodInvokerBuilder
     {
         public static Type BuildDynamicMethodInvoker(ModuleBuilder module, Type[] constantTypes, Type resultType, Type[] parameterTypes)
         {
@@ -107,7 +107,7 @@ namespace GrobExp.Compiler.ExpressionEmitters
                 il.Ret();
             }
 
-            return typeBuilder.CreateType();
+            return typeBuilder.CreateTypeInfo();
         }
 
         private static string GetKey(ModuleBuilder module, Type[] constantTypes, Type resultType, Type[] parameterTypes)
