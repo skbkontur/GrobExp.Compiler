@@ -6,7 +6,6 @@ using System.Reflection;
 using System.Reflection.Emit;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-using System.Text;
 using System.Threading;
 
 using GrEmit;
@@ -66,7 +65,7 @@ namespace GrobExp.Compiler.Tests
         static int Add(int x, double y) { return (int)(x + y); }
 
         [Test]
-        [Ignore("Is used for perf teststing")]
+        [Ignore("Is used for debugging")]
         public unsafe void TestWriteAssemblerCode()
         {
             var method = new DynamicMethod(Guid.NewGuid().ToString(), typeof(object), new[] {typeof(object)}, typeof(string), true);
@@ -94,7 +93,7 @@ namespace GrobExp.Compiler.Tests
         }
 
         [Test]
-        [Ignore("Is used for perf teststing")]
+        [Ignore("Is used for debugging")]
         public unsafe void TestWriteAssemblerCode0()
         {
             var method = new DynamicMethod(Guid.NewGuid().ToString(), typeof(int), new[] {typeof(double)}, typeof(string), true);
@@ -117,7 +116,7 @@ namespace GrobExp.Compiler.Tests
         }
 
         [Test]
-        [Ignore("Is used for perf teststing")]
+        [Ignore("Is used for debugging")]
         public unsafe void TestWriteAssemblerCode2()
         {
             var method = new DynamicMethod(Guid.NewGuid().ToString(), typeof(IntPtr), Type.EmptyTypes, typeof(string), true);
@@ -145,7 +144,7 @@ namespace GrobExp.Compiler.Tests
 
 #if !NETCOREAPP2_0
         [Test]
-        [Ignore("Is used for perf teststing")]
+        [Ignore("Is used for debugging")]
         public unsafe void TestWriteAssemblerCode3()
         {
             var method = new DynamicMethod(Guid.NewGuid().ToString(), typeof(void), new[] { typeof(IntPtr), typeof(int) }, typeof(string), true);
@@ -172,7 +171,7 @@ namespace GrobExp.Compiler.Tests
 #endif
 
         [Test]
-        [Ignore("Is used for perf teststing")]
+        [Ignore("Is used for perf testing")]
         public unsafe void TestWriteAssemblerCode4()
         {
             var method = new DynamicMethod(Guid.NewGuid().ToString(), typeof(int), new[] { typeof(int), typeof(int), typeof(int), typeof(int) }, typeof(string), true);
@@ -372,33 +371,6 @@ namespace GrobExp.Compiler.Tests
                 *(int*)(a + 7) = x;
             }
             return arr;
-        }
-
-        [Test]
-        public void Test_Gen()
-        {
-            var output = new StringBuilder();
-            output.AppendLine("10 20 2");
-            output.AppendLine("9 1 3");
-            output.AppendLine("preflop");
-            for(int i = 1; i <= 9; ++i)
-                output.AppendLine(string.Format("Player{0} 20000", i));
-            int n = 110;
-            int[] bets = new int[9];
-            bets[1] = 10;
-            bets[2] = 20;
-            var actions = 8 + 9 * n;
-            output.AppendLine(string.Format("{0}", actions));
-            int k = 4;
-            for(int i = 0; i < actions; ++i)
-            {
-                output.AppendLine(string.Format("Player{0} raises 20 to {1}", k, 20 * (i + 2)));
-                bets[k - 1] = 20 * (i + 2);
-                k = 1 + (k - 1 + 1) % 9;
-            }
-            for(int i = 0; i < 9; ++i)
-                output.Append(string.Format("{0} ", 20000 - 2 - bets[i]));
-            System.IO.File.WriteAllText(@"c:\temp\big.in", output.ToString());
         }
 
         [Test]

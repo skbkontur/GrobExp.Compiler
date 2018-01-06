@@ -6,11 +6,8 @@ using System.Reflection.Emit;
 
 using GrEmit;
 
-using NUnit.Framework;
-
 namespace GrobExp.Compiler.Tests
 {
-    [TestFixture]
     public class TestBase
     {
         protected TDelegate Compile<TDelegate>(Expression<TDelegate> lambda, CompilerOptions options) where TDelegate : class
@@ -32,6 +29,7 @@ namespace GrobExp.Compiler.Tests
                 il.Newobj(typeof(TDelegate).GetConstructor(new[] {typeof(object), typeof(IntPtr)}));
                 il.Ret();
             }
+
             return ((Func<TDelegate>)dynamicMethod.CreateDelegate(typeof(Func<TDelegate>)))();
         }
     }

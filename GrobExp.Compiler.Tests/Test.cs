@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
-using System.Reflection.Emit;
 using System.Threading;
 
 using NUnit.Framework;
@@ -13,11 +12,6 @@ namespace GrobExp.Compiler.Tests
     [TestFixture]
     public class Test // todo растащить на куски
     {
-        public class Qzz
-        {
-            public int? X { get; set; }
-        }
-
         [Test]
         public void TestNullable()
         {
@@ -108,7 +102,7 @@ namespace GrobExp.Compiler.Tests
                 Expression.Block(
                     Expression.Call(threadSleepMethod, new[] {Expression.Constant(10)}),
                     Expression.Equal(parameter, Expression.Constant(guid), false, typeof(Guid).GetMethod("op_Equality"))
-                    ),
+                ),
                 parameter);
 
             new Thread(Collect).Start();
@@ -154,24 +148,6 @@ namespace GrobExp.Compiler.Tests
             thread.Start(f);
             Run(f);
             Assert.IsFalse(wasBug);
-        }
-
-        [Test]
-        [Ignore("Is used for debugging")]
-        public void TestPopInt32()
-        {
-            var method = new DynamicMethod(Guid.NewGuid().ToString(), typeof(string), new[] {typeof(TestClassA)}, typeof(Test).Module, true);
-            var il = method.GetILGenerator(); //new GroboIL(method);
-            il.Emit(OpCodes.Ldarg_0);
-            il.Emit(OpCodes.Dup);
-            il.EmitCall(OpCodes.Call, typeof(TestClassA).GetProperty("E", BindingFlags.Public | BindingFlags.Instance).GetGetMethod(), null);
-            var temp = il.DeclareLocal(typeof(long));
-            il.Emit(OpCodes.Stloc, temp);
-            //il.Pop();
-            il.EmitCall(OpCodes.Call, typeof(TestClassA).GetProperty("S", BindingFlags.Public | BindingFlags.Instance).GetGetMethod(), null);
-            il.Emit(OpCodes.Ret);
-            var func = (Func<TestClassA, string>)method.CreateDelegate(typeof(Func<TestClassA, string>));
-            Assert.AreEqual("zzz", func(new TestClassA {S = "zzz"}));
         }
 
         [Test]
@@ -248,8 +224,8 @@ namespace GrobExp.Compiler.Tests
         {
             Expression<Func<TestClassA, string>> exp = a => (a.S == "zzz" ? a.Y : a.Y2).ToString();
             var func = LambdaCompiler.Compile(exp, CompilerOptions.All);
-            Assert.AreEqual("1", func(new TestClassA{Y = 1, Y2 = 2, S = "zzz"}));
-            Assert.AreEqual("2", func(new TestClassA{Y = 1, Y2 = 2, S = "qxx"}));
+            Assert.AreEqual("1", func(new TestClassA {Y = 1, Y2 = 2, S = "zzz"}));
+            Assert.AreEqual("2", func(new TestClassA {Y = 1, Y2 = 2, S = "qxx"}));
         }
 
         [Test]
@@ -349,7 +325,6 @@ namespace GrobExp.Compiler.Tests
         {
             Expression<Func<TestClassA, TestClassA, int>> exp = (x, y) => NotExtension2(x.A, y.A).Y;
             Func<TestClassA, TestClassA, int> compiledExp = LambdaCompiler.Compile(exp, CompilerOptions.All);
-
             Assert.That(compiledExp(new TestClassA {A = new TestClassA()}, new TestClassA {A = new TestClassA()}), Is.EqualTo(3), "!null,!null");
             Assert.That(compiledExp(new TestClassA {A = new TestClassA()}, null), Is.EqualTo(2), "!null,null");
             Assert.That(compiledExp(null, null), Is.EqualTo(1), "null,null");
@@ -405,84 +380,6 @@ namespace GrobExp.Compiler.Tests
             Expression<Func<int?, bool>> exp = s => s == 0;
             Func<int?, bool> compiledExp = LambdaCompiler.Compile(exp, CompilerOptions.All);
             Assert.IsFalse(compiledExp(null));
-        }
-
-        public class TestClassA
-        {
-            public int F(bool b)
-            {
-                return b ? 1 : 0;
-            }
-
-            public string S { get; set; }
-            public TestClassA A { get; set; }
-            public TestClassB B { get; set; }
-            public TestClassB[] ArrayB { get; set; }
-            public int[] IntArray { get; set; }
-            public TestEnum E { get; set; }
-            public TestStructA[] StructAArray { get; set; }
-            public string[] StringArray { get; set; }
-            public int[] IntArray2;
-            public int? X;
-            public Guid Guid = Guid.Empty;
-            public Guid? NullableGuid;
-            public bool? NullableBool;
-            public int Y;
-            public int Y2;
-            public bool Bool;
-            public long Z;
-
-            public TestStructA StructA;
-
-            ~TestClassA()
-            {
-                S = null;
-            }
-        }
-
-        public class TestClassB
-        {
-            public int? F2(int? x)
-            {
-                return x;
-            }
-
-            public int? F( /*Qzz*/ int a, int b)
-            {
-                return b;
-            }
-
-            public string S { get; set; }
-
-            public TestClassC C { get; set; }
-            public int? X;
-            public int Y;
-        }
-
-        public class TestClassC
-        {
-            public string S { get; set; }
-
-            public TestClassD D { get; set; }
-
-            public TestClassD[] ArrayD { get; set; }
-        }
-
-        public class TestClassD
-        {
-            public TestClassE E { get; set; }
-            public TestClassE[] ArrayE { get; set; }
-            public string Z { get; set; }
-
-            public int? X { get; set; }
-
-            public readonly string S;
-        }
-
-        public class TestClassE
-        {
-            public string S { get; set; }
-            public int X { get; set; }
         }
 
         public struct TestStructA
@@ -633,5 +530,89 @@ namespace GrobExp.Compiler.Tests
         private volatile bool wasBug;
 
         private static readonly MethodInfo forEachMethod = ((MethodCallExpression)((Expression<Action<int[]>>)(ints => Array.ForEach(ints, null))).Body).Method.GetGenericMethodDefinition();
+
+        public class Qzz
+        {
+            public int? X { get; set; }
+        }
+
+        public class TestClassA
+        {
+            public int F(bool b)
+            {
+                return b ? 1 : 0;
+            }
+
+            public string S { get; set; }
+            public TestClassA A { get; set; }
+            public TestClassB B { get; set; }
+            public TestClassB[] ArrayB { get; set; }
+            public int[] IntArray { get; set; }
+            public TestEnum E { get; set; }
+            public TestStructA[] StructAArray { get; set; }
+            public string[] StringArray { get; set; }
+
+            ~TestClassA()
+            {
+                S = null;
+            }
+
+            public int[] IntArray2;
+            public int? X;
+            public Guid Guid = Guid.Empty;
+            public Guid? NullableGuid;
+            public bool? NullableBool;
+            public int Y;
+            public int Y2;
+            public bool Bool;
+            public long Z;
+
+            public TestStructA StructA;
+        }
+
+        public class TestClassB
+        {
+            public int? F2(int? x)
+            {
+                return x;
+            }
+
+            public int? F( /*Qzz*/ int a, int b)
+            {
+                return b;
+            }
+
+            public string S { get; set; }
+
+            public TestClassC C { get; set; }
+            public int? X;
+            public int Y;
+        }
+
+        public class TestClassC
+        {
+            public string S { get; set; }
+
+            public TestClassD D { get; set; }
+
+            public TestClassD[] ArrayD { get; set; }
+        }
+
+        public class TestClassD
+        {
+            public TestClassE E { get; set; }
+            public TestClassE[] ArrayE { get; set; }
+            public string Z { get; set; }
+
+            public int? X { get; set; }
+
+            public readonly string S;
+        }
+
+        public class TestClassE
+        {
+            public string S { get; set; }
+            public int X { get; set; }
+        }
     }
 }
