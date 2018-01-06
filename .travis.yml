@@ -1,0 +1,12 @@
+dist: trusty
+sudo: false
+language: csharp
+dotnet: 2.0.0
+mono: none
+script:
+  - dotnet restore ./GrobExp.Compiler.sln --verbosity m
+  - dotnet build --configuration Release --framework netstandard2.0 ./GrobExp.Compiler/GrobExp.Compiler.csproj
+  - dotnet build --configuration Release --framework netcoreapp2.0 ./GrobExp.Compiler.Tests/GrobExp.Compiler.Tests.csproj
+  - dotnet test --no-build --configuration Release --framework netcoreapp2.0 ./GrobExp.Compiler.Tests/GrobExp.Compiler.Tests.csproj
+
+
