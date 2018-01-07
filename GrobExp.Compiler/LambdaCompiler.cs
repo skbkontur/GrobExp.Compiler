@@ -49,7 +49,7 @@ namespace GrobExp.Compiler
             var hashset = new HashSet<ParameterExpression>(lambda.Parameters);
             foreach(var parameter in parameters)
                 if(!hashset.Contains(parameter))
-                    throw new InvalidOperationException("Lambda contains parameter not presented in Lambda.Parameters");
+                    throw new InvalidOperationException($"Lambda contains parameter not presented in Lambda.Parameters: {parameter}");
         }
 
         public static bool AnalyzeILStack = true;

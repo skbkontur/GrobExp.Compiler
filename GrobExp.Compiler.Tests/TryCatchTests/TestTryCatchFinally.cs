@@ -149,7 +149,7 @@ namespace GrobExp.Compiler.Tests.TryCatchTests
                         Expression.MakeMemberAccess(nullReference, typeof(Exception).GetProperty("Message"))
                         )
                     );
-            var exp = Expression.Lambda<Func<TestClassA, TestClassA, string>>(tryExpr, a, b);
+            var exp = Expression.Lambda<Func<TestClassA, TestClassA, string>>(Expression.Block(new[] {overflow, invalidCast, nullReference}, tryExpr), a, b);
             var f = Compile(exp, CompilerOptions.None);
             B = false;
             Assert.AreEqual("Object reference not set to an instance of an object.", f(null, null));
