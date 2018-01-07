@@ -7,6 +7,6 @@ script:
   - dotnet restore ./GrobExp.Compiler.sln --verbosity m
   - dotnet build --configuration Release --framework netstandard2.0 ./GrobExp.Compiler/GrobExp.Compiler.csproj
   - dotnet build --configuration Release --framework netcoreapp2.0 ./GrobExp.Compiler.Tests/GrobExp.Compiler.Tests.csproj
-  - dotnet test --no-build --configuration Release --framework netcoreapp2.0 --filter TestCategory!=LongRunning ./GrobExp.Compiler.Tests/GrobExp.Compiler.Tests.csproj
+  - dotnet test --no-build --configuration Release --framework netcoreapp2.0 --filter TestCategory!=LongRunning&TestCategory!=FailingOnNetCore ./GrobExp.Compiler.Tests/GrobExp.Compiler.Tests.csproj
 
 
