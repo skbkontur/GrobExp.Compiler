@@ -170,10 +170,10 @@ namespace GrobExp.Compiler.Tests.TryCatchTests
             Assert.AreEqual("Object reference not set to an instance of an object.", f(new TestClassA(), new TestClassA {X = 1}));
             Assert.IsTrue(B);
             B = false;
-            Assert.AreEqual("Specified cast is not valid.", f(new TestClassA {X = "zzz"}, new TestClassA {X = 1}));
+            Assert.AreEqual(SelectValue("Unable to cast object of type 'System.String' to type 'System.Int32'.", "Specified cast is not valid."), f(new TestClassA {X = "zzz"}, new TestClassA {X = 1}));
             Assert.IsTrue(B);
             B = false;
-            Assert.AreEqual("Specified cast is not valid.", f(new TestClassA {X = 1}, new TestClassA {X = "zzz"}));
+            Assert.AreEqual(SelectValue("Unable to cast object of type 'System.String' to type 'System.Int32'.", "Specified cast is not valid."), f(new TestClassA {X = 1}, new TestClassA {X = "zzz"}));
             Assert.IsTrue(B);
             B = false;
             Assert.AreEqual("Arithmetic operation resulted in an overflow.", f(new TestClassA {X = 1000000}, new TestClassA {X = 1000000}));
@@ -203,10 +203,10 @@ namespace GrobExp.Compiler.Tests.TryCatchTests
             Assert.AreEqual("Object reference not set to an instance of an object.", f(new TestClassA(), new TestClassA {X = 1}));
             Assert.IsTrue(B);
             B = false;
-            Assert.AreEqual("Specified cast is not valid.", f(new TestClassA {X = "zzz"}, new TestClassA {X = 1}));
+            Assert.AreEqual(SelectValue("Unable to cast object of type 'System.String' to type 'System.Int32'.", "Specified cast is not valid."), f(new TestClassA {X = "zzz"}, new TestClassA {X = 1}));
             Assert.IsTrue(B);
             B = false;
-            Assert.AreEqual("Specified cast is not valid.", f(new TestClassA {X = 1}, new TestClassA {X = "zzz"}));
+            Assert.AreEqual(SelectValue("Unable to cast object of type 'System.String' to type 'System.Int32'.", "Specified cast is not valid."), f(new TestClassA {X = 1}, new TestClassA {X = "zzz"}));
             Assert.IsTrue(B);
             B = false;
             Assert.AreEqual("Arithmetic operation resulted in an overflow.", f(new TestClassA {X = 1000000}, new TestClassA {X = 1000000}));

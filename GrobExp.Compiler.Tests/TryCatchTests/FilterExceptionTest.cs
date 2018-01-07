@@ -278,7 +278,7 @@ namespace GrobExp.Compiler.Tests.TryCatchTests
             Assert.IsTrue(B);
             B = false;
             F = "zzz";
-            Assert.AreEqual("Specified cast is not valid.", f(new TestClassA {X = "zzz"}, new TestClassA {X = 1}));
+            Assert.AreEqual(SelectValue("Unable to cast object of type 'System.String' to type 'System.Int32'.", "Specified cast is not valid."), f(new TestClassA {X = "zzz"}, new TestClassA {X = 1}));
             Assert.IsTrue(B);
             B = false;
             F = "qxx";
@@ -286,7 +286,7 @@ namespace GrobExp.Compiler.Tests.TryCatchTests
             Assert.IsTrue(B);
             B = false;
             F = "zzz";
-            Assert.AreEqual("Specified cast is not valid.", f(new TestClassA {X = 1}, new TestClassA {X = "zzz"}));
+            Assert.AreEqual(SelectValue("Unable to cast object of type 'System.String' to type 'System.Int32'.", "Specified cast is not valid."), f(new TestClassA {X = 1}, new TestClassA {X = "zzz"}));
             Assert.IsTrue(B);
             B = false;
             F = "qxx";
@@ -356,7 +356,7 @@ namespace GrobExp.Compiler.Tests.TryCatchTests
             Assert.IsTrue(B);
             B = false;
             F = "zzz";
-            Assert.AreEqual("Specified cast is not valid.", f(new TestClassA {X = "zzz"}, new TestClassA {X = 1}));
+            Assert.AreEqual(SelectValue("Unable to cast object of type 'System.String' to type 'System.Int32'.", "Specified cast is not valid."), f(new TestClassA {X = "zzz"}, new TestClassA {X = 1}));
             Assert.IsTrue(B);
             B = false;
             F = "qxx";
@@ -364,7 +364,7 @@ namespace GrobExp.Compiler.Tests.TryCatchTests
             Assert.IsTrue(B);
             B = false;
             F = "zzz";
-            Assert.AreEqual("Specified cast is not valid.", f(new TestClassA {X = 1}, new TestClassA {X = "zzz"}));
+            Assert.AreEqual(SelectValue("Unable to cast object of type 'System.String' to type 'System.Int32'.", "Specified cast is not valid."), f(new TestClassA {X = 1}, new TestClassA {X = "zzz"}));
             Assert.IsTrue(B);
             B = false;
             F = "qxx";
