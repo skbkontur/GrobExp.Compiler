@@ -171,7 +171,7 @@ namespace GrobExp.Compiler.Tests
 #endif
 
         [Test]
-        [Ignore("Is used for perf testing")]
+        [Ignore("Is used for debugging")]
         public unsafe void TestWriteAssemblerCode4()
         {
             var method = new DynamicMethod(Guid.NewGuid().ToString(), typeof(int), new[] { typeof(int), typeof(int), typeof(int), typeof(int) }, typeof(string), true);
@@ -222,7 +222,7 @@ namespace GrobExp.Compiler.Tests
                 func(i, i, i, i);
             }
             var elapsed = stopwatch.Elapsed;
-            Console.WriteLine(elapsed.TotalMilliseconds);
+            Console.WriteLine(elapsed);
         }
 
         private unsafe void Replace(byte* ptr, byte[] marker)
@@ -374,7 +374,7 @@ namespace GrobExp.Compiler.Tests
         }
 
         [Test]
-        [Ignore("Is used for perf teststing")]
+        [Category("LongRunning")]
         public void TestSimple()
         {
             Expression<Func<TestClassA, int?>> exp = o => o.ArrayB[0].C.ArrayD[0].X;
@@ -390,7 +390,7 @@ namespace GrobExp.Compiler.Tests
         }
 
         [Test]
-        [Ignore("Is used for perf teststing")]
+        [Category("LongRunning")]
         public void TestSubLambda1()
         {
             Expression<Func<TestClassA, bool>> exp = o => o.ArrayB.Any(b => b.S == o.S);
@@ -406,7 +406,7 @@ namespace GrobExp.Compiler.Tests
         }
 
         [Test]
-        [Ignore("Is used for perf teststing")]
+        [Category("LongRunning")]
         public void TestSubLambda1WithGarbageCollecting()
         {
             Expression<Func<TestClassA, bool>> exp = o => o.ArrayB.Any(b => b.S == o.S);
@@ -420,7 +420,7 @@ namespace GrobExp.Compiler.Tests
         }
 
         [Test]
-        [Ignore("Is used for perf teststing")]
+        [Category("LongRunning")]
         public void TestSubLambda2()
         {
             Expression<Func<TestClassA, bool>> exp = o => o.ArrayB.Any(b => b.S == o.S && b.C.ArrayD.All(d => d.S == b.S && d.ArrayE.Any(e => e.S == o.S && e.S == b.S && e.S == d.S)));
@@ -454,7 +454,7 @@ namespace GrobExp.Compiler.Tests
         }
 
         [Test]
-        [Ignore("Is used for perf teststing")]
+        [Category("LongRunning")]
         public void TestInvoke1()
         {
             Expression<Func<TestClassA, int>> exp = o => func(o.Y, o.Z);
@@ -470,7 +470,7 @@ namespace GrobExp.Compiler.Tests
         }
 
         [Test]
-        [Ignore("Is used for perf teststing")]
+        [Category("LongRunning")]
         public void TestInvoke2()
         {
             Expression<Func<int, int, int>> lambda = (x, y) => x + y;
@@ -496,7 +496,7 @@ namespace GrobExp.Compiler.Tests
         }
 
         [Test]
-        [Ignore("Is used for perf teststing")]
+        [Category("LongRunning")]
         public void TestInvoke3()
         {
             Expression<Func<int, int, int>> sum = (x, y) => x + y;
@@ -523,7 +523,7 @@ namespace GrobExp.Compiler.Tests
         }
 
         [Test]
-        [Ignore("Is used for perf teststing")]
+        [Category("LongRunning")]
         public void TestFactorial()
         {
             ParameterExpression value = Expression.Parameter(typeof(int), "value");
@@ -558,7 +558,7 @@ namespace GrobExp.Compiler.Tests
         }
 
         [Test]
-        [Ignore("Is used for perf teststing")]
+        [Category("LongRunning")]
         public void TestSwitch1()
         {
             Console.WriteLine("Sharp");
@@ -590,7 +590,7 @@ namespace GrobExp.Compiler.Tests
         }
 
         [Test]
-        [Ignore("Is used for perf teststing")]
+        [Category("LongRunning")]
         public void TestSwitch2()
         {
             Console.WriteLine("Sharp");
@@ -619,7 +619,7 @@ namespace GrobExp.Compiler.Tests
         }
 
         [Test]
-        [Ignore("Is used for perf teststing")]
+        [Category("LongRunning")]
         public void TestCalls()
         {
             var test = (ITest)new TestImpl();
@@ -641,7 +641,7 @@ namespace GrobExp.Compiler.Tests
         }
 
         [Test]
-        [Ignore("Is used for perf teststing")]
+        [Category("LongRunning")]
         public void TestCalliWithGarbageCollecting()
         {
             stop = false;

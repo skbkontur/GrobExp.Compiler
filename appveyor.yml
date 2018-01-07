@@ -8,7 +8,7 @@ build_script:
   - cmd: dotnet build --configuration Release ./GrobExp.Compiler.sln
 
 test_script:
-  - cmd: dotnet test --no-build --configuration Release ./GrobExp.Compiler.Tests/GrobExp.Compiler.Tests.csproj --logger "trx;LogFileName=test-results.trx"
+  - cmd: dotnet test --no-build --configuration Release --filter TestCategory!=LongRunning ./GrobExp.Compiler.Tests/GrobExp.Compiler.Tests.csproj --logger "trx;LogFileName=test-results.trx"
 
 after_test:
   - ps: |
