@@ -1,0 +1,17 @@
+image: Visual Studio 2017
+
+before_build:
+  - cmd: dotnet --info
+  - cmd: dotnet restore ./GrobExp.Compiler.sln --verbosity m
+
+build_script:
+  - cmd: dotnet build --configuration Release ./GrobExp.Compiler.sln
+
+test_script:
+  - cmd: dotnet test --no-build --configuration Release --filter TestCategory!=LongRunning ./GrobExp.Compiler.Tests/GrobExp.Compiler.Tests.csproj --logger "trx;LogFileName=test-results.trx"
+
+after_test:
+  - ps: |
+      $wc = New-Object 'System.Net.WebClient'
+      $url = "https://ci.appveyor.com/api/testresults/mstest/$($env:APPVEYOR_JOB_ID)";
+      $wc.UploadFile($url, (Resolve-Path './GrobExp.Compiler.Tests/TestResults/test-results.trx'))
