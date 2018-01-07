@@ -147,6 +147,7 @@ namespace GrobExp.Compiler.Tests
             var thread = new Thread(Run);
             thread.Start(f);
             Run(f);
+            thread.Join();
             Assert.IsFalse(wasBug);
         }
 
