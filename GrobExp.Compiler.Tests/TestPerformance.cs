@@ -306,6 +306,10 @@ namespace GrobExp.Compiler.Tests
         [Test]
         public unsafe void TestMarshal()
         {
+#if NETCOREAPP2_0
+            if(RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
+#endif
             byte[] body;
             if (IntPtr.Size == 4)
             {
@@ -355,6 +359,9 @@ namespace GrobExp.Compiler.Tests
 //            }
 //            var elapsed = stopwatch.Elapsed;
 //            Console.WriteLine(elapsed.TotalMilliseconds);
+#if NETCOREAPP2_0
+            }
+#endif
         }
 
         public unsafe byte[] TestStind_i4(int x)
