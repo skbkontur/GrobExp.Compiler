@@ -598,6 +598,7 @@ namespace GrobExp.Compiler.Tests
 
         [Test]
         [Category("LongRunning")]
+        [Category("FailingOnNetCore")]
         public void TestSwitch2()
         {
             Console.WriteLine("Sharp");

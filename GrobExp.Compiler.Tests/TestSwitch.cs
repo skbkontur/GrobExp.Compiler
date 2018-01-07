@@ -145,6 +145,7 @@ namespace GrobExp.Compiler.Tests
         }
 
         [Test]
+        [Category("FailingOnNetCore")]
         public void TestString()
         {
             ParameterExpression a = Expression.Parameter(typeof(string));
