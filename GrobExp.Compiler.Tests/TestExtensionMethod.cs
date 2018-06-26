@@ -49,6 +49,25 @@ namespace GrobExp.Compiler.Tests
             Assert.AreEqual(9, f(new[] {3}));
         }
 
+        /// <summary>
+        /// Test validates that null reference check not applied to the first argument of an extension method
+        /// </summary>
+        [Test]
+        public void TestNullTargetArgument()
+        {
+            Expression<Func<Zurg, bool>> exp = zurg => zurg.IsNull();
+            Func<Zurg, bool> compiledExp = LambdaCompiler.Compile(exp, CompilerOptions.All);
+            Assert.That(compiledExp(null), Is.EqualTo(true));
+            Assert.That(compiledExp(new Zurg()), Is.EqualTo(false));
+        }
+
+        [Test]
+        public void TestRefParameters()
+        {
+            Expression<Func<Zurg, int, int, int>> exp = (o, i, j) => o.Nonsense(ref i, j) ? -1 : j;
+            Func<Zurg, int, int, int> compiledExp = LambdaCompiler.Compile(exp, CompilerOptions.All);
+            Assert.That(compiledExp(new Zurg {Length = 1}, 1, 2), Is.EqualTo(2));
+        }
     }
 
     public enum Zerg
@@ -64,6 +83,11 @@ namespace GrobExp.Compiler.Tests
         Lurker = 9
     }
 
+    public class Zurg
+    {
+        public int Length { get; set; }
+    }
+
     public static class ZergExtensions
     {
         public static bool Flies(this Zerg zerg)
@@ -74,6 +98,20 @@ namespace GrobExp.Compiler.Tests
         public static bool AttacksAir(this Zerg? zerg)
         {
             return zerg == Zerg.Hydralisk || zerg == Zerg.Mutalisk || zerg == Zerg.Devourer;
+        }
+    }
+
+    public static class ZurgExtensions
+    {
+        public static bool IsNull(this Zurg zurg)
+        {
+            return zurg == null;
+        }
+
+        public static bool Nonsense(this Zurg zurg, ref int a, int b)
+        {
+            a = zurg.Length;
+            return a == b;
         }
     }
 }

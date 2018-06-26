@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 
 using GrEmit;
@@ -18,21 +19,25 @@ namespace GrobExp.Compiler.ExpressionEmitters
             var method = node.Method;
             Expression obj;
             IEnumerable<Expression> arguments;
+            IEnumerable<ParameterInfo> parameters;
             bool isStatic = method.IsStatic;
             if(!isStatic)
             {
                 obj = node.Object;
                 arguments = node.Arguments;
+                parameters = method.GetParameters();
             }
-            else if(method.GetCustomAttributes(typeof(ExtensionAttribute), false).Any())
+            else if(method.DeclaringType == typeof(Enumerable))
             {
                 obj = node.Arguments[0];
                 arguments = node.Arguments.Skip(1);
+                parameters = method.GetParameters().Skip(1);
             }
             else
             {
                 obj = null;
                 arguments = node.Arguments;
+                parameters = method.GetParameters();
             }
             Type type = obj == null ? null : obj.Type;
             if(obj != null)
@@ -66,12 +71,13 @@ namespace GrobExp.Compiler.ExpressionEmitters
                     }
                 }
             }
-            var parameters = method.GetParameters();
+
+            var parametersArray = parameters.ToArray();
             var argumentsArray = arguments.ToArray();
             for(int i = 0; i < argumentsArray.Length; i++)
             {
                 var argument = argumentsArray[i];
-                var parameter = parameters[i];
+                var parameter = parametersArray[i];
                 if(parameter.ParameterType.IsByRef)
                 {
                     Type argumentType;
