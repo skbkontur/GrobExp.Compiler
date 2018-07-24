@@ -15,6 +15,6 @@
     <RepositoryType>git</RepositoryType>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="GrEmit" Version="2.2.1" />
+    <PackageReference Include="GrEmit" Version="2.2.2" />
   </ItemGroup>
 </Project>
