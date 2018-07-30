@@ -144,11 +144,18 @@ namespace GrobExp.Compiler.Closures
 
         protected override Expression VisitConstant(ConstantExpression node)
         {
-            if(quoteDepth > 0 || node.Value == null || node.Type.IsPrimitive || node.Type == typeof(string))
+            if(quoteDepth > 0 || node.Value == null || IsPrimitiveConstantType(node.Type))
                 return node;
             if(!constants.ContainsKey(node))
                 constants.Add(node, BuildConstField(node.Type, node.Value));
             return node;
+        }
+
+        private static bool IsPrimitiveConstantType(Type type)
+        {
+            if (type.IsNullable())
+                type = type.GetGenericArguments()[0];
+            return type.IsPrimitive || type.IsEnum || type == typeof(string) || type == typeof(decimal);
         }
 
         protected override Expression VisitParameter(ParameterExpression node)

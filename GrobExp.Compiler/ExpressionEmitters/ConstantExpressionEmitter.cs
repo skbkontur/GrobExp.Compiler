@@ -61,6 +61,9 @@ namespace GrobExp.Compiler.ExpressionEmitters
                 case TypeCode.String:
                     context.Il.Ldstr((string)node.Value);
                     break;
+                case TypeCode.Decimal:
+                    context.Il.LdDec((decimal)node.Value);
+                    break;
                 default:
                     throw new NotSupportedException("Constant of type '" + node.Type + "' is not supported");
                 }
