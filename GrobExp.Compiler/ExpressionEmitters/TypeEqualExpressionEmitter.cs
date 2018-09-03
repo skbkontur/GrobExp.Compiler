@@ -11,12 +11,12 @@ namespace GrobExp.Compiler.ExpressionEmitters
         {
             bool result;
             GroboIL il = context.Il;
-            if(!node.Expression.Type.IsAssignableFrom(node.TypeOperand))
+            if (!node.Expression.Type.IsAssignableFrom(node.TypeOperand))
             {
                 il.Ldc_I4(0);
                 result = false;
             }
-            else if(node.Expression.Type == node.TypeOperand && node.TypeOperand.IsValueType)
+            else if (node.Expression.Type == node.TypeOperand && node.TypeOperand.IsValueType)
             {
                 il.Ldc_I4(1);
                 result = false;
@@ -25,9 +25,9 @@ namespace GrobExp.Compiler.ExpressionEmitters
             {
                 Type operandType;
                 result = ExpressionEmittersCollection.Emit(node.Expression, context, returnDefaultValueLabel, ResultType.Value, extend, out operandType);
-                if(operandType.IsValueType)
+                if (operandType.IsValueType)
                 {
-                    using(var temp = context.DeclareLocal(operandType))
+                    using (var temp = context.DeclareLocal(operandType))
                     {
                         il.Stloc(temp);
                         il.Ldloca(temp);

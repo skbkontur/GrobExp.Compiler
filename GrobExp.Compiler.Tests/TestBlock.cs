@@ -22,7 +22,7 @@ namespace GrobExp.Compiler.Tests
         {
             Expression<Func<long, DateTime>> exp = ticks => new DateTime(ticks);
             Expression<Action<long>> exp2 = Expression.Lambda<Action<long>>(Expression.Block(typeof(void), exp.Body, exp.Parameters[0]), exp.Parameters);
-            var f = LambdaCompiler.Compile(exp2,CompilerOptions.All);
+            var f = LambdaCompiler.Compile(exp2, CompilerOptions.All);
             f(123485234785);
         }
 
@@ -45,6 +45,24 @@ namespace GrobExp.Compiler.Tests
             Assert.AreEqual(false, f(new TestClassA()));
             Assert.AreEqual(false, f(new TestClassA {X = -1}));
             Assert.AreEqual(true, f(new TestClassA {X = 1}));
+        }
+
+        public struct TestStructA
+        {
+            public string S { get; set; }
+            public int? X { get; set; }
+            public int Y { get; set; }
+            public TestStructB b;
+        }
+
+        public struct TestStructB
+        {
+            public string S { get; set; }
+        }
+
+        public struct Qzz
+        {
+            public long X;
         }
 
         public class TestClassA
@@ -111,24 +129,6 @@ namespace GrobExp.Compiler.Tests
         {
             public string S { get; set; }
             public int X { get; set; }
-        }
-
-        public struct TestStructA
-        {
-            public string S { get; set; }
-            public int? X { get; set; }
-            public int Y { get; set; }
-            public TestStructB b;
-        }
-
-        public struct TestStructB
-        {
-            public string S { get; set; }
-        }
-
-        public struct Qzz
-        {
-            public long X;
         }
     }
 }

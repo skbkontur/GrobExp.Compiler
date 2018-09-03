@@ -140,7 +140,7 @@ namespace GrobExp.Compiler.Tests.AssignTests.Assign
             Expression body = Expression.Assign(path1.Body, Expression.Constant(-123));
             Expression<Func<TestClassA, int>> exp = Expression.Lambda<Func<TestClassA, int>>(body, path1.Parameters);
             var f = LambdaCompiler.Compile(exp, CompilerOptions.CheckNullReferences | CompilerOptions.ExtendOnAssign);
-            var o = new TestClassA {TwoDimensionalArray = new TestClassB[1,1][]};
+            var o = new TestClassA {TwoDimensionalArray = new TestClassB[1, 1][]};
             o.TwoDimensionalArray[0, 0] = new TestClassB[1];
             Assert.AreEqual(-123, f(o));
             Assert.IsNotNull(o.TwoDimensionalArray[0, 0][0]);
@@ -223,7 +223,7 @@ namespace GrobExp.Compiler.Tests.AssignTests.Assign
             Expression body = Expression.Assign(Expression.ArrayAccess(path.Body, Expression.Constant(0), Expression.Constant(0)), Expression.Constant("zzz"));
             Expression<Func<TestClassA, string>> exp = Expression.Lambda<Func<TestClassA, string>>(body, path.Parameters);
             var f = LambdaCompiler.Compile(exp, CompilerOptions.All);
-            var o = new TestClassA {StringArray = new string[1,1]};
+            var o = new TestClassA {StringArray = new string[1, 1]};
             o.StringArray[0, 0] = "qxx";
             Assert.AreEqual("zzz", f(o));
             Assert.AreEqual("zzz", o.StringArray[0, 0]);
@@ -237,7 +237,7 @@ namespace GrobExp.Compiler.Tests.AssignTests.Assign
             Expression body = Expression.Assign(Expression.ArrayAccess(path.Body, Expression.Constant(0), Expression.Constant(0)), new ParameterReplacer(condition.Parameters[0], path.Parameters[0]).Visit(condition.Body));
             Expression<Func<TestClassA, bool>> exp = Expression.Lambda<Func<TestClassA, bool>>(body, path.Parameters);
             var f = LambdaCompiler.Compile(exp, CompilerOptions.All);
-            var o = new TestClassA {B = new TestClassB {BoolArray = new bool[1,1]}};
+            var o = new TestClassA {B = new TestClassB {BoolArray = new bool[1, 1]}};
             o.B.BoolArray[0, 0] = true;
             Assert.AreEqual(false, f(o));
             Assert.AreEqual(false, o.B.BoolArray[0, 0]);
@@ -254,7 +254,7 @@ namespace GrobExp.Compiler.Tests.AssignTests.Assign
             Expression body = Expression.Assign(Expression.ArrayAccess(path1.Body, Expression.Constant(0), Expression.Constant(0)), new ParameterReplacer(path2.Parameters[0], path1.Parameters[0]).Visit(path2.Body));
             Expression<Func<TestClassA, int>> exp = Expression.Lambda<Func<TestClassA, int>>(body, path1.Parameters);
             var f = LambdaCompiler.Compile(exp, CompilerOptions.All);
-            var o = new TestClassA {B = new TestClassB {IntArray = new int[1,1]}};
+            var o = new TestClassA {B = new TestClassB {IntArray = new int[1, 1]}};
             o.B.IntArray[0, 0] = 123;
             Assert.AreEqual(0, f(o));
             Assert.AreEqual(0, o.B.IntArray[0, 0]);
@@ -280,7 +280,7 @@ namespace GrobExp.Compiler.Tests.AssignTests.Assign
             Expression body = Expression.Assign(Expression.ArrayAccess(path.Body, Expression.Constant(1), Expression.Constant(2)), Expression.Constant(-123));
             Expression<Func<int>> exp = Expression.Lambda<Func<int>>(body);
             var f = LambdaCompiler.Compile(exp, CompilerOptions.All);
-            TwoDimensionalIntArray = new int[3,3];
+            TwoDimensionalIntArray = new int[3, 3];
             TwoDimensionalIntArray[1, 2] = 82736;
             Assert.AreEqual(-123, f());
             Assert.AreEqual(-123, TwoDimensionalIntArray[1, 2]);
@@ -290,6 +290,24 @@ namespace GrobExp.Compiler.Tests.AssignTests.Assign
 
         public static DateTime MyBirthDate { get { return new DateTime(1986, 2, 16); } }
         public static string S { get; set; }
+
+        public struct TestStructA
+        {
+            public string S { get; set; }
+            public int? X { get; set; }
+            public int Y { get; set; }
+            public TestStructB b;
+        }
+
+        public struct TestStructB
+        {
+            public string S { get; set; }
+        }
+
+        public struct Qzz
+        {
+            public long X;
+        }
 
         public static int[] intArray;
         public static int x;
@@ -369,24 +387,6 @@ namespace GrobExp.Compiler.Tests.AssignTests.Assign
         {
             public string S { get; set; }
             public int X { get; set; }
-        }
-
-        public struct TestStructA
-        {
-            public string S { get; set; }
-            public int? X { get; set; }
-            public int Y { get; set; }
-            public TestStructB b;
-        }
-
-        public struct TestStructB
-        {
-            public string S { get; set; }
-        }
-
-        public struct Qzz
-        {
-            public long X;
         }
     }
 }

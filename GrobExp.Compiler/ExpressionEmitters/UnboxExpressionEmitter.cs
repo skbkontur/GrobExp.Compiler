@@ -11,7 +11,7 @@ namespace GrobExp.Compiler.ExpressionEmitters
         {
             Type operandType;
             var result = ExpressionEmittersCollection.Emit(node.Operand, context, returnDefaultValueLabel, ResultType.Value, extend, out operandType);
-            if(context.Options.HasFlag(CompilerOptions.CheckNullReferences))
+            if (context.Options.HasFlag(CompilerOptions.CheckNullReferences))
             {
                 context.Il.Dup();
                 context.Il.Brfalse(returnDefaultValueLabel);

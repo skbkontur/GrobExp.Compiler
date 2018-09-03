@@ -15,9 +15,9 @@ namespace GrobExp.Compiler.ExpressionEmitters
             bool returnDefaultValueLabelUsed = ExpressionEmittersCollection.Emit(node.Body, context, returnDefaultValueLabel, whatReturn, extend, out resultType);
             EmittingContext.LocalHolder retValue = null;
             var doneLabel = il.DefineLabel("done");
-            if(resultType == typeof(void))
+            if (resultType == typeof(void))
             {
-                if(returnDefaultValueLabelUsed)
+                if (returnDefaultValueLabelUsed)
                     context.MarkLabelAndSurroundWithSP(returnDefaultValueLabel);
                 il.Leave(doneLabel);
             }
@@ -26,10 +26,10 @@ namespace GrobExp.Compiler.ExpressionEmitters
                 retValue = context.DeclareLocal(resultType);
                 il.Stloc(retValue);
                 il.Leave(doneLabel);
-                if(returnDefaultValueLabelUsed)
+                if (returnDefaultValueLabelUsed)
                 {
                     context.MarkLabelAndSurroundWithSP(returnDefaultValueLabel);
-                    if(resultType.IsValueType)
+                    if (resultType.IsValueType)
                     {
                         il.Ldloca(retValue);
                         il.Initobj(resultType);
@@ -42,25 +42,25 @@ namespace GrobExp.Compiler.ExpressionEmitters
                     il.Leave(doneLabel);
                 }
             }
-            foreach(var catchBlock in node.Handlers)
+            foreach (var catchBlock in node.Handlers)
             {
                 bool disposeVariable = false;
                 var variable = catchBlock.Variable;
-                if(catchBlock.Filter == null)
+                if (catchBlock.Filter == null)
                 {
                     il.BeginCatchBlock(catchBlock.Test);
-                    if(variable == null)
+                    if (variable == null)
                         il.Pop();
                     else
                     {
                         // todo вызвать ф-цию из AssignExpressionEmitter
                         var index = Array.IndexOf(context.Parameters, variable);
-                        if(index >= 0)
+                        if (index >= 0)
                             il.Starg(index);
                         else
                         {
                             GroboIL.Local local;
-                            if(!context.VariablesToLocals.TryGetValue(variable, out local))
+                            if (!context.VariablesToLocals.TryGetValue(variable, out local))
                             {
                                 local = context.DeclareLocal(variable.Type);
                                 context.VariablesToLocals.Add(variable, local);
@@ -83,22 +83,22 @@ namespace GrobExp.Compiler.ExpressionEmitters
                     var endFilterLabel = il.DefineLabel("endFilter");
                     il.Br(endFilterLabel);
                     context.MarkLabelAndSurroundWithSP(rightTypeLabel);
-                    if(variable == null)
+                    if (variable == null)
                         il.Pop();
                     else
                     {
                         // todo вызвать ф-цию из AssignExpressionEmitter
                         var index = Array.IndexOf(context.Parameters, variable);
-                        if(index >= 0)
+                        if (index >= 0)
                             il.Starg(index);
                         else
                         {
                             GroboIL.Local local;
-                            if(!context.VariablesToLocals.TryGetValue(variable, out local))
+                            if (!context.VariablesToLocals.TryGetValue(variable, out local))
                             {
                                 local = string.IsNullOrEmpty(variable.Name)
-                                                ? context.Il.DeclareLocal(variable.Type)
-                                                : context.Il.DeclareLocal(variable.Type, variable.Name, appendUniquePrefix: false);
+                                            ? context.Il.DeclareLocal(variable.Type)
+                                            : context.Il.DeclareLocal(variable.Type, variable.Name, appendUniquePrefix : false);
                                 if (context.DebugInfoGenerator != null)
                                     local.SetLocalSymInfo(local.Name);
                                 context.VariablesToLocals.Add(variable, local);
@@ -111,7 +111,7 @@ namespace GrobExp.Compiler.ExpressionEmitters
                     GroboIL.Label returnFalseLabel = context.CanReturn ? il.DefineLabel("returnFalse") : null;
                     Type filterResultType;
                     bool returnFalseLabelUsed = ExpressionEmittersCollection.Emit(catchBlock.Filter, context, returnFalseLabel, out filterResultType);
-                    if(returnFalseLabelUsed)
+                    if (returnFalseLabelUsed)
                     {
                         il.Br(endFilterLabel);
                         context.MarkLabelAndSurroundWithSP(returnFalseLabel);
@@ -124,23 +124,23 @@ namespace GrobExp.Compiler.ExpressionEmitters
                 }
 
                 context.EmitLoadArguments(catchBlock.Body);
-                if(catchBlock.Body.Type != typeof(void))
+                if (catchBlock.Body.Type != typeof(void))
                     il.Stloc(retValue);
 
-                if(disposeVariable)
+                if (disposeVariable)
                 {
                     context.VariablesToLocals.Remove(variable);
                     context.Variables.Pop();
                 }
             }
 
-            if(node.Fault != null)
+            if (node.Fault != null)
             {
                 il.BeginFaultBlock();
                 EmitExpressionAsVoid(node.Fault, context);
             }
 
-            if(node.Finally != null)
+            if (node.Finally != null)
             {
                 il.BeginFinallyBlock();
                 EmitExpressionAsVoid(node.Finally, context);
@@ -149,7 +149,7 @@ namespace GrobExp.Compiler.ExpressionEmitters
             il.EndExceptionBlock();
 
             context.MarkLabelAndSurroundWithSP(doneLabel);
-            if(retValue != null)
+            if (retValue != null)
             {
                 il.Ldloc(retValue);
                 retValue.Dispose();
@@ -164,16 +164,16 @@ namespace GrobExp.Compiler.ExpressionEmitters
             GroboIL.Label skipLabel = context.CanReturn ? il.DefineLabel("skip") : null;
             Type resultType;
             bool skipLabelUsed = ExpressionEmittersCollection.Emit(node, context, skipLabel, ResultType.Void, false, out resultType);
-            if(skipLabelUsed)
+            if (skipLabelUsed)
             {
                 var endLabel = il.DefineLabel("end");
-                if(resultType != typeof(void))
+                if (resultType != typeof(void))
                 {
-                    if(!resultType.IsStruct())
+                    if (!resultType.IsStruct())
                         il.Pop();
                     else
                     {
-                        using(var temp = context.DeclareLocal(resultType))
+                        using (var temp = context.DeclareLocal(resultType))
                             il.Stloc(temp);
                     }
                 }

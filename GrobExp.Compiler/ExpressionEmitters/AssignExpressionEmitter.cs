@@ -23,7 +23,7 @@ namespace GrobExp.Compiler.ExpressionEmitters
 
             GroboIL.Label assigneeIsNullLabel = null;
             bool assigneeIsNullLabelUsed = false;
-            switch(left.NodeType)
+            switch (left.NodeType)
             {
             case ExpressionType.Parameter:
                 assigneeType = null;
@@ -32,7 +32,7 @@ namespace GrobExp.Compiler.ExpressionEmitters
                 break;
             case ExpressionType.MemberAccess:
                 var memberExpression = (MemberExpression)left;
-                if(memberExpression.Expression == null)
+                if (memberExpression.Expression == null)
                 {
                     assigneeType = null;
                     assigneeKind = memberExpression.Member is FieldInfo ? AssigneeKind.StaticField : AssigneeKind.StaticProperty;
@@ -42,7 +42,7 @@ namespace GrobExp.Compiler.ExpressionEmitters
                 {
                     bool closureAssign = memberExpression.Expression == context.ParsedLambda.ClosureParameter || memberExpression.Expression.Type.IsStaticClosure();
                     checkNullReferences &= !closureAssign;
-                    if(node.NodeType != ExpressionType.Assign && context.CanReturn)
+                    if (node.NodeType != ExpressionType.Assign && context.CanReturn)
                         result |= ExpressionEmittersCollection.Emit(memberExpression.Expression, context, returnDefaultValueLabel, ResultType.ByRefValueTypesOnly, extend, out assigneeType);
                     else
                     {
@@ -54,11 +54,11 @@ namespace GrobExp.Compiler.ExpressionEmitters
                 break;
             case ExpressionType.Index:
                 var indexExpression = (IndexExpression)left;
-                if(indexExpression.Object == null)
+                if (indexExpression.Object == null)
                     throw new InvalidOperationException("Indexing of null object is invalid");
-                if((indexExpression.Object.Type.IsArray && indexExpression.Object.Type.GetArrayRank() == 1) || indexExpression.Object.Type.IsList())
+                if ((indexExpression.Object.Type.IsArray && indexExpression.Object.Type.GetArrayRank() == 1) || indexExpression.Object.Type.IsList())
                 {
-                    if(node.NodeType != ExpressionType.Assign && context.CanReturn)
+                    if (node.NodeType != ExpressionType.Assign && context.CanReturn)
                     {
                         result |= ArrayIndexExpressionEmitter.Emit(indexExpression.Object, indexExpression.Arguments.Single(), context, returnDefaultValueLabel, ResultType.ByRefAll, extend, out assigneeType);
                         checkNullReferences = false;
@@ -72,7 +72,7 @@ namespace GrobExp.Compiler.ExpressionEmitters
                 }
                 else
                 {
-                    if(node.NodeType != ExpressionType.Assign && context.CanReturn)
+                    if (node.NodeType != ExpressionType.Assign && context.CanReturn)
                         result |= ExpressionEmittersCollection.Emit(indexExpression.Object, context, returnDefaultValueLabel, ResultType.ByRefValueTypesOnly, extend, out assigneeType);
                     else
                     {
@@ -85,9 +85,9 @@ namespace GrobExp.Compiler.ExpressionEmitters
             default:
                 throw new InvalidOperationException("Unable to assign to an expression of type '" + left.NodeType + "'");
             }
-            if(assigneeType != null && assigneeType.IsValueType)
+            if (assigneeType != null && assigneeType.IsValueType)
             {
-                using(var temp = context.DeclareLocal(assigneeType))
+                using (var temp = context.DeclareLocal(assigneeType))
                 {
                     il.Stloc(temp);
                     il.Ldloca(temp);
@@ -95,15 +95,15 @@ namespace GrobExp.Compiler.ExpressionEmitters
                 assigneeType = assigneeType.MakeByRefType();
             }
 
-            if(node.NodeType == ExpressionType.Assign)
+            if (node.NodeType == ExpressionType.Assign)
             {
-                if(!checkNullReferences)
+                if (!checkNullReferences)
                 {
-                    if(whatReturn == ResultType.Void)
+                    if (whatReturn == ResultType.Void)
                         EmitAssign(assigneeKind, left, context, null, right);
                     else
                     {
-                        if(assigneeKind == AssigneeKind.Parameter)
+                        if (assigneeKind == AssigneeKind.Parameter)
                         {
                             EmitAssign(assigneeKind, left, context, null, right);
                             EmitAccess(assigneeKind, left, context);
@@ -111,7 +111,7 @@ namespace GrobExp.Compiler.ExpressionEmitters
                         else
                         {
                             context.EmitLoadArguments(right);
-                            using(var value = context.DeclareLocal(right.Type))
+                            using (var value = context.DeclareLocal(right.Type))
                             {
                                 il.Stloc(value);
                                 EmitAssign(assigneeKind, left, context, null, value);
@@ -122,7 +122,7 @@ namespace GrobExp.Compiler.ExpressionEmitters
                 }
                 else
                 {
-                    if(whatReturn == ResultType.Void)
+                    if (whatReturn == ResultType.Void)
                     {
                         il.Dup();
                         var skipAssigneeLabel = il.DefineLabel("skipAssignee");
@@ -140,11 +140,11 @@ namespace GrobExp.Compiler.ExpressionEmitters
                         var rightIsNullLabel = context.CanReturn ? il.DefineLabel("rightIsNull") : null;
                         Type valueType;
                         bool labelUsed = ExpressionEmittersCollection.Emit(right, context, rightIsNullLabel, out valueType); // stack: [address, value]
-                        if(right.Type == typeof(bool) && valueType == typeof(bool?))
+                        if (right.Type == typeof(bool) && valueType == typeof(bool?))
                             context.ConvertFromNullableBoolToBool();
-                        if(labelUsed && context.CanReturn)
+                        if (labelUsed && context.CanReturn)
                             context.EmitReturnDefaultValue(right.Type, rightIsNullLabel, il.DefineLabel("rightIsNotNull"));
-                        using(var value = context.DeclareLocal(right.Type))
+                        using (var value = context.DeclareLocal(right.Type))
                         {
                             il.Stloc(value);
                             il.Dup();
@@ -163,29 +163,29 @@ namespace GrobExp.Compiler.ExpressionEmitters
             }
             else
             {
-                if(checkNullReferences)
+                if (checkNullReferences)
                 {
                     il.Dup();
                     il.Brfalse(returnDefaultValueLabel);
                     result = true;
                 }
-                if(assigneeType != null)
+                if (assigneeType != null)
                     il.Dup();
                 object[] arguments = EmitAccess(assigneeKind, left, context);
                 context.EmitLoadArguments(right);
                 context.EmitArithmeticOperation(GetOp(node.NodeType), left.Type, left.Type, right.Type, node.Method);
-                if(whatReturn == ResultType.Void)
+                if (whatReturn == ResultType.Void)
                     EmitAssign(assigneeKind, left, context, arguments);
                 else
                 {
-                    if(assigneeKind == AssigneeKind.Parameter)
+                    if (assigneeKind == AssigneeKind.Parameter)
                     {
                         EmitAssign(assigneeKind, left, context, arguments);
                         EmitAccess(assigneeKind, left, context);
                     }
                     else
                     {
-                        using(var temp = context.DeclareLocal(left.Type))
+                        using (var temp = context.DeclareLocal(left.Type))
                         {
                             il.Stloc(temp);
                             EmitAssign(assigneeKind, left, context, arguments, temp);
@@ -195,7 +195,7 @@ namespace GrobExp.Compiler.ExpressionEmitters
                 }
             }
             resultType = whatReturn == ResultType.Void ? typeof(void) : left.Type;
-            if(assigneeIsNullLabelUsed)
+            if (assigneeIsNullLabelUsed)
                 context.EmitReturnDefaultValue(resultType, assigneeIsNullLabel, il.DefineLabel("assigneeIsNotNull"));
             return result;
         }
@@ -204,16 +204,16 @@ namespace GrobExp.Compiler.ExpressionEmitters
         {
             object[] arguments = null;
             var il = context.Il;
-            switch(assigneeKind)
+            switch (assigneeKind)
             {
             case AssigneeKind.Parameter:
                 var index = Array.IndexOf(context.Parameters, node);
-                if(index >= 0)
+                if (index >= 0)
                     il.Ldarg(index);
                 else
                 {
                     GroboIL.Local variable;
-                    if(context.VariablesToLocals.TryGetValue((ParameterExpression)node, out variable))
+                    if (context.VariablesToLocals.TryGetValue((ParameterExpression)node, out variable))
                         il.Ldloc(variable);
                     else
                         throw new InvalidOperationException("Unknown parameter " + node);
@@ -235,10 +235,10 @@ namespace GrobExp.Compiler.ExpressionEmitters
                 {
                     var indexExpression = (IndexExpression)node;
                     var args = new List<object>();
-                    foreach(var argument in indexExpression.Arguments)
+                    foreach (var argument in indexExpression.Arguments)
                     {
                         context.EmitLoadArguments(argument);
-                        if(argument.NodeType == ExpressionType.Constant || (argument.NodeType == ExpressionType.MemberAccess && ((MemberExpression)argument).Member.MemberType == MemberTypes.Field && ((FieldInfo)((MemberExpression)argument).Member).IsStatic))
+                        if (argument.NodeType == ExpressionType.Constant || (argument.NodeType == ExpressionType.MemberAccess && ((MemberExpression)argument).Member.MemberType == MemberTypes.Field && ((FieldInfo)((MemberExpression)argument).Member).IsStatic))
                             args.Add(argument);
                         else
                         {
@@ -250,28 +250,28 @@ namespace GrobExp.Compiler.ExpressionEmitters
                     }
                     arguments = args.ToArray();
                     MethodInfo getter = indexExpression.Indexer.GetGetMethod(context.SkipVisibility);
-                    if(getter == null)
+                    if (getter == null)
                         throw new MissingMethodException(indexExpression.Indexer.ReflectedType.ToString(), "get_" + indexExpression.Indexer.Name);
-                    context.Il.Call(getter,indexExpression.Object.Type);
+                    context.Il.Call(getter, indexExpression.Object.Type);
                 }
                 break;
             case AssigneeKind.MultiDimensionalArray:
                 {
                     var indexExpression = (IndexExpression)node;
                     Type arrayType = indexExpression.Object.Type;
-                    if(!arrayType.IsArray)
+                    if (!arrayType.IsArray)
                         throw new InvalidOperationException("An array expected");
                     int rank = arrayType.GetArrayRank();
-                    if(rank != indexExpression.Arguments.Count)
+                    if (rank != indexExpression.Arguments.Count)
                         throw new InvalidOperationException("Incorrect number of indeces '" + indexExpression.Arguments.Count + "' provided to access an array with rank '" + rank + "'");
                     Type indexType = indexExpression.Arguments.First().Type;
-                    if(indexType != typeof(int))
+                    if (indexType != typeof(int))
                         throw new InvalidOperationException("Indexing array with an index of type '" + indexType + "' is not allowed");
                     var args = new List<object>();
-                    foreach(var argument in indexExpression.Arguments)
+                    foreach (var argument in indexExpression.Arguments)
                     {
                         context.EmitLoadArguments(argument);
-                        if(argument.NodeType == ExpressionType.Constant || (argument.NodeType == ExpressionType.MemberAccess && ((MemberExpression)argument).Member.MemberType == MemberTypes.Field && ((FieldInfo)((MemberExpression)argument).Member).IsStatic))
+                        if (argument.NodeType == ExpressionType.Constant || (argument.NodeType == ExpressionType.MemberAccess && ((MemberExpression)argument).Member.MemberType == MemberTypes.Field && ((FieldInfo)((MemberExpression)argument).Member).IsStatic))
                             args.Add(argument);
                         else
                         {
@@ -283,7 +283,7 @@ namespace GrobExp.Compiler.ExpressionEmitters
                     }
                     arguments = args.ToArray();
                     MethodInfo getMethod = arrayType.GetMethod("Get");
-                    if(getMethod == null)
+                    if (getMethod == null)
                         throw new MissingMethodException(arrayType.ToString(), "Get");
                     context.Il.Call(getMethod, arrayType);
                 }
@@ -295,16 +295,16 @@ namespace GrobExp.Compiler.ExpressionEmitters
         private static void EmitAssign(AssigneeKind assigneeKind, Expression node, EmittingContext context, object[] arguments)
         {
             var il = context.Il;
-            switch(assigneeKind)
+            switch (assigneeKind)
             {
             case AssigneeKind.Parameter:
                 var index = Array.IndexOf(context.Parameters, node);
-                if(index >= 0)
+                if (index >= 0)
                     il.Starg(index);
                 else
                 {
                     GroboIL.Local variable;
-                    if(context.VariablesToLocals.TryGetValue((ParameterExpression)node, out variable))
+                    if (context.VariablesToLocals.TryGetValue((ParameterExpression)node, out variable))
                         il.Stloc(variable);
                     else
                         throw new InvalidOperationException("Unknown parameter " + node);
@@ -324,17 +324,17 @@ namespace GrobExp.Compiler.ExpressionEmitters
                 break;
             case AssigneeKind.IndexedProperty:
                 {
-                    using(var temp = context.DeclareLocal(node.Type))
+                    using (var temp = context.DeclareLocal(node.Type))
                     {
                         il.Stloc(temp);
                         var indexExpression = (IndexExpression)node;
-                        if(arguments == null)
+                        if (arguments == null)
                             context.EmitLoadArguments(indexExpression.Arguments.ToArray());
                         else
                         {
-                            foreach(var argument in arguments)
+                            foreach (var argument in arguments)
                             {
-                                if(argument is Expression)
+                                if (argument is Expression)
                                     context.EmitLoadArguments((Expression)argument);
                                 else
                                 {
@@ -346,7 +346,7 @@ namespace GrobExp.Compiler.ExpressionEmitters
                         }
                         il.Ldloc(temp);
                         MethodInfo setter = indexExpression.Indexer.GetSetMethod(context.SkipVisibility);
-                        if(setter == null)
+                        if (setter == null)
                             throw new MissingMethodException(indexExpression.Indexer.ReflectedType.ToString(), "set_" + indexExpression.Indexer.Name);
                         context.Il.Call(setter, indexExpression.Object.Type);
                     }
@@ -354,26 +354,26 @@ namespace GrobExp.Compiler.ExpressionEmitters
                 break;
             case AssigneeKind.MultiDimensionalArray:
                 {
-                    using(var temp = context.DeclareLocal(node.Type))
+                    using (var temp = context.DeclareLocal(node.Type))
                     {
                         il.Stloc(temp);
                         var indexExpression = (IndexExpression)node;
                         Type arrayType = indexExpression.Object.Type;
-                        if(!arrayType.IsArray)
+                        if (!arrayType.IsArray)
                             throw new InvalidOperationException("An array expected");
                         int rank = arrayType.GetArrayRank();
-                        if(rank != indexExpression.Arguments.Count)
+                        if (rank != indexExpression.Arguments.Count)
                             throw new InvalidOperationException("Incorrect number of indeces '" + indexExpression.Arguments.Count + "' provided to access an array with rank '" + rank + "'");
                         Type indexType = indexExpression.Arguments.First().Type;
-                        if(indexType != typeof(int))
+                        if (indexType != typeof(int))
                             throw new InvalidOperationException("Indexing array with an index of type '" + indexType + "' is not allowed");
-                        if(arguments == null)
+                        if (arguments == null)
                             context.EmitLoadArguments(indexExpression.Arguments.ToArray());
                         else
                         {
-                            foreach(var argument in arguments)
+                            foreach (var argument in arguments)
                             {
-                                if(argument is Expression)
+                                if (argument is Expression)
                                     context.EmitLoadArguments((Expression)argument);
                                 else
                                 {
@@ -385,7 +385,7 @@ namespace GrobExp.Compiler.ExpressionEmitters
                         }
                         il.Ldloc(temp);
                         MethodInfo setMethod = arrayType.GetMethod("Set");
-                        if(setMethod == null)
+                        if (setMethod == null)
                             throw new MissingMethodException(arrayType.ToString(), "Set");
                         context.Il.Call(setMethod, arrayType);
                     }
@@ -397,17 +397,17 @@ namespace GrobExp.Compiler.ExpressionEmitters
         private static void EmitAssign(AssigneeKind assigneeKind, Expression node, EmittingContext context, object[] arguments, EmittingContext.LocalHolder value)
         {
             var il = context.Il;
-            switch(assigneeKind)
+            switch (assigneeKind)
             {
             case AssigneeKind.Parameter:
                 il.Ldloc(value);
                 var index = Array.IndexOf(context.Parameters, node);
-                if(index >= 0)
+                if (index >= 0)
                     il.Starg(index);
                 else
                 {
                     GroboIL.Local variable;
-                    if(context.VariablesToLocals.TryGetValue((ParameterExpression)node, out variable))
+                    if (context.VariablesToLocals.TryGetValue((ParameterExpression)node, out variable))
                         il.Stloc(variable);
                     else
                         throw new InvalidOperationException("Unknown parameter " + node);
@@ -431,13 +431,13 @@ namespace GrobExp.Compiler.ExpressionEmitters
             case AssigneeKind.IndexedProperty:
                 {
                     var indexExpression = (IndexExpression)node;
-                    if(arguments == null)
+                    if (arguments == null)
                         context.EmitLoadArguments(indexExpression.Arguments.ToArray());
                     else
                     {
-                        foreach(var argument in arguments)
+                        foreach (var argument in arguments)
                         {
-                            if(argument is Expression)
+                            if (argument is Expression)
                                 context.EmitLoadArguments((Expression)argument);
                             else
                             {
@@ -449,7 +449,7 @@ namespace GrobExp.Compiler.ExpressionEmitters
                     }
                     il.Ldloc(value);
                     MethodInfo setter = indexExpression.Indexer.GetSetMethod(context.SkipVisibility);
-                    if(setter == null)
+                    if (setter == null)
                         throw new MissingMethodException(indexExpression.Indexer.ReflectedType.ToString(), "set_" + indexExpression.Indexer.Name);
                     context.Il.Call(setter, indexExpression.Object.Type);
                 }
@@ -458,21 +458,21 @@ namespace GrobExp.Compiler.ExpressionEmitters
                 {
                     var indexExpression = (IndexExpression)node;
                     Type arrayType = indexExpression.Object.Type;
-                    if(!arrayType.IsArray)
+                    if (!arrayType.IsArray)
                         throw new InvalidOperationException("An array expected");
                     int rank = arrayType.GetArrayRank();
-                    if(rank != indexExpression.Arguments.Count)
+                    if (rank != indexExpression.Arguments.Count)
                         throw new InvalidOperationException("Incorrect number of indeces '" + indexExpression.Arguments.Count + "' provided to access an array with rank '" + rank + "'");
                     Type indexType = indexExpression.Arguments.First().Type;
-                    if(indexType != typeof(int))
+                    if (indexType != typeof(int))
                         throw new InvalidOperationException("Indexing array with an index of type '" + indexType + "' is not allowed");
-                    if(arguments == null)
+                    if (arguments == null)
                         context.EmitLoadArguments(indexExpression.Arguments.ToArray());
                     else
                     {
-                        foreach(var argument in arguments)
+                        foreach (var argument in arguments)
                         {
-                            if(argument is Expression)
+                            if (argument is Expression)
                                 context.EmitLoadArguments((Expression)argument);
                             else
                             {
@@ -484,7 +484,7 @@ namespace GrobExp.Compiler.ExpressionEmitters
                     }
                     il.Ldloc(value);
                     MethodInfo setMethod = arrayType.GetMethod("Set");
-                    if(setMethod == null)
+                    if (setMethod == null)
                         throw new MissingMethodException(arrayType.ToString(), "Set");
                     context.Il.Call(setMethod, arrayType);
                 }
@@ -495,17 +495,17 @@ namespace GrobExp.Compiler.ExpressionEmitters
         private static void EmitAssign(AssigneeKind assigneeKind, Expression node, EmittingContext context, object[] arguments, Expression value)
         {
             var il = context.Il;
-            switch(assigneeKind)
+            switch (assigneeKind)
             {
             case AssigneeKind.Parameter:
                 context.EmitLoadArguments(value);
                 var index = Array.IndexOf(context.Parameters, node);
-                if(index >= 0)
+                if (index >= 0)
                     il.Starg(index);
                 else
                 {
                     GroboIL.Local variable;
-                    if(context.VariablesToLocals.TryGetValue((ParameterExpression)node, out variable))
+                    if (context.VariablesToLocals.TryGetValue((ParameterExpression)node, out variable))
                         il.Stloc(variable);
                     else
                         throw new InvalidOperationException("Unknown parameter " + node);
@@ -529,13 +529,13 @@ namespace GrobExp.Compiler.ExpressionEmitters
             case AssigneeKind.IndexedProperty:
                 {
                     var indexExpression = (IndexExpression)node;
-                    if(arguments == null)
+                    if (arguments == null)
                         context.EmitLoadArguments(indexExpression.Arguments.ToArray());
                     else
                     {
-                        foreach(var argument in arguments)
+                        foreach (var argument in arguments)
                         {
-                            if(argument is Expression)
+                            if (argument is Expression)
                                 context.EmitLoadArguments((Expression)argument);
                             else
                             {
@@ -547,7 +547,7 @@ namespace GrobExp.Compiler.ExpressionEmitters
                     }
                     context.EmitLoadArguments(value);
                     MethodInfo setter = indexExpression.Indexer.GetSetMethod(context.SkipVisibility);
-                    if(setter == null)
+                    if (setter == null)
                         throw new MissingMethodException(indexExpression.Indexer.ReflectedType.ToString(), "set_" + indexExpression.Indexer.Name);
                     context.Il.Call(setter, indexExpression.Object.Type);
                 }
@@ -556,21 +556,21 @@ namespace GrobExp.Compiler.ExpressionEmitters
                 {
                     var indexExpression = (IndexExpression)node;
                     Type arrayType = indexExpression.Object.Type;
-                    if(!arrayType.IsArray)
+                    if (!arrayType.IsArray)
                         throw new InvalidOperationException("An array expected");
                     int rank = arrayType.GetArrayRank();
-                    if(rank != indexExpression.Arguments.Count)
+                    if (rank != indexExpression.Arguments.Count)
                         throw new InvalidOperationException("Incorrect number of indeces '" + indexExpression.Arguments.Count + "' provided to access an array with rank '" + rank + "'");
                     Type indexType = indexExpression.Arguments.First().Type;
-                    if(indexType != typeof(int))
+                    if (indexType != typeof(int))
                         throw new InvalidOperationException("Indexing array with an index of type '" + indexType + "' is not allowed");
-                    if(arguments == null)
+                    if (arguments == null)
                         context.EmitLoadArguments(indexExpression.Arguments.ToArray());
                     else
                     {
-                        foreach(var argument in arguments)
+                        foreach (var argument in arguments)
                         {
-                            if(argument is Expression)
+                            if (argument is Expression)
                                 context.EmitLoadArguments((Expression)argument);
                             else
                             {
@@ -582,7 +582,7 @@ namespace GrobExp.Compiler.ExpressionEmitters
                     }
                     context.EmitLoadArguments(value);
                     MethodInfo setMethod = arrayType.GetMethod("Set");
-                    if(setMethod == null)
+                    if (setMethod == null)
                         throw new MissingMethodException(arrayType.ToString(), "Set");
                     context.Il.Call(setMethod, arrayType);
                 }
@@ -592,7 +592,7 @@ namespace GrobExp.Compiler.ExpressionEmitters
 
         private static ExpressionType GetOp(ExpressionType nodeType)
         {
-            switch(nodeType)
+            switch (nodeType)
             {
             case ExpressionType.AddAssign:
                 return ExpressionType.Add;

@@ -15,13 +15,13 @@ namespace GrobExp.Compiler.ExpressionEmitters
             // ReSharper disable ConditionIsAlwaysTrueOrFalse
             // ReSharper disable HeuristicUnreachableCode
             GroboIL il = context.Il;
-            if(node.Constructor != null)
+            if (node.Constructor != null)
                 il.Newobj(node.Constructor);
             else
             {
-                if(node.Type.IsValueType)
+                if (node.Type.IsValueType)
                 {
-                    using(var temp = context.DeclareLocal(node.Type))
+                    using (var temp = context.DeclareLocal(node.Type))
                     {
                         il.Ldloca(temp);
                         il.Initobj(node.Type);

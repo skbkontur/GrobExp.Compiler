@@ -11,7 +11,7 @@ namespace GrobExp.Compiler.Closures
     {
         public int DefineField(Type type)
         {
-            if(tree == null)
+            if (tree == null)
                 tree = new Node();
             var fieldId = tree.Count;
             var isPrivateType = DynamicClosureBuilder.IsPrivate(type) && type.IsValueType;
@@ -26,9 +26,6 @@ namespace GrobExp.Compiler.Closures
             fields.Add(child);
             return fieldId;
         }
-
-        private static readonly Type[] tupleTypes = typeof(StaticClosures).GetNestedTypes()
-                                                                          .OrderBy(type => type.GetGenericArguments().Length).ToArray();
 
         public Type Create()
         {
@@ -70,7 +67,7 @@ namespace GrobExp.Compiler.Closures
             var result = MakeAccessInternal(root, id);
             var node = fields[id];
             if (node.Field.IsPrivateType)
-                value = Expression.New(node.Field.Type.GetConstructor(new[] { value.Type }), value);
+                value = Expression.New(node.Field.Type.GetConstructor(new[] {value.Type}), value);
             return Expression.Assign(result, value);
         }
 
@@ -88,10 +85,15 @@ namespace GrobExp.Compiler.Closures
                 );
         }
 
+        private static readonly Type[] tupleTypes = typeof(StaticClosures).GetNestedTypes()
+                                                                          .OrderBy(type => type.GetGenericArguments().Length).ToArray();
+
+        private Node tree;
+        private readonly List<Node> fields = new List<Node>();
+
         private class Node
         {
-            private readonly List<Node> children = new List<Node>();
-            public List<Node> Children { get { return children; } }
+            public List<Node> Children { get; } = new List<Node>();
             public Field Field { get; set; }
             public int Depth { get; set; }
             public int Count { get; set; }
@@ -99,15 +101,15 @@ namespace GrobExp.Compiler.Closures
 
             public Type Create()
             {
-                if(Field != null)
+                if (Field != null)
                     return Field.Type;
-                return tupleTypes[children.Count - 1].MakeGenericType(children.Select(child => child.Create()).ToArray());
+                return tupleTypes[Children.Count - 1].MakeGenericType(Children.Select(child => child.Create()).ToArray());
             }
 
             public Node Add(List<Node> fields, Field field)
             {
                 Count++;
-                if (children.Count < tupleTypes.Length)
+                if (Children.Count < tupleTypes.Length)
                 {
                     var node = new Node
                         {
@@ -116,19 +118,19 @@ namespace GrobExp.Compiler.Closures
                             Depth = 0,
                             Count = 1
                         };
-                    children.Add(node);
+                    Children.Add(node);
                     node.UpdateDepth();
                     return node;
                 }
-                foreach(var child in children)
+                foreach (var child in Children)
                 {
-                    if(!child.Saturated())
+                    if (!child.Saturated())
                         return child.Add(fields, field);
                 }
                 int minCount = int.MaxValue;
                 Node minimalChild = null;
-                foreach(var child in children)
-                    if(child.Count < minCount)
+                foreach (var child in Children)
+                    if (child.Count < minCount)
                     {
                         minCount = child.Count;
                         minimalChild = child;
@@ -139,14 +141,14 @@ namespace GrobExp.Compiler.Closures
 
             private Node Split(List<Node> fields, Field field)
             {
-                children.Add(new Node
+                Children.Add(new Node
                     {
                         Field = Field,
                         Parent = this,
                         Depth = 0,
                         Count = 1
                     });
-                fields[children[0].Field.Id] = children[0];
+                fields[Children[0].Field.Id] = Children[0];
                 Field = null;
                 var node = new Node
                     {
@@ -155,7 +157,7 @@ namespace GrobExp.Compiler.Closures
                         Depth = 0,
                         Count = 1
                     };
-                children.Add(node);
+                Children.Add(node);
                 Count = 2;
                 node.UpdateDepth();
                 return node;
@@ -174,12 +176,12 @@ namespace GrobExp.Compiler.Closures
 
             private Node FindLeaf()
             {
-                if(Field != null) return this;
+                if (Field != null) return this;
                 int minDepth = int.MaxValue;
                 Node minimalChild = null;
-                foreach(var child in children)
+                foreach (var child in Children)
                 {
-                    if(child.Depth < minDepth)
+                    if (child.Depth < minDepth)
                     {
                         minDepth = child.Depth;
                         minimalChild = child;
@@ -190,15 +192,12 @@ namespace GrobExp.Compiler.Closures
 
             private bool Saturated()
             {
-                if(Field != null) return true;
-                if(children.Count != tupleTypes.Length)
+                if (Field != null) return true;
+                if (Children.Count != tupleTypes.Length)
                     return false;
-                return children.All(child => child.Saturated());
+                return Children.All(child => child.Saturated());
             }
         }
-
-        private Node tree;
-        private readonly List<Node> fields = new List<Node>();
 
         private class Field
         {

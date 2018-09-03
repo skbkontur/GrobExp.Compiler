@@ -14,7 +14,7 @@ namespace GrobExp.Compiler.Tests
         {
             Expression<Func<TestClassA, string>> exp = o => o.StringArray[1, 2];
             var f = LambdaCompiler.Compile(exp, CompilerOptions.All);
-            var a = new TestClassA {StringArray = new string[2,3]};
+            var a = new TestClassA {StringArray = new string[2, 3]};
             a.StringArray[1, 2] = "zzz";
             Assert.AreEqual("zzz", f(a));
         }
@@ -25,7 +25,7 @@ namespace GrobExp.Compiler.Tests
             Expression<Func<TestClassA, string[,]>> path = o => o.StringArray;
             Expression<Func<TestClassA, string>> exp = Expression.Lambda<Func<TestClassA, string>>(Expression.ArrayAccess(path.Body, Expression.Constant(1), Expression.Constant(2)), path.Parameters);
             var f = LambdaCompiler.Compile(exp, CompilerOptions.All);
-            var a = new TestClassA {StringArray = new string[2,3]};
+            var a = new TestClassA {StringArray = new string[2, 3]};
             a.StringArray[1, 2] = "zzz";
             Assert.AreEqual("zzz", f(a));
         }
@@ -35,7 +35,7 @@ namespace GrobExp.Compiler.Tests
         {
             Expression<Func<TestClassA, bool>> exp = o => o.BoolArray[1, 2];
             var f = LambdaCompiler.Compile(exp, CompilerOptions.All);
-            var a = new TestClassA {BoolArray = new bool[2,3]};
+            var a = new TestClassA {BoolArray = new bool[2, 3]};
             a.BoolArray[1, 2] = true;
             Assert.AreEqual(true, f(a));
         }
@@ -46,7 +46,7 @@ namespace GrobExp.Compiler.Tests
             Expression<Func<TestClassA, bool[,]>> path = o => o.BoolArray;
             Expression<Func<TestClassA, bool>> exp = Expression.Lambda<Func<TestClassA, bool>>(Expression.ArrayAccess(path.Body, Expression.Constant(1), Expression.Constant(2)), path.Parameters);
             var f = LambdaCompiler.Compile(exp, CompilerOptions.All);
-            var a = new TestClassA {BoolArray = new bool[2,3]};
+            var a = new TestClassA {BoolArray = new bool[2, 3]};
             a.BoolArray[1, 2] = true;
             Assert.AreEqual(true, f(a));
         }
@@ -121,6 +121,20 @@ namespace GrobExp.Compiler.Tests
             Assert.AreEqual("123", f(new TestClassA {IntArray = new[] {123}}));
         }
 
+        public struct TestStructA
+        {
+            public string S { get; set; }
+            public TestStructB[] ArrayB { get; set; }
+            public int? X { get; set; }
+            public int Y { get; set; }
+        }
+
+        public struct TestStructB
+        {
+            public string S { get; set; }
+            public int Y { get; set; }
+        }
+
         public class TestClassA
         {
             public int F(bool b)
@@ -142,9 +156,9 @@ namespace GrobExp.Compiler.Tests
                 set
                 {
                     string[] array;
-                    if(!dict.TryGetValue(key, out array))
+                    if (!dict.TryGetValue(key, out array))
                         dict.Add(key, array = new string[0]);
-                    if(array.Length <= index)
+                    if (array.Length <= index)
                     {
                         var newArray = new string[index + 1];
                         array.CopyTo(newArray, 0);
@@ -186,9 +200,9 @@ namespace GrobExp.Compiler.Tests
                 set
                 {
                     string[] array;
-                    if(!dict.TryGetValue(key, out array))
+                    if (!dict.TryGetValue(key, out array))
                         dict.Add(key, array = new string[0]);
-                    if(array.Length <= index)
+                    if (array.Length <= index)
                     {
                         var newArray = new string[index + 1];
                         array.CopyTo(newArray, 0);
@@ -228,20 +242,6 @@ namespace GrobExp.Compiler.Tests
         {
             public string S { get; set; }
             public int X { get; set; }
-        }
-
-        public struct TestStructA
-        {
-            public string S { get; set; }
-            public TestStructB[] ArrayB { get; set; }
-            public int? X { get; set; }
-            public int Y { get; set; }
-        }
-
-        public struct TestStructB
-        {
-            public string S { get; set; }
-            public int Y { get; set; }
         }
     }
 }

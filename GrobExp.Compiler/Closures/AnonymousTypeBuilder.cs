@@ -12,12 +12,12 @@ namespace GrobExp.Compiler.Closures
         {
             var key = new HashtableKey(module, types, names);
             var type = (Type)anonymousTypes[key];
-            if(type == null)
+            if (type == null)
             {
-                lock(anonymousTypesLock)
+                lock (anonymousTypesLock)
                 {
                     type = (Type)anonymousTypes[key];
-                    if(type == null)
+                    if (type == null)
                         anonymousTypes[key] = type = BuildType(types, names, module);
                 }
             }
@@ -37,12 +37,12 @@ namespace GrobExp.Compiler.Closures
         private static Type BuildType(Type[] types, string[] names, ModuleBuilder module)
         {
             var length = types.Length;
-            if(names.Length != length)
+            if (names.Length != length)
                 throw new InvalidOperationException();
             var typeBuilder = module.DefineType("<>f__DynamicAnonymousType_" + Guid.NewGuid(), TypeAttributes.Public | TypeAttributes.Class);
             var constructor = typeBuilder.DefineConstructor(MethodAttributes.Public, CallingConventions.HasThis, types);
             var constructorIl = constructor.GetILGenerator();
-            for(var i = 0; i < length; ++i)
+            for (var i = 0; i < length; ++i)
             {
                 var field = typeBuilder.DefineField(names[i] + "_" + Guid.NewGuid(), types[i], FieldAttributes.Private | FieldAttributes.InitOnly);
                 var property = typeBuilder.DefineProperty(names[i], PropertyAttributes.None, types[i], Type.EmptyTypes);
@@ -88,15 +88,15 @@ namespace GrobExp.Compiler.Closures
 
             public override bool Equals(object obj)
             {
-                if(!(obj is HashtableKey))
+                if (!(obj is HashtableKey))
                     return false;
-                if(ReferenceEquals(this, obj)) return true;
+                if (ReferenceEquals(this, obj)) return true;
                 var other = (HashtableKey)obj;
-                if(Module != other.Module || Types.Length != other.Types.Length || Names.Length != other.Names.Length)
+                if (Module != other.Module || Types.Length != other.Types.Length || Names.Length != other.Names.Length)
                     return false;
-                if(Types.Where((t, i) => t != other.Types[i]).Any())
+                if (Types.Where((t, i) => t != other.Types[i]).Any())
                     return false;
-                if(Names.Where((s, i) => s != other.Names[i]).Any())
+                if (Names.Where((s, i) => s != other.Names[i]).Any())
                     return false;
                 return true;
             }

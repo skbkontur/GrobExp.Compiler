@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Diagnostics;
 using System.Linq;
 using System.Linq.Expressions;
@@ -21,7 +21,7 @@ namespace GrobExp.Compiler.Tests
     {
         public string zzz(int x)
         {
-            switch(x)
+            switch (x)
             {
             case 0:
                 return "zzz";
@@ -38,7 +38,7 @@ namespace GrobExp.Compiler.Tests
 
         public string qzz(string s)
         {
-            switch(s)
+            switch (s)
             {
             case null:
             case "0":
@@ -57,19 +57,22 @@ namespace GrobExp.Compiler.Tests
 
         public static int? Zzz(object x)
         {
-            if(x is int)
+            if (x is int)
                 return (int)x;
             return null;
         }
 
-        static int Add(int x, double y) { return (int)(x + y); }
+        static int Add(int x, double y)
+        {
+            return (int)(x + y);
+        }
 
         [Test]
         [Ignore("Is used for debugging")]
         public unsafe void TestWriteAssemblerCode()
         {
             var method = new DynamicMethod(Guid.NewGuid().ToString(), typeof(object), new[] {typeof(object)}, typeof(string), true);
-            using(var il = new GroboIL(method, false))
+            using (var il = new GroboIL(method, false))
             {
                 il.Ldarg(0);
                 il.Isinst(typeof(int?));
@@ -80,12 +83,12 @@ namespace GrobExp.Compiler.Tests
             var b = (byte*)pointer;
             //var zzz = Convert.FromBase64String(@"VldVU0FSTInOSItsJFhIi3wkYEGJyonRRInDRInQVQ8oBg8oZhAPKMgPKOwPKNAPKPQPKNgPKPwPWUUAD1llEA9ZTTAPWW1AD1lVYA9ZdXAPWZ2QAAAAD1m9oAAAAPIPfMHyD3zl8g980/IPfPfyD3zC8g985g9Y4A8oRiAPKMgPKNAPKNgPWUUgD1lNUA9ZlYAAAAAPWZ2wAAAA8g98wfIPfNPyD3zCD1jgD1ilwAAAAA8rJ0iBxdAAAABIg8cQ/8gPhVf///9Ig8YwXf/LD4VG////Z0ONBFJnQY0EgsHgBEiYSAHF/8kPhSn///9BWltdX17D");
             var zzz = Convert.FromBase64String(@"VldVU0FSTInOSItsJFBIi3wkWEGJyonRRInDRInQVQ8oBg8oZhAPKMgPKOwPKNAPKPQPKNgPKPwPWUUAD1llEA9ZTTAPWW1AD1lVYA9ZdXAPWZ2QAAAAD1m9oAAAAPIPfMHyD3zl8g980/IPfPfyD3zC8g985g9Y4A8oRiAPKMgPKNAPKNgPWUUgD1lNUA9ZlYAAAAAPWZ2wAAAA8g98wfIPfNPyD3zCD1jgD1ilwAAAAA8rJ0iBxdAAAABIg8cQ/8gPhVf///9Ig8YwXf/LD4VG////Z0ONBFJnQY0EgsHgBEiYSAHF/8kPhSn///9BWltdX17D");
-            fixed(byte* z = &zzz[0])
+            fixed (byte* z = &zzz[0])
             {
                 b = z;
-                for(int i = 0; i < 20; ++i)
+                for (int i = 0; i < 20; ++i)
                 {
-                    for(int j = 0; j < 10; ++j)
+                    for (int j = 0; j < 10; ++j)
                         Console.Write(string.Format("{0:X2} ", *b++));
                     Console.WriteLine();
                 }
@@ -97,7 +100,7 @@ namespace GrobExp.Compiler.Tests
         public unsafe void TestWriteAssemblerCode0()
         {
             var method = new DynamicMethod(Guid.NewGuid().ToString(), typeof(int), new[] {typeof(double)}, typeof(string), true);
-            using(var il = new GroboIL(method))
+            using (var il = new GroboIL(method))
             {
                 il.Ldarg(0);
                 il.Conv<int>();
@@ -107,9 +110,9 @@ namespace GrobExp.Compiler.Tests
             Console.WriteLine(func(3000000000));
             var pointer = DynamicMethodInvokerBuilder.DynamicMethodPointerExtractor(method);
             var b = (byte*)pointer;
-            for(int i = 0; i < 20; ++i)
+            for (int i = 0; i < 20; ++i)
             {
-                for(int j = 0; j < 10; ++j)
+                for (int j = 0; j < 10; ++j)
                     Console.Write(string.Format("{0:X2} ", *b++));
                 Console.WriteLine();
             }
@@ -122,7 +125,7 @@ namespace GrobExp.Compiler.Tests
             var method = new DynamicMethod(Guid.NewGuid().ToString(), typeof(IntPtr), Type.EmptyTypes, typeof(string), true);
             var il = method.GetILGenerator();
             var ptr = new IntPtr(0x40100C);
-            if(IntPtr.Size == 4)
+            if (IntPtr.Size == 4)
                 il.Emit(OpCodes.Ldc_I4, ptr.ToInt32());
             else il.Emit(OpCodes.Ldc_I8, ptr.ToInt64());
             il.Emit(OpCodes.Conv_U);
@@ -130,13 +133,13 @@ namespace GrobExp.Compiler.Tests
             il.Emit(OpCodes.Ldnull);
 
             il.Emit(OpCodes.Ret);
-            
+
             method.CreateDelegate(typeof(Func<IntPtr>));
             var pointer = DynamicMethodInvokerBuilder.DynamicMethodPointerExtractor(method);
             var b = (byte*)pointer;
-            for(int i = 0; i < 20; ++i)
+            for (int i = 0; i < 20; ++i)
             {
-                for(int j = 0; j < 10; ++j)
+                for (int j = 0; j < 10; ++j)
                     Console.Write(string.Format("{0:X2} ", *b++));
                 Console.WriteLine();
             }
@@ -174,7 +177,7 @@ namespace GrobExp.Compiler.Tests
         [Ignore("Is used for debugging")]
         public unsafe void TestWriteAssemblerCode4()
         {
-            var method = new DynamicMethod(Guid.NewGuid().ToString(), typeof(int), new[] { typeof(int), typeof(int), typeof(int), typeof(int) }, typeof(string), true);
+            var method = new DynamicMethod(Guid.NewGuid().ToString(), typeof(int), new[] {typeof(int), typeof(int), typeof(int), typeof(int)}, typeof(string), true);
             var il = method.GetILGenerator();
             il.Emit(OpCodes.Ldarg_0);
             il.Emit(OpCodes.Ldarg_1);
@@ -187,7 +190,7 @@ namespace GrobExp.Compiler.Tests
             il.Emit(OpCodes.Ldarg_0);
             il.Emit(OpCodes.Ldarg_1);
             byte[] marker;
-            if(IntPtr.Size == 8)
+            if (IntPtr.Size == 8)
             {
                 const long addr = 0x123456789ABCDEF1;
                 marker = BitConverter.GetBytes(addr);
@@ -199,7 +202,7 @@ namespace GrobExp.Compiler.Tests
                 marker = BitConverter.GetBytes(addr);
                 il.Emit(OpCodes.Ldc_I4, addr);
             }
-            il.EmitCalli(OpCodes.Calli, CallingConventions.Standard, typeof(int), new[] { typeof(int), typeof(int), typeof(int), typeof(int), typeof(int), typeof(int), typeof(int), typeof(int), typeof(int), typeof(int), }, null);
+            il.EmitCalli(OpCodes.Calli, CallingConventions.Standard, typeof(int), new[] {typeof(int), typeof(int), typeof(int), typeof(int), typeof(int), typeof(int), typeof(int), typeof(int), typeof(int), typeof(int),}, null);
             il.Emit(OpCodes.Ret);
             var func = (Func<int, int, int, int, int>)method.CreateDelegate(typeof(Func<int, int, int, int, int>));
             var pointer = DynamicMethodInvokerBuilder.DynamicMethodPointerExtractor(method);
@@ -227,9 +230,9 @@ namespace GrobExp.Compiler.Tests
 
         private unsafe void Replace(byte* ptr, byte[] marker)
         {
-            for(;;++ptr)
+            for (;; ++ptr)
             {
-                if(marker.Where((t, i) => *(ptr + i) != t).Any()) continue;
+                if (marker.Where((t, i) => *(ptr + i) != t).Any()) continue;
                 int prevJunk = (IntPtr.Size == 4 ? 1 : 2);
                 int nextJunk = 2;
                 ptr -= prevJunk;
@@ -238,20 +241,20 @@ namespace GrobExp.Compiler.Tests
                 {
                     // x86
                     body = new byte[]
-                    {
-                        0x31, 0xC0, // xor eax, eax
-                    };
+                        {
+                            0x31, 0xC0, // xor eax, eax
+                        };
                 }
                 else
                 {
                     body = new byte[]
-                    {
-                        0x48, 0x31, 0xC0, // xor rax, rax
-                    };
+                        {
+                            0x48, 0x31, 0xC0, // xor rax, rax
+                        };
                 }
-                foreach(byte b in body)
+                foreach (byte b in body)
                     *ptr++ = b;
-                for(int i = 0; i < prevJunk + marker.Length + nextJunk - body.Length; ++i)
+                for (int i = 0; i < prevJunk + marker.Length + nextJunk - body.Length; ++i)
                     *ptr++ = 0x90; // nop
                 break;
             }
@@ -260,27 +263,36 @@ namespace GrobExp.Compiler.Tests
         [Flags]
         private enum AllocationTypes : uint
         {
-            Commit = 0x1000, Reserve = 0x2000,
-            Reset = 0x80000, LargePages = 0x20000000,
-            Physical = 0x400000, TopDown = 0x100000,
+            Commit = 0x1000,
+            Reserve = 0x2000,
+            Reset = 0x80000,
+            LargePages = 0x20000000,
+            Physical = 0x400000,
+            TopDown = 0x100000,
             WriteWatch = 0x200000
         }
 
         [Flags]
         private enum MemoryProtections : uint
         {
-            Execute = 0x10, ExecuteRead = 0x20,
-            ExecuteReadWrite = 0x40, ExecuteWriteCopy = 0x80,
-            NoAccess = 0x01, ReadOnly = 0x02,
-            ReadWrite = 0x04, WriteCopy = 0x08,
-            GuartModifierflag = 0x100, NoCacheModifierflag = 0x200,
+            Execute = 0x10,
+            ExecuteRead = 0x20,
+            ExecuteReadWrite = 0x40,
+            ExecuteWriteCopy = 0x80,
+            NoAccess = 0x01,
+            ReadOnly = 0x02,
+            ReadWrite = 0x04,
+            WriteCopy = 0x08,
+            GuartModifierflag = 0x100,
+            NoCacheModifierflag = 0x200,
             WriteCombineModifierflag = 0x400
         }
 
         [Flags]
         private enum FreeTypes : uint
         {
-            Decommit = 0x4000, Release = 0x8000
+            Decommit = 0x4000,
+            Release = 0x8000
         }
 
         [UnmanagedFunctionPointer(CallingConvention.StdCall)]
@@ -296,7 +308,7 @@ namespace GrobExp.Compiler.Tests
                 MemoryProtections flProtect);
 
             [DllImport("kernel32")]
-            [return: MarshalAs(UnmanagedType.Bool)]
+            [return : MarshalAs(UnmanagedType.Bool)]
             internal static extern bool VirtualFree(
                 IntPtr lpAddress,
                 uint dwSize,
@@ -307,50 +319,50 @@ namespace GrobExp.Compiler.Tests
         public unsafe void TestMarshal()
         {
 #if NETCOREAPP2_0
-            if(RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             {
 #endif
-            byte[] body;
-            if (IntPtr.Size == 4)
-            {
-                // x86
-                /*
+                byte[] body;
+                if (IntPtr.Size == 4)
+                {
+                    // x86
+                    /*
                  * xor eax, eax // 0x31, 0xC0
                  * ret 8 // 0xC2, 0x08, 0x00
                  */
-                body = new byte[]
-                    {
-                        0x31, 0xC0, // xor eax, eax
-                        0xC2, 0x08, 0x00 // ret 8
-                    };
-            }
-            else
-            {
-                body = new byte[]
-                    {
-                        0x48, 0x31, 0xC0, // xor rax, rax
-                        0xC3 // ret
-                    };
-            }
-            IntPtr p = NativeMethods.VirtualAlloc(
+                    body = new byte[]
+                        {
+                            0x31, 0xC0, // xor eax, eax
+                            0xC2, 0x08, 0x00 // ret 8
+                        };
+                }
+                else
+                {
+                    body = new byte[]
+                        {
+                            0x48, 0x31, 0xC0, // xor rax, rax
+                            0xC3 // ret
+                        };
+                }
+                IntPtr p = NativeMethods.VirtualAlloc(
                     IntPtr.Zero,
                     new UIntPtr((uint)body.Length),
                     AllocationTypes.Commit | AllocationTypes.Reserve,
                     MemoryProtections.ExecuteReadWrite);
-            Marshal.Copy(body, 0, p, body.Length);
-            var func = (ZzzUnmanagedDelegate)Marshal.GetDelegateForFunctionPointer(p, typeof(ZzzUnmanagedDelegate));
-            var method = ((MulticastDelegate)func).Method;
-            var methodHandle = (RuntimeMethodHandle)method.GetType().GetProperty("MethodHandle", BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public).GetGetMethod().Invoke(method, new object[0]);
-            var pointer = methodHandle.GetFunctionPointer();
-            var b = (byte*)pointer;
-            for (int i = 0; i < 20; ++i)
-            {
-                for (int j = 0; j < 10; ++j)
-                    Console.Write(string.Format("{0:X2} ", *b++));
-                Console.WriteLine();
-            }
+                Marshal.Copy(body, 0, p, body.Length);
+                var func = (ZzzUnmanagedDelegate)Marshal.GetDelegateForFunctionPointer(p, typeof(ZzzUnmanagedDelegate));
+                var method = ((MulticastDelegate)func).Method;
+                var methodHandle = (RuntimeMethodHandle)method.GetType().GetProperty("MethodHandle", BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public).GetGetMethod().Invoke(method, new object[0]);
+                var pointer = methodHandle.GetFunctionPointer();
+                var b = (byte*)pointer;
+                for (int i = 0; i < 20; ++i)
+                {
+                    for (int j = 0; j < 10; ++j)
+                        Console.Write(string.Format("{0:X2} ", *b++));
+                    Console.WriteLine();
+                }
 
-            func(0, 1);
+                func(0, 1);
 
 //            var stopwatch = Stopwatch.StartNew();
 //            for (int i = 0; i < 1000000001; ++i)
@@ -367,7 +379,7 @@ namespace GrobExp.Compiler.Tests
         public unsafe byte[] TestStind_i4(int x)
         {
             var arr = new byte[10];
-            fixed(byte* a = &arr[0])
+            fixed (byte* a = &arr[0])
             {
                 *(int*)(a + 1) = x;
                 *(int*)(a + 2) = x;
@@ -756,7 +768,7 @@ namespace GrobExp.Compiler.Tests
 
         private void Collect()
         {
-            while(!stop)
+            while (!stop)
             {
                 Thread.Sleep(100);
                 GC.Collect();
@@ -797,9 +809,9 @@ namespace GrobExp.Compiler.Tests
         private int Func6(int n)
         {
             var result = 1;
-            while(true)
+            while (true)
             {
-                if(n > 1)
+                if (n > 1)
                     result *= n--;
                 else break;
             }
@@ -816,7 +828,7 @@ namespace GrobExp.Compiler.Tests
         {
             var typeBuilder = Module.DefineType(Guid.NewGuid().ToString(), TypeAttributes.Class | TypeAttributes.Public);
             var method = typeBuilder.DefineMethod("zzz", MethodAttributes.Public | MethodAttributes.Static, typeof(int), new[] {typeof(TestClassA)});
-            using(var il = new GroboIL(method))
+            using (var il = new GroboIL(method))
             {
                 il.Ldarg(0);
                 il.Ldfld(typeof(TestClassA).GetField("Y"));
@@ -833,7 +845,7 @@ namespace GrobExp.Compiler.Tests
             }
             var type = typeBuilder.CreateType();
             var dynamicMethod = new DynamicMethod(Guid.NewGuid().ToString(), MethodAttributes.Public | MethodAttributes.Static, CallingConventions.Standard, typeof(Func<TestClassA, int>), Type.EmptyTypes, Module, true);
-            using(var il = new GroboIL(dynamicMethod))
+            using (var il = new GroboIL(dynamicMethod))
             {
                 il.Ldnull();
                 il.Ldftn(type.GetMethod("zzz"));
@@ -847,7 +859,7 @@ namespace GrobExp.Compiler.Tests
         {
             var typeBuilder = Module.DefineType(Guid.NewGuid().ToString(), TypeAttributes.Class | TypeAttributes.Public);
             var method = typeBuilder.DefineMethod("zzz", MethodAttributes.Public, typeof(int), new[] {typeof(TestClassA)});
-            using(var il = new GroboIL(method))
+            using (var il = new GroboIL(method))
             {
                 il.Ldarg(1);
                 il.Ldfld(typeof(TestClassA).GetField("Y"));
@@ -864,7 +876,7 @@ namespace GrobExp.Compiler.Tests
             }
             var type = typeBuilder.CreateType();
             var dynamicMethod = new DynamicMethod(Guid.NewGuid().ToString(), MethodAttributes.Public | MethodAttributes.Static, CallingConventions.Standard, typeof(Func<TestClassA, int>), new[] {typeof(object)}, Module, true);
-            using(var il = new GroboIL(dynamicMethod))
+            using (var il = new GroboIL(dynamicMethod))
             {
                 il.Ldarg(0);
                 il.Ldftn(type.GetMethod("zzz"));
@@ -878,7 +890,7 @@ namespace GrobExp.Compiler.Tests
         {
             var typeBuilder = Module.DefineType(Guid.NewGuid().ToString(), TypeAttributes.Class | TypeAttributes.Public);
             var doNothingMethod = typeBuilder.DefineMethod("DoNothingImpl", MethodAttributes.Public, typeof(void), Type.EmptyTypes);
-            using(var il = new GroboIL(doNothingMethod))
+            using (var il = new GroboIL(doNothingMethod))
             {
                 il.Ldfld(xField);
                 il.Ldc_I4(1);
@@ -887,7 +899,7 @@ namespace GrobExp.Compiler.Tests
                 il.Ret();
             }
             var method = typeBuilder.DefineMethod("DoNothing", MethodAttributes.Public | MethodAttributes.Virtual, typeof(void), Type.EmptyTypes);
-            using(var il = new GroboIL(method))
+            using (var il = new GroboIL(method))
             {
                 il.Ldarg(0);
                 il.Call(doNothingMethod);
@@ -905,7 +917,7 @@ namespace GrobExp.Compiler.Tests
             var typeBuilder = Module.DefineType(Guid.NewGuid().ToString(), TypeAttributes.Class | TypeAttributes.Public);
             var actionField = typeBuilder.DefineField("action", typeof(Action), FieldAttributes.Private | FieldAttributes.InitOnly);
             var constructor = typeBuilder.DefineConstructor(MethodAttributes.Public, CallingConventions.HasThis, new[] {typeof(Action)});
-            using(var il = new GroboIL(constructor))
+            using (var il = new GroboIL(constructor))
             {
                 il.Ldarg(0);
                 il.Ldarg(1);
@@ -913,7 +925,7 @@ namespace GrobExp.Compiler.Tests
                 il.Ret();
             }
             var method = typeBuilder.DefineMethod("DoNothing", MethodAttributes.Public | MethodAttributes.Virtual, typeof(void), Type.EmptyTypes);
-            using(var il = new GroboIL(method))
+            using (var il = new GroboIL(method))
             {
                 il.Ldarg(0);
                 il.Ldfld(actionField);
@@ -950,13 +962,13 @@ namespace GrobExp.Compiler.Tests
             typeBuilder.DefineMethodOverride(method, typeof(ITest).GetMethod("DoNothing"));
             typeBuilder.AddInterfaceImplementation(typeof(ITest));
             var type = typeBuilder.CreateType();
-            return (ITest)Activator.CreateInstance(type, new object[] { DynamicMethodInvokerBuilder.DynamicMethodPointerExtractor((DynamicMethod)action.Item2), action.Item1 });
+            return (ITest)Activator.CreateInstance(type, new object[] {DynamicMethodInvokerBuilder.DynamicMethodPointerExtractor((DynamicMethod)action.Item2), action.Item1});
         }
 
         private Tuple<Action, MethodInfo> Build()
         {
             var dynamicMethod = new DynamicMethod(Guid.NewGuid().ToString(), MethodAttributes.Public | MethodAttributes.Static, CallingConventions.Standard, typeof(void), Type.EmptyTypes, Module, true);
-            using(var il = new GroboIL(dynamicMethod))
+            using (var il = new GroboIL(dynamicMethod))
             {
                 il.Ldfld(xField);
                 il.Ldc_I4(1);
@@ -972,24 +984,24 @@ namespace GrobExp.Compiler.Tests
         {
             switch (x)
             {
-                case 0:
-                case 2:
-                    return "zzz";
-                case 5:
-                case 1000001:
-                    return "qxx";
-                case 7:
-                case 1000000:
-                    return "qzz";
-                default:
-                    return "xxx";
+            case 0:
+            case 2:
+                return "zzz";
+            case 5:
+            case 1000001:
+                return "qxx";
+            case 7:
+            case 1000000:
+                return "qzz";
+            default:
+                return "xxx";
             }
         }
 
         private Func<int, string> BuildSwitch1()
         {
             var dynamicMethod = new DynamicMethod(Guid.NewGuid().ToString(), MethodAttributes.Public | MethodAttributes.Static, CallingConventions.Standard, typeof(string), new[] {typeof(int)}, Module, true);
-            using(var il = new GroboIL(dynamicMethod))
+            using (var il = new GroboIL(dynamicMethod))
             {
                 il.Ldarg(0);
                 var zzzLabel = il.DefineLabel("zzz");
@@ -1022,13 +1034,13 @@ namespace GrobExp.Compiler.Tests
             return (Func<int, string>)dynamicMethod.CreateDelegate(typeof(Func<int, string>));
         }
 
-        public static int[] testValues = new[] { 0, -1, 2, -1, -1, 5, -1, 7, 1000000, 1000001, -1, -1, -1, -1 };
-        public static int[] indexes = new[] { 0, -1, 1, -1, -1, 2, -1, 3, 4, 5, -1, -1, -1, -1 };
+        public static int[] testValues = new[] {0, -1, 2, -1, -1, 5, -1, 7, 1000000, 1000001, -1, -1, -1, -1};
+        public static int[] indexes = new[] {0, -1, 1, -1, -1, 2, -1, 3, 4, 5, -1, -1, -1, -1};
 
         private Func<int, string> BuildSwitch2()
         {
             var dynamicMethod = new DynamicMethod(Guid.NewGuid().ToString(), MethodAttributes.Public | MethodAttributes.Static, CallingConventions.Standard, typeof(string), new[] {typeof(int)}, Module, true);
-            using(var il = new GroboIL(dynamicMethod))
+            using (var il = new GroboIL(dynamicMethod))
             {
                 var zzzLabel = il.DefineLabel("zzz");
                 var qxxLabel = il.DefineLabel("qxx");
@@ -1070,17 +1082,17 @@ namespace GrobExp.Compiler.Tests
         {
             switch (s)
             {
-                case "0":
-                case "2":
-                    return "zzz";
-                case "5":
-                case "1000001":
-                    return "qxx";
-                case "7":
-                case "1000000":
-                    return "qzz";
-                default:
-                    return "xxx";
+            case "0":
+            case "2":
+                return "zzz";
+            case "5":
+            case "1000001":
+                return "qxx";
+            case "7":
+            case "1000000":
+                return "qzz";
+            default:
+                return "xxx";
             }
         }
 
@@ -1089,25 +1101,25 @@ namespace GrobExp.Compiler.Tests
 
         private static void Init(string[] values)
         {
-            for(int x = values.Length; ;++x)
+            for (int x = values.Length;; ++x)
             {
                 bool[] exist = new bool[x];
                 bool ok = true;
-                foreach(var s in values)
+                foreach (var s in values)
                 {
                     var hash = s.GetHashCode();
-                    if(exist[hash % x])
+                    if (exist[hash % x])
                     {
                         ok = false;
                         break;
                     }
                     exist[hash % x] = true;
                 }
-                if(ok)
+                if (ok)
                 {
                     testValues2 = new string[x];
                     indexes2 = new int[x];
-                    for(int index = 0; index < values.Length; index++)
+                    for (int index = 0; index < values.Length; index++)
                     {
                         var s = values[index];
                         var i = s.GetHashCode() % x;
@@ -1122,8 +1134,8 @@ namespace GrobExp.Compiler.Tests
         private Func<string, string> BuildSwitch4()
         {
             Init(new[] {"0", "2", "5", "1000001", "7", "1000000"});
-            var dynamicMethod = new DynamicMethod(Guid.NewGuid().ToString(), MethodAttributes.Public | MethodAttributes.Static, CallingConventions.Standard, typeof(string), new[] { typeof(string) }, Module, true);
-            using(var il = new GroboIL(dynamicMethod))
+            var dynamicMethod = new DynamicMethod(Guid.NewGuid().ToString(), MethodAttributes.Public | MethodAttributes.Static, CallingConventions.Standard, typeof(string), new[] {typeof(string)}, Module, true);
+            using (var il = new GroboIL(dynamicMethod))
             {
                 var zzzLabel = il.DefineLabel("zzz");
                 var qxxLabel = il.DefineLabel("qxx");
@@ -1165,7 +1177,7 @@ namespace GrobExp.Compiler.Tests
         private void MeasureSpeed(ITest test, int iter)
         {
             var stopwatch = Stopwatch.StartNew();
-            for(int i = 0; i < iter; ++i)
+            for (int i = 0; i < iter; ++i)
                 test.DoNothing();
             var elapsed = stopwatch.Elapsed;
             Console.WriteLine(string.Format("{0:0.000} millions runs per second", iter * 1.0 / elapsed.TotalSeconds / 1000000.0));
@@ -1175,7 +1187,7 @@ namespace GrobExp.Compiler.Tests
         {
             func(arg);
             var stopwatch = Stopwatch.StartNew();
-            for(int i = 0; i < iter; ++i)
+            for (int i = 0; i < iter; ++i)
                 func(arg);
             var elapsed = stopwatch.Elapsed;
             Console.WriteLine(string.Format("{0:0.000} millions runs per second = {1:0.000X}", iter * 1.0 / elapsed.TotalSeconds / 1000000.0, ethalon == null ? 1 : elapsed.TotalSeconds / iter / ethalon));

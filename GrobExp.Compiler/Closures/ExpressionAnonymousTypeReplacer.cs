@@ -9,18 +9,10 @@ namespace GrobExp.Compiler.Closures
 {
     internal class ExpressionAnonymousTypeReplacer : ExpressionVisitor
     {
-        private readonly ModuleBuilder module;
-
         public ExpressionAnonymousTypeReplacer(ModuleBuilder module)
         {
             this.module = module;
         }
-
-        private readonly Dictionary<Type, Type> typeCache = new Dictionary<Type, Type>();
-        private readonly Dictionary<Type, Dictionary<string, PropertyInfo>> propertiesCache =
-            new Dictionary<Type, Dictionary<string, PropertyInfo>>();
-        private readonly Dictionary<ParameterExpression, ParameterExpression> parameterCache =
-            new Dictionary<ParameterExpression, ParameterExpression>();
 
         private bool IsAnonymousType(Type type)
         {
@@ -29,18 +21,18 @@ namespace GrobExp.Compiler.Closures
 
         private Type CreateAnonymousType(Type type)
         {
-            if(!IsAnonymousType(type))
+            if (!IsAnonymousType(type))
                 return type;
 
             var properties = type.GetProperties();
             var newType = AnonymousTypeBuilder.CreateAnonymousType(properties
-                .Select(p => p.PropertyType)
-                .Select(CreateAnonymousType)
-                .ToArray(),
-                properties.Select(p => p.Name).ToArray(),
-                module);
+                                                                       .Select(p => p.PropertyType)
+                                                                       .Select(CreateAnonymousType)
+                                                                       .ToArray(),
+                                                                   properties.Select(p => p.Name).ToArray(),
+                                                                   module);
             var newProperties = newType.GetProperties(BindingFlags.Public | BindingFlags.Instance)
-                .ToDictionary(property => property.Name);
+                                       .ToDictionary(property => property.Name);
             typeCache[type] = newType;
             propertiesCache[newType] = newProperties;
             return newType;
@@ -48,7 +40,7 @@ namespace GrobExp.Compiler.Closures
 
         private Type GetTypeFromCache(Type type)
         {
-            if(!typeCache.ContainsKey(type))
+            if (!typeCache.ContainsKey(type))
                 return CreateAnonymousType(type);
             return typeCache[type];
         }
@@ -66,7 +58,7 @@ namespace GrobExp.Compiler.Closures
             if (type.IsArray)
             {
                 var element = ReplaceGenericType(type.GetElementType());
-                if(type.GetArrayRank() == 1)
+                if (type.GetArrayRank() == 1)
                     return element.MakeArrayType();
                 return element.MakeArrayType(type.GetArrayRank());
             }
@@ -90,7 +82,7 @@ namespace GrobExp.Compiler.Closures
 
         private ParameterExpression GetParameterFromCache(ParameterExpression parameter)
         {
-            if(!parameterCache.ContainsKey(parameter))
+            if (!parameterCache.ContainsKey(parameter))
             {
                 var newType = ReplaceGenericType(parameter.Type);
                 var newParameter = Expression.Parameter(newType);
@@ -112,7 +104,7 @@ namespace GrobExp.Compiler.Closures
 
         private MethodInfo ReplaceMethod(MethodInfo method)
         {
-            if(!method.IsGenericMethod)
+            if (!method.IsGenericMethod)
                 return method;
             var pattern = method.GetGenericMethodDefinition();
             var generics = method.GetGenericArguments();
@@ -169,7 +161,7 @@ namespace GrobExp.Compiler.Closures
             if (node.Members != null)
                 members = node.Members.ToArray();
 
-            if(members != null && ContainsAnonymousType(node.Type))
+            if (members != null && ContainsAnonymousType(node.Type))
             {
                 var properties = propertiesCache[type];
                 // ReSharper disable once CoVariantArrayConversion
@@ -179,7 +171,7 @@ namespace GrobExp.Compiler.Closures
             var constructor = type.GetConstructor(constructorTypes);
 
             // ReSharper disable once ConditionIsAlwaysTrueOrFalse
-            if(members == null)
+            if (members == null)
                 return Expression.New(constructor, arguments);
             return Expression.New(constructor, arguments, members);
         }
@@ -188,7 +180,7 @@ namespace GrobExp.Compiler.Closures
         {
             var expressions = Visit(node.Expressions);
             var type = ReplaceGenericType(node.Type.GetElementType());
-            if(node.NodeType == ExpressionType.NewArrayBounds)
+            if (node.NodeType == ExpressionType.NewArrayBounds)
                 return Expression.NewArrayBounds(type, expressions);
             return Expression.NewArrayInit(type, expressions);
         }
@@ -200,5 +192,15 @@ namespace GrobExp.Compiler.Closures
             var obj = Visit(node.Object);
             return Expression.Call(obj, method, arguments);
         }
+
+        private readonly ModuleBuilder module;
+
+        private readonly Dictionary<Type, Type> typeCache = new Dictionary<Type, Type>();
+
+        private readonly Dictionary<Type, Dictionary<string, PropertyInfo>> propertiesCache =
+            new Dictionary<Type, Dictionary<string, PropertyInfo>>();
+
+        private readonly Dictionary<ParameterExpression, ParameterExpression> parameterCache =
+            new Dictionary<ParameterExpression, ParameterExpression>();
     }
 }

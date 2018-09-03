@@ -11,9 +11,9 @@ namespace GrobExp.Compiler.ExpressionEmitters
         {
             ExpressionEmittersCollection.Emit(node.NewExpression, context, out resultType); // stack: [new obj(args)]
             GroboIL il = context.Il;
-            if(!node.Type.IsValueType)
+            if (!node.Type.IsValueType)
             {
-                foreach(MemberAssignment assignment in node.Bindings)
+                foreach (MemberAssignment assignment in node.Bindings)
                 {
                     il.Dup();
                     context.EmitLoadArguments(assignment.Expression);
@@ -22,11 +22,11 @@ namespace GrobExp.Compiler.ExpressionEmitters
             }
             else
             {
-                using(var temp = context.DeclareLocal(node.Type))
+                using (var temp = context.DeclareLocal(node.Type))
                 {
                     il.Stloc(temp);
                     il.Ldloca(temp);
-                    foreach(MemberAssignment assignment in node.Bindings)
+                    foreach (MemberAssignment assignment in node.Bindings)
                     {
                         il.Dup();
                         context.EmitLoadArguments(assignment.Expression);

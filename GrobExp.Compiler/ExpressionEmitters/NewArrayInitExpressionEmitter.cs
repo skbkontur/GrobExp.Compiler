@@ -13,12 +13,12 @@ namespace GrobExp.Compiler.ExpressionEmitters
             Type elementType = node.Type.GetElementType();
             il.Ldc_I4(node.Expressions.Count); // stack: [length]
             il.Newarr(elementType); // stack: [new type[length]]
-            for(int index = 0; index < node.Expressions.Count; index++)
+            for (int index = 0; index < node.Expressions.Count; index++)
             {
                 var expression = node.Expressions[index];
                 il.Dup();
                 il.Ldc_I4(index);
-                if(elementType.IsValueType && !elementType.IsPrimitive)
+                if (elementType.IsValueType && !elementType.IsPrimitive)
                 {
                     il.Ldelema(elementType);
                     context.EmitLoadArguments(expression);

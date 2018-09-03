@@ -93,18 +93,18 @@ namespace GrobExp.Compiler.Tests
             Assert.AreEqual(TestEnum.One, actual);
         }
 
+        public enum TestEnum
+        {
+            One,
+            Two
+        }
+
         public class TestClassA
         {
         }
 
         public class TestClassB : TestClassA
         {
-        }
-
-        public enum TestEnum
-        {
-            One,
-            Two
         }
     }
 }

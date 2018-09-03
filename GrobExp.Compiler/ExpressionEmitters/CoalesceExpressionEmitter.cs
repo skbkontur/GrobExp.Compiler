@@ -9,7 +9,7 @@ namespace GrobExp.Compiler.ExpressionEmitters
     {
         protected override bool EmitInternal(BinaryExpression node, EmittingContext context, GroboIL.Label returnDefaultValueLabel, ResultType whatReturn, bool extend, out Type resultType)
         {
-            if(node.Conversion != null)
+            if (node.Conversion != null)
                 throw new NotSupportedException("Coalesce with conversion is not supported");
             // note ich: баг решарпера
             // ReSharper disable HeuristicUnreachableCode
@@ -19,27 +19,27 @@ namespace GrobExp.Compiler.ExpressionEmitters
             GroboIL.Label valueIsNullLabel = il.DefineLabel("valueIsNull");
             Type leftType;
             bool labelUsed = ExpressionEmittersCollection.Emit(left, context, valueIsNullLabel, out leftType);
-            if(left.Type.IsValueType)
+            if (left.Type.IsValueType)
             {
-                using(var temp = context.DeclareLocal(left.Type))
+                using (var temp = context.DeclareLocal(left.Type))
                 {
                     il.Stloc(temp);
                     il.Ldloca(temp);
                 }
             }
             labelUsed |= context.EmitNullChecking(left.Type, valueIsNullLabel);
-            if(left.Type.IsValueType)
+            if (left.Type.IsValueType)
             {
-                if(!left.Type.IsNullable())
+                if (!left.Type.IsNullable())
                     throw new InvalidOperationException("Type '" + left.Type + "' cannot be null");
-                if(node.Type != left.Type)
+                if (node.Type != left.Type)
                     context.EmitValueAccess(left.Type);
                 else
                     il.Ldobj(left.Type);
             }
             var valueIsNotNullLabel = il.DefineLabel("valueIsNotNull");
             il.Br(valueIsNotNullLabel);
-            if(labelUsed)
+            if (labelUsed)
             {
                 context.MarkLabelAndSurroundWithSP(valueIsNullLabel);
                 il.Pop();

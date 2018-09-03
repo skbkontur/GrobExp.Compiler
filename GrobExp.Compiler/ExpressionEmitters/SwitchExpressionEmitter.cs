@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
-using System.Reflection;
 
 using GrEmit;
 
@@ -15,10 +14,10 @@ namespace GrobExp.Compiler.ExpressionEmitters
             var defaultLabel = il.DefineLabel("default");
             var caseLabels = new GroboIL.Label[node.Cases.Count];
             GroboIL.Label switchValueIsNullLabel = null;
-            for(int index = 0; index < node.Cases.Count; index++)
+            for (int index = 0; index < node.Cases.Count; index++)
                 caseLabels[index] = il.DefineLabel("case#" + index);
             context.EmitLoadArguments(node.SwitchValue);
-            using(var switchValue = context.DeclareLocal(node.SwitchValue.Type))
+            using (var switchValue = context.DeclareLocal(node.SwitchValue.Type))
             {
                 il.Stloc(switchValue);
                 Tuple<int, int, int> switchCase;
@@ -59,7 +58,7 @@ namespace GrobExp.Compiler.ExpressionEmitters
                     ExpressionEmittersCollection.Emit(context.ParsedLambda.ConstantsBuilder.MakeAccess(context.ParsedLambda.ConstantsParameter, switchCase.Item1), context, out temp);
                     var type = node.SwitchValue.Type.IsNullable() ? node.SwitchValue.Type.GetGenericArguments()[0] : node.SwitchValue.Type;
                     var typeCode = Type.GetTypeCode(type);
-                    switch(typeCode)
+                    switch (typeCode)
                     {
                     case TypeCode.Byte:
                     case TypeCode.Char:
@@ -73,16 +72,16 @@ namespace GrobExp.Compiler.ExpressionEmitters
                         il.Ldloc(pureSwitchValue);
                         break;
                     default:
-                        if(type.IsValueType)
+                        if (type.IsValueType)
                             il.Ldloca(pureSwitchValue);
                         else
                             il.Ldloc(pureSwitchValue);
                         il.Call(typeof(object).GetMethod("GetHashCode"), type);
                         break;
                     }
-                    using(var index = context.DeclareLocal(typeof(int)))
+                    using (var index = context.DeclareLocal(typeof(int)))
                     {
-                        if(typeCode == TypeCode.Int64 || typeCode == TypeCode.UInt64)
+                        if (typeCode == TypeCode.Int64 || typeCode == TypeCode.UInt64)
                             il.Ldc_I8(switchCase.Item3);
                         else
                             il.Ldc_I4(switchCase.Item3);
@@ -93,7 +92,7 @@ namespace GrobExp.Compiler.ExpressionEmitters
                         il.Ldloc(index);
                         il.Ldelem(type);
                         il.Ldloc(pureSwitchValue);
-                        if(node.Comparison != null)
+                        if (node.Comparison != null)
                             il.Call(node.Comparison);
                         else
                             il.Ceq();
@@ -122,23 +121,23 @@ namespace GrobExp.Compiler.ExpressionEmitters
                         context.EmitHasValueAccess(node.SwitchValue.Type);
                         il.Stloc(switchValueIsNull);
                     }
-                    for(int index = 0; index < node.Cases.Count; index++)
+                    for (int index = 0; index < node.Cases.Count; index++)
                     {
                         var caSe = node.Cases[index];
                         var label = caseLabels[index];
-                        foreach(var testValue in caSe.TestValues)
+                        foreach (var testValue in caSe.TestValues)
                         {
                             context.EmitLoadArguments(testValue);
                             GroboIL.Label elseLabel = null;
-                            if(testValue.Type.IsNullable())
+                            if (testValue.Type.IsNullable())
                             {
                                 elseLabel = il.DefineLabel("else");
-                                using(var temp = context.DeclareLocal(testValue.Type))
+                                using (var temp = context.DeclareLocal(testValue.Type))
                                 {
                                     il.Stloc(temp);
                                     il.Ldloca(temp);
                                     context.EmitHasValueAccess(testValue.Type);
-                                    if(switchValueIsNull != null)
+                                    if (switchValueIsNull != null)
                                     {
                                         il.Ldloc(switchValueIsNull);
                                         il.Or();
@@ -154,12 +153,12 @@ namespace GrobExp.Compiler.ExpressionEmitters
                                 }
                             }
                             il.Ldloc(pureSwitchValue);
-                            if(node.Comparison != null)
+                            if (node.Comparison != null)
                                 il.Call(node.Comparison);
                             else
                                 il.Ceq();
                             il.Brtrue(label);
-                            if(elseLabel != null)
+                            if (elseLabel != null)
                                 context.MarkLabelAndSurroundWithSP(elseLabel);
                         }
                     }
@@ -169,11 +168,11 @@ namespace GrobExp.Compiler.ExpressionEmitters
             var doneLabel = il.DefineLabel("done");
             context.EmitLoadArguments(node.DefaultBody);
             il.Br(doneLabel);
-            for(int index = 0; index < node.Cases.Count; ++index)
+            for (int index = 0; index < node.Cases.Count; ++index)
             {
                 context.MarkLabelAndSurroundWithSP(caseLabels[index]);
                 context.EmitLoadArguments(node.Cases[index].Body);
-                if(index < node.Cases.Count - 1)
+                if (index < node.Cases.Count - 1)
                     il.Br(doneLabel);
             }
             context.MarkLabelAndSurroundWithSP(doneLabel);

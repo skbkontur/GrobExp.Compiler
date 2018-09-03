@@ -486,16 +486,16 @@ namespace GrobExp.Compiler.Tests
 
             public bool Equals(Fraction other)
             {
-                if(ReferenceEquals(null, other)) return false;
-                if(ReferenceEquals(this, other)) return true;
+                if (ReferenceEquals(null, other)) return false;
+                if (ReferenceEquals(this, other)) return true;
                 return other.Num == Num && other.Den == Den;
             }
 
             public override bool Equals(object obj)
             {
-                if(ReferenceEquals(null, obj)) return false;
-                if(ReferenceEquals(this, obj)) return true;
-                if(obj.GetType() != typeof(Fraction)) return false;
+                if (ReferenceEquals(null, obj)) return false;
+                if (ReferenceEquals(this, obj)) return true;
+                if (obj.GetType() != typeof(Fraction)) return false;
                 return Equals((Fraction)obj);
             }
 
@@ -529,35 +529,35 @@ namespace GrobExp.Compiler.Tests
 
             public static Fraction operator +(Fraction left, Fraction right)
             {
-                if(left == null || right == null)
+                if (left == null || right == null)
                     return null;
                 return new Fraction(left.Num * right.Den + left.Den * right.Num, left.Den * right.Den);
             }
 
             public static Fraction operator -(Fraction left, Fraction right)
             {
-                if(left == null || right == null)
+                if (left == null || right == null)
                     return null;
                 return new Fraction(left.Num * right.Den - left.Den * right.Num, left.Den * right.Den);
             }
 
             public static Fraction operator *(Fraction left, Fraction right)
             {
-                if(left == null || right == null)
+                if (left == null || right == null)
                     return null;
                 return new Fraction(left.Num * right.Num, left.Den * right.Den);
             }
 
             public static Fraction operator /(Fraction left, Fraction right)
             {
-                if(left == null || right == null)
+                if (left == null || right == null)
                     return null;
                 return new Fraction(left.Num * right.Den, left.Den * right.Num);
             }
 
             public static bool operator ==(Fraction left, Fraction right)
             {
-                if(ReferenceEquals(left, null) || ReferenceEquals(right, null))
+                if (ReferenceEquals(left, null) || ReferenceEquals(right, null))
                     return ReferenceEquals(left, null) && ReferenceEquals(right, null);
                 return left.Num == right.Num && left.Den == right.Den;
             }
@@ -569,28 +569,28 @@ namespace GrobExp.Compiler.Tests
 
             public static bool operator <(Fraction left, Fraction right)
             {
-                if(left == null || right == null)
+                if (left == null || right == null)
                     return false;
                 return left.Num * right.Den < left.Den * right.Num;
             }
 
             public static bool operator >(Fraction left, Fraction right)
             {
-                if(left == null || right == null)
+                if (left == null || right == null)
                     return false;
                 return left.Num * right.Den > left.Den * right.Num;
             }
 
             public static bool operator <=(Fraction left, Fraction right)
             {
-                if(left == null || right == null)
+                if (left == null || right == null)
                     return false;
                 return left.Num * right.Den <= left.Den * right.Num;
             }
 
             public static bool operator >=(Fraction left, Fraction right)
             {
-                if(left == null || right == null)
+                if (left == null || right == null)
                     return false;
                 return left.Num * right.Den >= left.Den * right.Num;
             }
@@ -603,7 +603,7 @@ namespace GrobExp.Compiler.Tests
                 var gcd = Gcd(Num, Den);
                 Num /= gcd;
                 Den /= gcd;
-                if(Den < 0)
+                if (Den < 0)
                 {
                     Num = -Num;
                     Den = -Den;
@@ -612,7 +612,7 @@ namespace GrobExp.Compiler.Tests
 
             private static int Gcd(int a, int b)
             {
-                while(b != 0)
+                while (b != 0)
                 {
                     var r = a % b;
                     a = b;

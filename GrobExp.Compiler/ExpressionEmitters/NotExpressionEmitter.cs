@@ -10,22 +10,22 @@ namespace GrobExp.Compiler.ExpressionEmitters
     {
         protected override bool EmitInternal(UnaryExpression node, EmittingContext context, GroboIL.Label returnDefaultValueLabel, ResultType whatReturn, bool extend, out Type resultType)
         {
-            if(node.Type != typeof(bool) && node.Type != typeof(bool?))
+            if (node.Type != typeof(bool) && node.Type != typeof(bool?))
                 return ExpressionEmittersCollection.Emit(Expression.OnesComplement(node.Operand, node.Method), context, returnDefaultValueLabel, whatReturn, extend, out resultType);
             GroboIL il = context.Il;
-            if(node.Method != null)
+            if (node.Method != null)
                 throw new NotSupportedException("Custom operator '" + node.NodeType + "' is not supported");
             var operand = node.Operand;
 
             context.EmitLoadArgument(operand, false, out resultType);
-            if(resultType == typeof(bool))
+            if (resultType == typeof(bool))
             {
                 il.Ldc_I4(1);
                 il.Xor();
             }
-            else if(resultType == typeof(bool?))
+            else if (resultType == typeof(bool?))
             {
-                using(var value = context.DeclareLocal(typeof(bool?)))
+                using (var value = context.DeclareLocal(typeof(bool?)))
                 {
                     il.Stloc(value);
                     il.Ldloca(value);

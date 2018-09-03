@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics.SymbolStore;
 using System.Linq;
@@ -37,7 +37,7 @@ namespace GrobExp.Compiler.Tests
         [Test]
         public void Test()
         {
-            if(asdfsadf())
+            if (asdfsadf())
             {
                 Console.WriteLine("zzz");
             }

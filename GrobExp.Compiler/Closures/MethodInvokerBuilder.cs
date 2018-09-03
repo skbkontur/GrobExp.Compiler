@@ -15,12 +15,12 @@ namespace GrobExp.Compiler.Closures
         public static Delegate GetInvoker(MethodInfo method)
         {
             var result = (Delegate)hashtable[method];
-            if(result == null)
+            if (result == null)
             {
-                lock(lockObject)
+                lock (lockObject)
                 {
                     result = (Delegate)hashtable[method];
-                    if(result == null)
+                    if (result == null)
                         hashtable[method] = result = BuildInvoker(method);
                 }
             }
@@ -30,16 +30,16 @@ namespace GrobExp.Compiler.Closures
         private static Delegate BuildInvoker(MethodInfo method)
         {
             var parameterTypes = new List<Type>();
-            if(!method.IsStatic)
+            if (!method.IsStatic)
                 parameterTypes.Add(method.ReflectedType);
             parameterTypes.AddRange(method.GetParameters().Select(p => p.ParameterType));
             var prefix = "MethodInvoker";
-            if(method.IsStatic)
+            if (method.IsStatic)
                 prefix += "$" + Formatter.Format(method.DeclaringType);
             var dynamicMethod = new DynamicMethod(prefix + "$" + method.Name + "$" + Guid.NewGuid(), method.ReturnType, parameterTypes.ToArray(), typeof(MethodInvokerBuilder), true);
-            using(var il = new GroboIL(dynamicMethod))
+            using (var il = new GroboIL(dynamicMethod))
             {
-                for(var i = 0; i < parameterTypes.Count; ++i)
+                for (var i = 0; i < parameterTypes.Count; ++i)
                     il.Ldarg(i);
                 il.Call(method);
                 il.Ret();

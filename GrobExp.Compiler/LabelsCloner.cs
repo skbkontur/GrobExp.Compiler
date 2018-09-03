@@ -7,10 +7,10 @@ namespace GrobExp.Compiler
     {
         protected override LabelTarget VisitLabelTarget(LabelTarget node)
         {
-            if(node == null)
+            if (node == null)
                 return null;
             LabelTarget newLabel;
-            if(!labels.TryGetValue(node, out newLabel))
+            if (!labels.TryGetValue(node, out newLabel))
             {
                 newLabel = Expression.Label(node.Type, node.Name);
                 labels.Add(node, newLabel);

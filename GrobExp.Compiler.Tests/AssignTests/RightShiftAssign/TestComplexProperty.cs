@@ -375,9 +375,9 @@ namespace GrobExp.Compiler.Tests.AssignTests.RightShiftAssign
                 set
                 {
                     int[] array;
-                    if(!dict.TryGetValue(key, out array))
+                    if (!dict.TryGetValue(key, out array))
                         dict.Add(key, array = new int[0]);
-                    if(array.Length <= index)
+                    if (array.Length <= index)
                     {
                         var newArray = new int[index + 1];
                         array.CopyTo(newArray, 0);
@@ -398,9 +398,9 @@ namespace GrobExp.Compiler.Tests.AssignTests.RightShiftAssign
                 set
                 {
                     int?[] array;
-                    if(!dict.TryGetValue(key, out array))
+                    if (!dict.TryGetValue(key, out array))
                         dict.Add(key, array = new int?[0]);
-                    if(array.Length <= index)
+                    if (array.Length <= index)
                     {
                         var newArray = new int?[index + 1];
                         array.CopyTo(newArray, 0);
@@ -421,9 +421,9 @@ namespace GrobExp.Compiler.Tests.AssignTests.RightShiftAssign
                 set
                 {
                     uint[] array;
-                    if(!dict.TryGetValue(key, out array))
+                    if (!dict.TryGetValue(key, out array))
                         dict.Add(key, array = new uint[0]);
-                    if(array.Length <= index)
+                    if (array.Length <= index)
                     {
                         var newArray = new uint[index + 1];
                         array.CopyTo(newArray, 0);
@@ -444,9 +444,9 @@ namespace GrobExp.Compiler.Tests.AssignTests.RightShiftAssign
                 set
                 {
                     uint?[] array;
-                    if(!dict.TryGetValue(key, out array))
+                    if (!dict.TryGetValue(key, out array))
                         dict.Add(key, array = new uint?[0]);
-                    if(array.Length <= index)
+                    if (array.Length <= index)
                     {
                         var newArray = new uint?[index + 1];
                         array.CopyTo(newArray, 0);

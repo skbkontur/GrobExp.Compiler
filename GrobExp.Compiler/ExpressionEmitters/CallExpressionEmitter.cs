@@ -20,13 +20,13 @@ namespace GrobExp.Compiler.ExpressionEmitters
             IEnumerable<Expression> arguments;
             IEnumerable<ParameterInfo> parameters;
             bool isStatic = method.IsStatic;
-            if(!isStatic)
+            if (!isStatic)
             {
                 obj = node.Object;
                 arguments = node.Arguments;
                 parameters = method.GetParameters();
             }
-            else if(method.DeclaringType == typeof(Enumerable))
+            else if (method.DeclaringType == typeof(Enumerable))
             {
                 obj = node.Arguments[0];
                 arguments = node.Arguments.Skip(1);
@@ -39,24 +39,24 @@ namespace GrobExp.Compiler.ExpressionEmitters
                 parameters = method.GetParameters();
             }
             Type type = obj == null ? null : obj.Type;
-            if(obj != null)
+            if (obj != null)
             {
                 Type actualType;
                 result |= ExpressionEmittersCollection.Emit(obj, context, returnDefaultValueLabel, isStatic ? ResultType.Value : ResultType.ByRefValueTypesOnly, extend, out actualType); // stack: [obj]
-                if(actualType == typeof(void))
+                if (actualType == typeof(void))
                     throw new InvalidOperationException("Unable to call method on void");
-                if(actualType.IsValueType && !isStatic)
+                if (actualType.IsValueType && !isStatic)
                 {
-                    using(var temp = context.DeclareLocal(actualType))
+                    using (var temp = context.DeclareLocal(actualType))
                     {
                         il.Stloc(temp);
                         il.Ldloca(temp);
                     }
                     actualType = actualType.MakeByRefType();
                 }
-                if(context.Options.HasFlag(CompilerOptions.CheckNullReferences) && !actualType.IsValueType)
+                if (context.Options.HasFlag(CompilerOptions.CheckNullReferences) && !actualType.IsValueType)
                 {
-                    if(method.DeclaringType != typeof(Enumerable))
+                    if (method.DeclaringType != typeof(Enumerable))
                         result |= context.EmitNullChecking(type, returnDefaultValueLabel);
                     else
                     {
@@ -73,18 +73,18 @@ namespace GrobExp.Compiler.ExpressionEmitters
 
             var parametersArray = parameters.ToArray();
             var argumentsArray = arguments.ToArray();
-            for(int i = 0; i < argumentsArray.Length; i++)
+            for (int i = 0; i < argumentsArray.Length; i++)
             {
                 var argument = argumentsArray[i];
                 var parameter = parametersArray[i];
-                if(parameter.ParameterType.IsByRef)
+                if (parameter.ParameterType.IsByRef)
                 {
                     Type argumentType;
                     var options = context.Options;
                     context.Options = CompilerOptions.None;
                     ExpressionEmittersCollection.Emit(argument, context, null, ResultType.ByRefAll, false, out argumentType);
                     context.Options = options;
-                    if(!argumentType.IsByRef)
+                    if (!argumentType.IsByRef)
                         throw new InvalidOperationException("Expected type by reference");
                 }
                 else
@@ -100,17 +100,17 @@ namespace GrobExp.Compiler.ExpressionEmitters
 
         private static Type GetElementType(Type type)
         {
-            if(type.IsInterface && type.IsGenericType && type.GetGenericTypeDefinition() == typeof(IEnumerable<>))
+            if (type.IsInterface && type.IsGenericType && type.GetGenericTypeDefinition() == typeof(IEnumerable<>))
                 return type.GetGenericArguments()[0];
-            if(type == typeof(IEnumerable))
+            if (type == typeof(IEnumerable))
                 return typeof(object);
             var interfaces = type.GetInterfaces();
-            foreach(var interfaCe in interfaces)
+            foreach (var interfaCe in interfaces)
             {
-                if(interfaCe.IsGenericType && interfaCe.GetGenericTypeDefinition() == typeof(IEnumerable<>))
+                if (interfaCe.IsGenericType && interfaCe.GetGenericTypeDefinition() == typeof(IEnumerable<>))
                     return interfaCe.GetGenericArguments()[0];
             }
-            if(interfaces.Any(interfaCe => interfaCe == typeof(IEnumerable)))
+            if (interfaces.Any(interfaCe => interfaCe == typeof(IEnumerable)))
                 return typeof(object);
             throw new InvalidOperationException("Unable to extract element type from type '" + type + "'");
         }

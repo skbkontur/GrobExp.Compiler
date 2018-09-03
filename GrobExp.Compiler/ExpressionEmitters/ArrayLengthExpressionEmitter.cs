@@ -12,9 +12,9 @@ namespace GrobExp.Compiler.ExpressionEmitters
             var il = context.Il;
             Type arrayType;
             var result = ExpressionEmittersCollection.Emit(node.Operand, context, returnDefaultValueLabel, out arrayType);
-            if(!arrayType.IsArray)
+            if (!arrayType.IsArray)
                 throw new InvalidOperationException("Expected an array but was '" + arrayType + "'");
-            if(context.Options.HasFlag(CompilerOptions.CheckNullReferences))
+            if (context.Options.HasFlag(CompilerOptions.CheckNullReferences))
             {
                 result = true;
                 il.Dup();

@@ -12,7 +12,7 @@ namespace GrobExp.Compiler.ExpressionEmitters
         protected override bool EmitInternal(InvocationExpression node, EmittingContext context, GroboIL.Label returnDefaultValueLabel, ResultType whatReturn, bool extend, out Type resultType)
         {
             bool result;
-            if(node.Expression.NodeType != ExpressionType.Lambda)
+            if (node.Expression.NodeType != ExpressionType.Lambda)
             {
                 Type delegateType;
                 result = ExpressionEmittersCollection.Emit(node.Expression, context, returnDefaultValueLabel, ResultType.Value, extend, out delegateType);

@@ -1,11 +1,5 @@
 using System;
-using System.Collections.Generic;
-using System.Diagnostics.SymbolStore;
-using System.Linq;
 using System.Linq.Expressions;
-using System.Reflection;
-using System.Reflection.Emit;
-using System.Runtime.CompilerServices;
 
 using GrEmit;
 
@@ -19,7 +13,7 @@ namespace GrobExp.Compiler.ExpressionEmitters
             var ifTrue = node.IfTrue;
             var ifFalse = node.IfFalse;
             var ifTrueBranchIsEmpty = ifTrue.NodeType == ExpressionType.Default && ifTrue.Type == typeof(void);
-            if(ifTrueBranchIsEmpty)
+            if (ifTrueBranchIsEmpty)
             {
                 test = Expression.Not(test);
                 var temp = ifTrue;
@@ -31,20 +25,20 @@ namespace GrobExp.Compiler.ExpressionEmitters
             var testIsNullLabel = il.DefineLabel("testIsNull");
             Type testType;
             var testIsNullLabelUsed = ExpressionEmittersCollection.Emit(test, context, testIsNullLabel, out testType);
-            if(testType == typeof(bool?))
+            if (testType == typeof(bool?))
                 context.ConvertFromNullableBoolToBool();
             var ifFalseLabel = il.DefineLabel("ifFalse");
             il.Brfalse(ifFalseLabel);
             Type ifTrueType;
             result |= ExpressionEmittersCollection.Emit(ifTrue, context, returnDefaultValueLabel, whatReturn, extend, out ifTrueType);
-            if(node.Type == typeof(void) && ifTrueType != typeof(void))
+            if (node.Type == typeof(void) && ifTrueType != typeof(void))
             {
-                using(var temp = context.DeclareLocal(ifTrueType))
+                using (var temp = context.DeclareLocal(ifTrueType))
                     il.Stloc(temp);
             }
             var doneLabel = il.DefineLabel("done");
             il.Br(doneLabel);
-            if(testIsNullLabelUsed)
+            if (testIsNullLabelUsed)
             {
                 context.MarkLabelAndSurroundWithSP(testIsNullLabel);
                 il.Pop();
@@ -52,13 +46,13 @@ namespace GrobExp.Compiler.ExpressionEmitters
             context.MarkLabelAndSurroundWithSP(ifFalseLabel);
             Type ifFalseType;
             result |= ExpressionEmittersCollection.Emit(ifFalse, context, returnDefaultValueLabel, whatReturn, extend, out ifFalseType);
-            if(node.Type == typeof(void) && ifFalseType != typeof(void))
+            if (node.Type == typeof(void) && ifFalseType != typeof(void))
             {
-                using(var temp = context.DeclareLocal(ifFalseType))
+                using (var temp = context.DeclareLocal(ifFalseType))
                     il.Stloc(temp);
             }
             context.MarkLabelAndSurroundWithSP(doneLabel);
-            if(ifTrueType != typeof(void) && ifFalseType != typeof(void) && ifTrueType != ifFalseType)
+            if (ifTrueType != typeof(void) && ifFalseType != typeof(void) && ifTrueType != ifFalseType)
                 throw new InvalidOperationException(string.Format("ifTrue type '{0}' is not equal to ifFalse type '{1}'", ifTrueType, ifFalseType));
             resultType = node.Type == typeof(void) ? typeof(void) : ifTrueType;
             return result;

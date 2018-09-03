@@ -12,15 +12,15 @@ namespace GrobExp.Compiler.ExpressionEmitters
             Type operandType;
             var result = ExpressionEmittersCollection.Emit(node.Operand, context, returnDefaultValueLabel, ResultType.Value, extend, out operandType);
             GroboIL il = context.Il;
-            if(node.NodeType == ExpressionType.IsTrue || node.NodeType == ExpressionType.IsFalse)
+            if (node.NodeType == ExpressionType.IsTrue || node.NodeType == ExpressionType.IsFalse)
             {
-                if(!operandType.IsNullable())
+                if (!operandType.IsNullable())
                 {
-                    if(node.Method != null)
+                    if (node.Method != null)
                         il.Call(node.Method);
-                    else if(operandType == typeof(bool))
+                    else if (operandType == typeof(bool))
                     {
-                        if(node.NodeType == ExpressionType.IsFalse)
+                        if (node.NodeType == ExpressionType.IsFalse)
                         {
                             il.Ldc_I4(1);
                             il.Xor();
@@ -30,7 +30,7 @@ namespace GrobExp.Compiler.ExpressionEmitters
                 }
                 else
                 {
-                    using(var temp = context.DeclareLocal(operandType))
+                    using (var temp = context.DeclareLocal(operandType))
                     {
                         il.Stloc(temp);
                         il.Ldloca(temp);
@@ -39,11 +39,11 @@ namespace GrobExp.Compiler.ExpressionEmitters
                         il.Brfalse(returnFalseLabel);
                         il.Ldloca(temp);
                         context.EmitValueAccess(operandType);
-                        if(node.Method != null)
+                        if (node.Method != null)
                             il.Call(node.Method);
-                        else if(operandType == typeof(bool?))
+                        else if (operandType == typeof(bool?))
                         {
-                            if(node.NodeType == ExpressionType.IsFalse)
+                            if (node.NodeType == ExpressionType.IsFalse)
                             {
                                 il.Ldc_I4(1);
                                 il.Xor();
@@ -60,15 +60,15 @@ namespace GrobExp.Compiler.ExpressionEmitters
             }
             else
             {
-                if(!operandType.IsNullable())
+                if (!operandType.IsNullable())
                 {
-                    if(node.Method != null)
+                    if (node.Method != null)
                         il.Call(node.Method);
                     else
                     {
-                        if(operandType.IsStruct())
+                        if (operandType.IsStruct())
                             throw new InvalidOperationException("Cannot perform operation '" + node.NodeType + "' to a struct '" + operandType + "'");
-                        switch(node.NodeType)
+                        switch (node.NodeType)
                         {
                         case ExpressionType.UnaryPlus:
                             break;
@@ -76,7 +76,7 @@ namespace GrobExp.Compiler.ExpressionEmitters
                             il.Neg();
                             break;
                         case ExpressionType.NegateChecked:
-                            using(var temp = context.DeclareLocal(operandType))
+                            using (var temp = context.DeclareLocal(operandType))
                             {
                                 il.Stloc(temp);
                                 il.Ldc_I4(0);
@@ -105,7 +105,7 @@ namespace GrobExp.Compiler.ExpressionEmitters
                 }
                 else
                 {
-                    using(var temp = context.DeclareLocal(operandType))
+                    using (var temp = context.DeclareLocal(operandType))
                     {
                         il.Stloc(temp);
                         il.Ldloca(temp);
@@ -113,7 +113,7 @@ namespace GrobExp.Compiler.ExpressionEmitters
                         var returnNullLabel = il.DefineLabel("returnLabel");
                         il.Brfalse(returnNullLabel);
                         Type argumentType = operandType.GetGenericArguments()[0];
-                        if(node.Method != null)
+                        if (node.Method != null)
                         {
                             il.Ldloca(temp);
                             context.EmitValueAccess(operandType);
@@ -121,7 +121,7 @@ namespace GrobExp.Compiler.ExpressionEmitters
                         }
                         else
                         {
-                            switch(node.NodeType)
+                            switch (node.NodeType)
                             {
                             case ExpressionType.UnaryPlus:
                                 il.Ldloca(temp);

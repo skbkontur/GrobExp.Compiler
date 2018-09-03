@@ -12,9 +12,9 @@ namespace GrobExp.Compiler.ExpressionEmitters
         {
             var il = context.Il;
             var result = ExpressionEmittersCollection.Emit(node.NewExpression, context, returnDefaultValueLabel, out resultType);
-            if(!resultType.IsValueType)
+            if (!resultType.IsValueType)
             {
-                foreach(var initializer in node.Initializers)
+                foreach (var initializer in node.Initializers)
                 {
                     il.Dup();
                     context.EmitLoadArguments(initializer.Arguments.ToArray());
@@ -23,12 +23,12 @@ namespace GrobExp.Compiler.ExpressionEmitters
             }
             else
             {
-                if(node.Initializers.Count > 0)
+                if (node.Initializers.Count > 0)
                 {
-                    using(var temp = context.DeclareLocal(resultType))
+                    using (var temp = context.DeclareLocal(resultType))
                     {
                         il.Stloc(temp);
-                        foreach(var initializer in node.Initializers)
+                        foreach (var initializer in node.Initializers)
                         {
                             il.Ldloca(temp);
                             context.EmitLoadArguments(initializer.Arguments.ToArray());

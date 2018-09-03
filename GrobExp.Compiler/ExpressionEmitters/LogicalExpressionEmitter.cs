@@ -11,15 +11,15 @@ namespace GrobExp.Compiler.ExpressionEmitters
         protected override bool EmitInternal(BinaryExpression node, EmittingContext context, GroboIL.Label returnDefaultValueLabel, ResultType whatReturn, bool extend, out Type resultType)
         {
             GroboIL il = context.Il;
-            if(node.Method != null)
+            if (node.Method != null)
                 throw new NotSupportedException("Custom operator '" + node.NodeType + "' is not supported");
             Expression left = node.Left;
             Expression right = node.Right;
             Type leftType;
             context.EmitLoadArgument(left, false, out leftType); // stack: [left]
-            if(leftType == typeof(bool))
+            if (leftType == typeof(bool))
             {
-                switch(node.NodeType)
+                switch (node.NodeType)
                 {
                 case ExpressionType.AndAlso:
                     {
@@ -31,7 +31,7 @@ namespace GrobExp.Compiler.ExpressionEmitters
                         il.Br(doneLabel); // goto done; stack: [right]
                         context.MarkLabelAndSurroundWithSP(returnFalseLabel);
                         il.Ldc_I4(0); // stack: [false]
-                        if(rightType == typeof(bool?))
+                        if (rightType == typeof(bool?))
                             il.Newobj(nullableBoolConstructor); // stack: [new bool?(false)]
                         context.MarkLabelAndSurroundWithSP(doneLabel);
                         resultType = rightType;
@@ -47,7 +47,7 @@ namespace GrobExp.Compiler.ExpressionEmitters
                         il.Br(doneLabel); // goto done; stack: [right]
                         context.MarkLabelAndSurroundWithSP(returnTrueLabel);
                         il.Ldc_I4(1); // stack: [true]
-                        if(rightType == typeof(bool?))
+                        if (rightType == typeof(bool?))
                             il.Newobj(nullableBoolConstructor); // stack: [new bool?(true)]
                         context.MarkLabelAndSurroundWithSP(doneLabel);
                         resultType = rightType;
@@ -59,7 +59,7 @@ namespace GrobExp.Compiler.ExpressionEmitters
             }
             else // bool?
             {
-                switch(node.NodeType)
+                switch (node.NodeType)
                 {
                 case ExpressionType.AndAlso:
                     {
@@ -74,7 +74,7 @@ namespace GrobExp.Compiler.ExpressionEmitters
                                          * | true  | null  | false | true  |
                                          * +-------+-------+-------+-------+
                                      */
-                        using(var localLeft = context.DeclareLocal(typeof(bool?)))
+                        using (var localLeft = context.DeclareLocal(typeof(bool?)))
                         {
                             il.Stloc(localLeft); // localLeft = left; stack: []
                             il.Ldloca(localLeft); // stack: [&localLeft]
@@ -88,10 +88,10 @@ namespace GrobExp.Compiler.ExpressionEmitters
                             il.Brfalse(returnFalseLabel); // if(localLeft == false) goto returnFalse; stack: []
                             Type rightType;
                             context.EmitLoadArgument(right, false, out rightType); // stack: [right]
-                            using(var localRight = context.DeclareLocal(rightType))
+                            using (var localRight = context.DeclareLocal(rightType))
                             {
                                 il.Stloc(localRight); // localRight = right; stack: []
-                                if(rightType == typeof(bool))
+                                if (rightType == typeof(bool))
                                     il.Ldloc(localRight); // stack: [localRight]
                                 else
                                 {
@@ -104,7 +104,7 @@ namespace GrobExp.Compiler.ExpressionEmitters
                                     il.Or(); // stack: [!localRight.HasValue || localRight.Value]
                                 }
                                 il.Brfalse(returnFalseLabel); // if(localRight == false) goto returnFalse;
-                                if(rightType == typeof(bool))
+                                if (rightType == typeof(bool))
                                     il.Ldloc(localRight); // stack: [localRight]
                                 else
                                 {
@@ -144,7 +144,7 @@ namespace GrobExp.Compiler.ExpressionEmitters
                                          * | true  | true  | true  | true  |
                                          * +-------+-------+-------+-------+
                                      */
-                        using(var localLeft = context.DeclareLocal(typeof(bool?)))
+                        using (var localLeft = context.DeclareLocal(typeof(bool?)))
                         {
                             il.Stloc(localLeft); // localLeft = left; stack: []
                             il.Ldloca(localLeft); // stack: [&localLeft]
@@ -156,10 +156,10 @@ namespace GrobExp.Compiler.ExpressionEmitters
                             il.Brtrue(returnTrueLabel); // if(localLeft == true) goto returnTrue; stack: []
                             Type rightType;
                             context.EmitLoadArgument(right, false, out rightType); // stack: [right]
-                            using(var localRight = context.DeclareLocal(rightType))
+                            using (var localRight = context.DeclareLocal(rightType))
                             {
                                 il.Stloc(localRight); // localRight = right; stack: []
-                                if(rightType == typeof(bool))
+                                if (rightType == typeof(bool))
                                     il.Ldloc(localRight); // stack: [localRight]
                                 else
                                 {
@@ -170,7 +170,7 @@ namespace GrobExp.Compiler.ExpressionEmitters
                                     il.And(); // stack: [localRight.HasValue && localRight.Value]
                                 }
                                 il.Brtrue(returnTrueLabel); // if(localRight == true) goto returnTrue; stack: []
-                                if(rightType == typeof(bool))
+                                if (rightType == typeof(bool))
                                     il.Ldloc(localRight); // stack: [localRight]
                                 else
                                 {

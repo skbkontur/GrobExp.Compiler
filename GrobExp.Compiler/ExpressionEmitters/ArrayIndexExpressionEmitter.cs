@@ -21,7 +21,7 @@ namespace GrobExp.Compiler.ExpressionEmitters
         {
             var arrayType = zarr.Type;
             var isArray = arrayType.IsArray;
-            if(!isArray && !arrayType.IsList())
+            if (!isArray && !arrayType.IsList())
                 throw new InvalidOperationException("Unable to perform array index operator to type '" + arrayType + "'");
             var itemType = isArray ? arrayType.GetElementType() : arrayType.GetGenericArguments()[0];
             GroboIL il = context.Il;
@@ -29,23 +29,23 @@ namespace GrobExp.Compiler.ExpressionEmitters
             bool extendArray = extend && (CanAssign(zarr) || !isArray);
             bool extendArrayElement = extend && itemType.IsClass;
             var result = false;
-            if(!extendArray)
+            if (!extendArray)
             {
                 result |= ExpressionEmittersCollection.Emit(zarr, context, returnDefaultValueLabel, ResultType.Value, extend, out arrayType); // stack: [array]
-                if(context.Options.HasFlag(CompilerOptions.CheckNullReferences))
+                if (context.Options.HasFlag(CompilerOptions.CheckNullReferences))
                 {
                     result = true;
                     il.Dup(); // stack: [array, array]
                     il.Brfalse(returnDefaultValueLabel); // if(array == null) goto returnDefaultValue; stack: [array]
                 }
                 EmitLoadIndex(zindex, context, arrayType); // stack: [array, arrayIndex]
-                if(context.Options.HasFlag(CompilerOptions.CheckArrayIndexes))
+                if (context.Options.HasFlag(CompilerOptions.CheckArrayIndexes))
                 {
                     result = true;
                     arrayIndex = context.DeclareLocal(typeof(int));
                     il.Stloc(arrayIndex); // arrayIndex = index; stack: [array]
                     il.Dup(); // stack: [array, array]
-                    if(isArray)
+                    if (isArray)
                         il.Ldlen(); // stack: [array, array.Length]
                     else
                         EmitLoadField(context, arrayType, arrayType.GetField("_size", BindingFlags.Instance | BindingFlags.NonPublic));
@@ -55,7 +55,7 @@ namespace GrobExp.Compiler.ExpressionEmitters
                     il.Ldc_I4(0); // stack: [array, arrayIndex, 0]
                     il.Blt(returnDefaultValueLabel, false); // if(arrayIndex < 0) goto returnDefaultValue; stack: [array]
                 }
-                else if(extendArrayElement || !isArray)
+                else if (extendArrayElement || !isArray)
                 {
                     arrayIndex = context.DeclareLocal(typeof(int));
                     il.Stloc(arrayIndex); // arrayIndex = index; stack: [array]
@@ -64,7 +64,7 @@ namespace GrobExp.Compiler.ExpressionEmitters
             else
             {
                 EmittingContext.LocalHolder arrayOwner = null;
-                switch(zarr.NodeType)
+                switch (zarr.NodeType)
                 {
                 case ExpressionType.Parameter:
                 case ExpressionType.ArrayIndex:
@@ -84,7 +84,7 @@ namespace GrobExp.Compiler.ExpressionEmitters
                 default:
                     throw new InvalidOperationException("Cannot extend array for expression with node type '" + zarr.NodeType + "'");
                 }
-                if(context.Options.HasFlag(CompilerOptions.CheckNullReferences))
+                if (context.Options.HasFlag(CompilerOptions.CheckNullReferences))
                 {
                     il.Dup(); // stack: [array, array]
                     il.Brfalse(returnDefaultValueLabel); // if(array == null) goto returnDefaultValue; stack: [array]
@@ -97,17 +97,17 @@ namespace GrobExp.Compiler.ExpressionEmitters
                 il.Ldc_I4(0); // stack: [array, arrayIndex, 0]
                 il.Blt(returnDefaultValueLabel, false); // if(arrayIndex < 0) goto returnDefaultValue; stack: [array]
                 il.Dup(); // stack: [array, array]
-                if(isArray)
+                if (isArray)
                     il.Ldlen(); // stack: [array, array.Length]
                 else
                     EmitLoadField(context, arrayType, arrayType.GetField("_size", BindingFlags.Instance | BindingFlags.NonPublic));
                 il.Ldloc(arrayIndex); // stack: [array, array.Length, arrayIndex]
                 var bigEnoughLabel = il.DefineLabel("bigEnough");
                 il.Bgt(bigEnoughLabel, false); // if(array.Length > arrayIndex) goto bigEnough; stack: [array]
-                using(var array = context.DeclareLocal(arrayType))
+                using (var array = context.DeclareLocal(arrayType))
                 {
                     il.Stloc(array); // stack: []
-                    if(!isArray)
+                    if (!isArray)
                         EnsureCount(context, array, arrayIndex, arrayType);
                     else
                     {
@@ -117,7 +117,7 @@ namespace GrobExp.Compiler.ExpressionEmitters
                         il.Add(); // stack: [ref array, arrayIndex + 1]
                         il.Call(arrayResizeMethod.MakeGenericMethod(arrayType.GetElementType())); // Array.Resize(ref array, 1 + arrayIndex); stack: []
 
-                        switch(zarr.NodeType)
+                        switch (zarr.NodeType)
                         {
                         case ExpressionType.Parameter:
                         case ExpressionType.ArrayIndex:
@@ -128,10 +128,10 @@ namespace GrobExp.Compiler.ExpressionEmitters
                             break;
                         case ExpressionType.MemberAccess:
                             var memberExpression = (MemberExpression)zarr;
-                            if(memberExpression.Expression != null)
+                            if (memberExpression.Expression != null)
                                 il.Ldloc(arrayOwner);
                             il.Ldloc(array);
-                            switch(memberExpression.Member.MemberType)
+                            switch (memberExpression.Member.MemberType)
                             {
                             case MemberTypes.Field:
                                 il.Stfld((FieldInfo)memberExpression.Member);
@@ -139,7 +139,7 @@ namespace GrobExp.Compiler.ExpressionEmitters
                             case MemberTypes.Property:
                                 var propertyInfo = (PropertyInfo)memberExpression.Member;
                                 var setter = propertyInfo.GetSetMethod(context.SkipVisibility);
-                                if(setter == null)
+                                if (setter == null)
                                     throw new MissingMethodException(propertyInfo.ReflectedType.ToString(), "set_" + propertyInfo.Name);
                                 il.Call(setter, memberExpression.Expression == null ? null : memberExpression.Expression.Type);
                                 break;
@@ -156,20 +156,20 @@ namespace GrobExp.Compiler.ExpressionEmitters
                 }
             }
 
-            if(!isArray)
+            if (!isArray)
             {
                 // TODO: это злобно, лист при всех операциях меняет _version, а мы нет
                 EmitLoadField(context, arrayType, arrayType.GetField("_items", BindingFlags.Instance | BindingFlags.NonPublic));
                 arrayType = itemType.MakeArrayType();
             }
 
-            if(extendArrayElement)
+            if (extendArrayElement)
             {
                 // stack: [array]
                 var constructor = itemType.GetConstructor(Type.EmptyTypes);
-                if(itemType.IsArray || constructor != null)
+                if (itemType.IsArray || constructor != null)
                 {
-                    using(var array = context.DeclareLocal(arrayType))
+                    using (var array = context.DeclareLocal(arrayType))
                     {
                         il.Dup(); // stack: [array, array]
                         il.Stloc(array); // stack: [array]
@@ -186,19 +186,19 @@ namespace GrobExp.Compiler.ExpressionEmitters
                     }
                 }
             }
-            if(arrayIndex != null)
+            if (arrayIndex != null)
             {
                 il.Ldloc(arrayIndex);
                 arrayIndex.Dispose();
             }
-            switch(whatReturn)
+            switch (whatReturn)
             {
             case ResultType.ByRefAll:
                 il.Ldelema(itemType);
                 resultType = itemType.MakeByRefType();
                 break;
             case ResultType.ByRefValueTypesOnly:
-                if(itemType.IsValueType)
+                if (itemType.IsValueType)
                 {
                     il.Ldelema(itemType);
                     resultType = itemType.MakeByRefType();
@@ -220,7 +220,7 @@ namespace GrobExp.Compiler.ExpressionEmitters
         private static void EmitLoadField(EmittingContext context, Type type, FieldInfo field)
         {
             var il = context.Il;
-            if(context.SkipVisibility || field.IsPublic)
+            if (context.SkipVisibility || field.IsPublic)
             {
                 il.Ldfld(field);
             }
@@ -229,14 +229,14 @@ namespace GrobExp.Compiler.ExpressionEmitters
                 // todo убрать Reflection
                 var extractor = (Tuple<Delegate, IntPtr>)extractFieldMethod.MakeGenericMethod(type, field.FieldType).Invoke(null, new[] {(object)field});
                 il.Ldc_IntPtr(extractor.Item2);
-                il.Calli(CallingConventions.Standard, field.FieldType, new [] {type});
+                il.Calli(CallingConventions.Standard, field.FieldType, new[] {type});
             }
         }
 
         private static void EnsureCount(EmittingContext context, GroboIL.Local list, GroboIL.Local index, Type type)
         {
             var il = context.Il;
-            if(context.SkipVisibility)
+            if (context.SkipVisibility)
             {
                 il.Ldloc(list); // stack: [list]
                 il.Ldloc(index); // stack: [list, arrayIndex]
@@ -260,9 +260,6 @@ namespace GrobExp.Compiler.ExpressionEmitters
             }
         }
 
-        private static readonly Hashtable hashtable = new Hashtable();
-        private static readonly object lockObject = new object();
-
         private static Tuple<Delegate, IntPtr> GetFieldExtractor<T, TValue>(FieldInfo field)
         {
             var result = (Tuple<Delegate, IntPtr>)hashtable[field];
@@ -284,12 +281,12 @@ namespace GrobExp.Compiler.ExpressionEmitters
         {
             var key = typeof(T);
             var result = (Tuple<Delegate, IntPtr>)hashtable[key];
-            if(result == null)
+            if (result == null)
             {
-                lock(lockObject)
+                lock (lockObject)
                 {
                     result = (Tuple<Delegate, IntPtr>)hashtable[key];
-                    if(result == null)
+                    if (result == null)
                     {
                         hashtable[key] = result = EmitListResizer<T>();
                     }
@@ -300,8 +297,8 @@ namespace GrobExp.Compiler.ExpressionEmitters
 
         private static Tuple<Delegate, IntPtr> EmitListResizer<T>()
         {
-            var method = new DynamicMethod(Guid.NewGuid().ToString(), typeof(void), new [] {typeof(List<T>), typeof(int)}, typeof(string), true);
-            using(var il = new GroboIL(method))
+            var method = new DynamicMethod(Guid.NewGuid().ToString(), typeof(void), new[] {typeof(List<T>), typeof(int)}, typeof(string), true);
+            using (var il = new GroboIL(method))
             {
                 il.Ldarg(0); // stack: [list]
                 il.Ldarg(1); // stack: [list, arrayIndex]
@@ -320,8 +317,8 @@ namespace GrobExp.Compiler.ExpressionEmitters
 
         private static Tuple<Delegate, IntPtr> EmitFieldExtractor<T, TValue>(FieldInfo field)
         {
-            var method = new DynamicMethod(Guid.NewGuid().ToString(), typeof(TValue), new [] {typeof(T)}, typeof(string), true);
-            using(var il = new GroboIL(method))
+            var method = new DynamicMethod(Guid.NewGuid().ToString(), typeof(TValue), new[] {typeof(T)}, typeof(string), true);
+            using (var il = new GroboIL(method))
             {
                 il.Ldarg(0); // stack: [list]
                 il.Ldfld(field);
@@ -329,9 +326,6 @@ namespace GrobExp.Compiler.ExpressionEmitters
             }
             return new Tuple<Delegate, IntPtr>((Func<T, TValue>)method.CreateDelegate(typeof(Func<T, TValue>)), DynamicMethodInvokerBuilder.DynamicMethodPointerExtractor(method));
         }
-
-        private static readonly MethodInfo extractFieldMethod = HackHelpers.GetMethodDefinition<int>(x => GetFieldExtractor<string, int>(null)).GetGenericMethodDefinition();
-        private static readonly MethodInfo resizeListMethod = HackHelpers.GetMethodDefinition<int>(x => GetListResizer<int>()).GetGenericMethodDefinition();
 
         private static bool CanAssign(MemberInfo member)
         {
@@ -357,9 +351,9 @@ namespace GrobExp.Compiler.ExpressionEmitters
             GroboIL.Label indexIsNullLabel = context.CanReturn ? il.DefineLabel("indexIsNull") : null;
             Type indexType;
             bool labelUsed = ExpressionEmittersCollection.Emit(index, context, indexIsNullLabel, out indexType); // stack: [array, index]
-            if(indexType != typeof(int))
+            if (indexType != typeof(int))
                 throw new InvalidOperationException("Unable to perform array index operator to type '" + arrayType + "'");
-            if(labelUsed && context.CanReturn)
+            if (labelUsed && context.CanReturn)
             {
                 var indexIsNotNullLabel = il.DefineLabel("indexIsNotNull");
                 il.Br(indexIsNotNullLabel);
@@ -369,6 +363,12 @@ namespace GrobExp.Compiler.ExpressionEmitters
                 context.MarkLabelAndSurroundWithSP(indexIsNotNullLabel);
             }
         }
+
+        private static readonly Hashtable hashtable = new Hashtable();
+        private static readonly object lockObject = new object();
+
+        private static readonly MethodInfo extractFieldMethod = HackHelpers.GetMethodDefinition<int>(x => GetFieldExtractor<string, int>(null)).GetGenericMethodDefinition();
+        private static readonly MethodInfo resizeListMethod = HackHelpers.GetMethodDefinition<int>(x => GetListResizer<int>()).GetGenericMethodDefinition();
 
         private static readonly MethodInfo arrayResizeMethod = ((MethodCallExpression)((Expression<Action<int[], int>>)((ints, len) => Array.Resize(ref ints, len))).Body).Method.GetGenericMethodDefinition();
     }

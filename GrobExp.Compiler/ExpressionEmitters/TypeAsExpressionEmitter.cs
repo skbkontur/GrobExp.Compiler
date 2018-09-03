@@ -12,10 +12,10 @@ namespace GrobExp.Compiler.ExpressionEmitters
             Type operandType;
             var result = ExpressionEmittersCollection.Emit(node.Operand, context, returnDefaultValueLabel, ResultType.Value, extend, out operandType);
             GroboIL il = context.Il;
-            if(operandType.IsValueType)
+            if (operandType.IsValueType)
                 il.Box(operandType);
             il.Isinst(node.Type);
-            if(node.Type.IsValueType)
+            if (node.Type.IsValueType)
                 il.Unbox_Any(node.Type);
             resultType = node.Type;
             return result;

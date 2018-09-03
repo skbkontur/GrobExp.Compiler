@@ -43,12 +43,12 @@ namespace GrobExp.Compiler
         private static LambdaCreateDelegate GetLambdaFactory(Type delegateType)
         {
             var factory = (LambdaCreateDelegate)factories[delegateType];
-            if(factory == null)
+            if (factory == null)
             {
-                lock(factoriesLock)
+                lock (factoriesLock)
                 {
                     factory = (LambdaCreateDelegate)factories[delegateType];
-                    if(factory == null)
+                    if (factory == null)
                     {
                         factory = BuildLambdaFactory(delegateType);
                         factories[delegateType] = factory;
@@ -63,7 +63,7 @@ namespace GrobExp.Compiler
             var resultType = typeof(Expression<>).MakeGenericType(delegateType);
             var parameterTypes = new[] {typeof(Expression), typeof(string), typeof(bool), typeof(ReadOnlyCollection<ParameterExpression>)};
             var method = new DynamicMethod(Guid.NewGuid().ToString(), typeof(LambdaExpression), parameterTypes, typeof(LambdaExpressionCreator), true);
-            using(var il = new GroboIL(method))
+            using (var il = new GroboIL(method))
             {
                 il.Ldarg(0);
                 il.Ldarg(1);

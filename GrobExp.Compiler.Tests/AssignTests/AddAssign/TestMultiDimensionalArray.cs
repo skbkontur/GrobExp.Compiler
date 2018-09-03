@@ -15,7 +15,7 @@ namespace GrobExp.Compiler.Tests.AssignTests.AddAssign
             ParameterExpression b = Expression.Parameter(typeof(int), "b");
             Expression<Func<TestClassA, int, int>> exp = Expression.Lambda<Func<TestClassA, int, int>>(Expression.AddAssign(Expression.ArrayAccess(Expression.MakeMemberAccess(a, typeof(TestClassA).GetProperty("IntArray")), Expression.Constant(0), Expression.Constant(0)), b), a, b);
             var f = LambdaCompiler.Compile(exp, CompilerOptions.CheckNullReferences);
-            var o = new TestClassA {IntArray = new int[1,1]};
+            var o = new TestClassA {IntArray = new int[1, 1]};
             Assert.AreEqual(0, f(o, 0));
             Assert.AreEqual(0, o.IntArray[0, 0]);
             o.IntArray[0, 0] = 1;
@@ -33,7 +33,7 @@ namespace GrobExp.Compiler.Tests.AssignTests.AddAssign
             Assert.AreEqual(0, f(null, 1));
 
             f = LambdaCompiler.Compile(exp, CompilerOptions.None);
-            o = new TestClassA {IntArray = new int[1,1]};
+            o = new TestClassA {IntArray = new int[1, 1]};
             Assert.AreEqual(0, f(o, 0));
             Assert.AreEqual(0, o.IntArray[0, 0]);
             o.IntArray[0, 0] = 1;
@@ -59,7 +59,7 @@ namespace GrobExp.Compiler.Tests.AssignTests.AddAssign
             BinaryExpression addAssign = Expression.AddAssign(Expression.ArrayAccess(Expression.MakeMemberAccess(a, typeof(TestClassA).GetProperty("IntArray")), Expression.Constant(0), Expression.Constant(0)), b);
             Expression<Func<TestClassA, int, int>> exp = Expression.Lambda<Func<TestClassA, int, int>>(Expression.Block(addAssign, Expression.ArrayAccess(Expression.MakeMemberAccess(a, typeof(TestClassA).GetProperty("IntArray")), Expression.Constant(0), Expression.Constant(0))), a, b);
             var f = LambdaCompiler.Compile(exp, CompilerOptions.CheckNullReferences);
-            var o = new TestClassA {IntArray = new int[1,1]};
+            var o = new TestClassA {IntArray = new int[1, 1]};
             Assert.AreEqual(0, f(o, 0));
             Assert.AreEqual(0, o.IntArray[0, 0]);
             o.IntArray[0, 0] = 1;
@@ -79,7 +79,7 @@ namespace GrobExp.Compiler.Tests.AssignTests.AddAssign
             f = LambdaCompiler.Compile(exp, CompilerOptions.None);
             var f2 = exp.Compile();
             Assert.IsNotNull(f2);
-            o = new TestClassA {IntArray = new int[1,1]};
+            o = new TestClassA {IntArray = new int[1, 1]};
             Assert.AreEqual(0, f(o, 0));
             Assert.AreEqual(0, o.IntArray[0, 0]);
             o.IntArray[0, 0] = 1;
@@ -104,7 +104,7 @@ namespace GrobExp.Compiler.Tests.AssignTests.AddAssign
             ParameterExpression b = Expression.Parameter(typeof(int?), "b");
             Expression<Func<TestClassA, int?, int?>> exp = Expression.Lambda<Func<TestClassA, int?, int?>>(Expression.AddAssign(Expression.ArrayAccess(Expression.MakeMemberAccess(a, typeof(TestClassA).GetProperty("NullableIntArray")), Expression.Constant(0), Expression.Constant(0)), b), a, b);
             var f = LambdaCompiler.Compile(exp, CompilerOptions.CheckNullReferences);
-            var o = new TestClassA {NullableIntArray = new int?[1,1]};
+            var o = new TestClassA {NullableIntArray = new int?[1, 1]};
             o.NullableIntArray[0, 0] = 0;
             Assert.AreEqual(0, f(o, 0));
             Assert.AreEqual(0, o.NullableIntArray[0, 0]);
@@ -131,7 +131,7 @@ namespace GrobExp.Compiler.Tests.AssignTests.AddAssign
             Assert.IsNull(o.NullableIntArray[0, 0]);
 
             f = LambdaCompiler.Compile(exp, CompilerOptions.None);
-            o = new TestClassA {NullableIntArray = new int?[1,1]};
+            o = new TestClassA {NullableIntArray = new int?[1, 1]};
             o.NullableIntArray[0, 0] = 0;
             Assert.AreEqual(0, f(o, 0));
             Assert.AreEqual(0, o.NullableIntArray[0, 0]);
@@ -165,7 +165,7 @@ namespace GrobExp.Compiler.Tests.AssignTests.AddAssign
             ParameterExpression b = Expression.Parameter(typeof(int), "b");
             Expression<Func<TestClassA, int, int>> exp = Expression.Lambda<Func<TestClassA, int, int>>(Expression.AddAssignChecked(Expression.ArrayAccess(Expression.MakeMemberAccess(a, typeof(TestClassA).GetProperty("IntArray")), Expression.Constant(0), Expression.Constant(0)), b), a, b);
             var f = LambdaCompiler.Compile(exp, CompilerOptions.CheckNullReferences);
-            var o = new TestClassA {IntArray = new int[1,1]};
+            var o = new TestClassA {IntArray = new int[1, 1]};
             Assert.AreEqual(0, f(o, 0));
             Assert.AreEqual(0, o.IntArray[0, 0]);
             o.IntArray[0, 0] = 1;
@@ -179,7 +179,7 @@ namespace GrobExp.Compiler.Tests.AssignTests.AddAssign
             Assert.AreEqual(0, f(null, 1));
 
             f = LambdaCompiler.Compile(exp, CompilerOptions.None);
-            o = new TestClassA {IntArray = new int[1,1]};
+            o = new TestClassA {IntArray = new int[1, 1]};
             Assert.AreEqual(0, f(o, 0));
             Assert.AreEqual(0, o.IntArray[0, 0]);
             o.IntArray[0, 0] = 1;
@@ -200,7 +200,7 @@ namespace GrobExp.Compiler.Tests.AssignTests.AddAssign
             ParameterExpression b = Expression.Parameter(typeof(int?), "b");
             Expression<Func<TestClassA, int?, int?>> exp = Expression.Lambda<Func<TestClassA, int?, int?>>(Expression.AddAssignChecked(Expression.ArrayAccess(Expression.MakeMemberAccess(a, typeof(TestClassA).GetProperty("NullableIntArray")), Expression.Constant(0), Expression.Constant(0)), b), a, b);
             var f = LambdaCompiler.Compile(exp, CompilerOptions.CheckNullReferences);
-            var o = new TestClassA {NullableIntArray = new int?[1,1]};
+            var o = new TestClassA {NullableIntArray = new int?[1, 1]};
             o.NullableIntArray[0, 0] = 0;
             Assert.AreEqual(0, f(o, 0));
             Assert.AreEqual(0, o.NullableIntArray[0, 0]);
@@ -223,7 +223,7 @@ namespace GrobExp.Compiler.Tests.AssignTests.AddAssign
             Assert.IsNull(o.NullableIntArray[0, 0]);
 
             f = LambdaCompiler.Compile(exp, CompilerOptions.None);
-            o = new TestClassA {NullableIntArray = new int?[1,1]};
+            o = new TestClassA {NullableIntArray = new int?[1, 1]};
             o.NullableIntArray[0, 0] = 0;
             Assert.AreEqual(0, f(o, 0));
             Assert.AreEqual(0, o.NullableIntArray[0, 0]);
@@ -253,7 +253,7 @@ namespace GrobExp.Compiler.Tests.AssignTests.AddAssign
             ParameterExpression b = Expression.Parameter(typeof(uint), "b");
             Expression<Func<TestClassA, uint, uint>> exp = Expression.Lambda<Func<TestClassA, uint, uint>>(Expression.AddAssignChecked(Expression.ArrayAccess(Expression.MakeMemberAccess(a, typeof(TestClassA).GetField("UIntArray")), Expression.Constant(0), Expression.Constant(0)), b), a, b);
             var f = LambdaCompiler.Compile(exp, CompilerOptions.CheckNullReferences);
-            var o = new TestClassA {UIntArray = new uint[1,1]};
+            var o = new TestClassA {UIntArray = new uint[1, 1]};
             Assert.AreEqual(0, f(o, 0));
             Assert.AreEqual(0, o.UIntArray[0, 0]);
             o.UIntArray[0, 0] = 1;
@@ -266,7 +266,7 @@ namespace GrobExp.Compiler.Tests.AssignTests.AddAssign
             Assert.AreEqual(0, f(null, 1));
 
             f = LambdaCompiler.Compile(exp, CompilerOptions.None);
-            o = new TestClassA {UIntArray = new uint[1,1]};
+            o = new TestClassA {UIntArray = new uint[1, 1]};
             Assert.AreEqual(0, f(o, 0));
             Assert.AreEqual(0, o.UIntArray[0, 0]);
             o.UIntArray[0, 0] = 1;
@@ -286,7 +286,7 @@ namespace GrobExp.Compiler.Tests.AssignTests.AddAssign
             ParameterExpression b = Expression.Parameter(typeof(uint?), "b");
             Expression<Func<TestClassA, uint?, uint?>> exp = Expression.Lambda<Func<TestClassA, uint?, uint?>>(Expression.AddAssignChecked(Expression.ArrayAccess(Expression.MakeMemberAccess(a, typeof(TestClassA).GetField("NullableUIntArray")), Expression.Constant(0), Expression.Constant(0)), b), a, b);
             var f = LambdaCompiler.Compile(exp, CompilerOptions.CheckNullReferences);
-            var o = new TestClassA {NullableUIntArray = new uint?[1,1]};
+            var o = new TestClassA {NullableUIntArray = new uint?[1, 1]};
             o.NullableUIntArray[0, 0] = 0;
             Assert.AreEqual(0, f(o, 0));
             Assert.AreEqual(0, o.NullableUIntArray[0, 0]);
@@ -308,7 +308,7 @@ namespace GrobExp.Compiler.Tests.AssignTests.AddAssign
             Assert.IsNull(o.NullableUIntArray[0, 0]);
 
             f = LambdaCompiler.Compile(exp, CompilerOptions.None);
-            o = new TestClassA {NullableUIntArray = new uint?[1,1]};
+            o = new TestClassA {NullableUIntArray = new uint?[1, 1]};
             o.NullableUIntArray[0, 0] = 0;
             Assert.AreEqual(0, f(o, 0));
             Assert.AreEqual(0, o.NullableUIntArray[0, 0]);

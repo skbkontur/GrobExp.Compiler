@@ -211,7 +211,7 @@ namespace GrobExp.Compiler.Tests.AssignTests.Assign
             var parameter = Expression.Parameter(typeof(TestClassA));
             var exp = Expression.Lambda<Func<TestClassA, string>>(Expression.Assign(Expression.Property(Expression.MakeIndex(Expression.Property(parameter, "Dict"), typeof(Dictionary<string, TestClassB>).GetProperty("Item"), new[] {Expression.Constant("zzz")}), "S"), Expression.Constant("2")), parameter);
             var f = LambdaCompiler.Compile(exp, CompilerOptions.All);
-            var a = new TestClassA{Dict = new Dictionary<string, TestClassB>{{"zzz", new TestClassB{S = "1"}}}};
+            var a = new TestClassA {Dict = new Dictionary<string, TestClassB> {{"zzz", new TestClassB {S = "1"}}}};
             Assert.AreEqual("2", f(a));
             Assert.AreEqual("2", a.Dict["zzz"].S);
             a = new TestClassA();
@@ -225,13 +225,12 @@ namespace GrobExp.Compiler.Tests.AssignTests.Assign
             var parameter = Expression.Parameter(typeof(TestClassA));
             var exp = Expression.Lambda<Func<TestClassA, string>>(Expression.Assign(Expression.Property(Expression.Call(Expression.Property(parameter, "Dict"), typeof(Dictionary<string, TestClassB>).GetProperty("Item").GetGetMethod(), new[] {Expression.Constant("zzz")}), "S"), Expression.Constant("2")), parameter);
             var f = LambdaCompiler.Compile(exp, CompilerOptions.All);
-            var a = new TestClassA{Dict = new Dictionary<string, TestClassB>{{"zzz", new TestClassB{S = "1"}}}};
+            var a = new TestClassA {Dict = new Dictionary<string, TestClassB> {{"zzz", new TestClassB {S = "1"}}}};
             Assert.AreEqual("2", f(a));
             Assert.AreEqual("2", a.Dict["zzz"].S);
             a = new TestClassA();
             Assert.AreEqual("2", f(a));
             Assert.AreEqual("2", a.Dict["zzz"].S);
-
         }
 
         [Test]
@@ -239,7 +238,7 @@ namespace GrobExp.Compiler.Tests.AssignTests.Assign
         {
             //LambdaCompiler.DebugOutputDirectory = @"c:\temp";
             var parameter = Expression.Parameter(typeof(TestClassA));
-            var exp = Expression.Lambda<Func<TestClassA, string>>(Expression.Assign(Expression.MakeIndex(Expression.Property(parameter, "List"), typeof(List<string>).GetProperty("Item"), new[] { Expression.Constant(1) }), Expression.Constant("zzz")), parameter);
+            var exp = Expression.Lambda<Func<TestClassA, string>>(Expression.Assign(Expression.MakeIndex(Expression.Property(parameter, "List"), typeof(List<string>).GetProperty("Item"), new[] {Expression.Constant(1)}), Expression.Constant("zzz")), parameter);
             var f = LambdaCompiler.Compile(exp, CompilerOptions.All);
             var o = new TestClassA();
             Assert.AreEqual("zzz", f(o));
@@ -249,6 +248,24 @@ namespace GrobExp.Compiler.Tests.AssignTests.Assign
         }
 
         public static string S { get; set; }
+
+        public struct TestStructA
+        {
+            public string S { get; set; }
+            public int? X { get; set; }
+            public int Y { get; set; }
+            public TestStructB b;
+        }
+
+        public struct TestStructB
+        {
+            public string S { get; set; }
+        }
+
+        public struct Qzz
+        {
+            public long X;
+        }
 
         public static int x;
         public static bool b;
@@ -261,8 +278,7 @@ namespace GrobExp.Compiler.Tests.AssignTests.Assign
             }
 
             public Dictionary<string, TestClassB> Dict { get; set; }
-            private readonly List<string> _list = new List<string>();
-            public List<string> List { get { return _list; } }
+            public List<string> List { get; } = new List<string>();
 
             public string S { get; set; }
             public TestClassA A { get; set; }
@@ -275,9 +291,9 @@ namespace GrobExp.Compiler.Tests.AssignTests.Assign
                 set
                 {
                     string[] array;
-                    if(!dict.TryGetValue(key, out array))
+                    if (!dict.TryGetValue(key, out array))
                         dict.Add(key, array = new string[0]);
-                    if(array.Length <= index)
+                    if (array.Length <= index)
                     {
                         var newArray = new string[index + 1];
                         array.CopyTo(newArray, 0);
@@ -345,24 +361,6 @@ namespace GrobExp.Compiler.Tests.AssignTests.Assign
         {
             public string S { get; set; }
             public int X { get; set; }
-        }
-
-        public struct TestStructA
-        {
-            public string S { get; set; }
-            public int? X { get; set; }
-            public int Y { get; set; }
-            public TestStructB b;
-        }
-
-        public struct TestStructB
-        {
-            public string S { get; set; }
-        }
-
-        public struct Qzz
-        {
-            public long X;
         }
     }
 }

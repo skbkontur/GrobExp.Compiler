@@ -64,15 +64,15 @@ namespace GrobExp.Compiler
 
         public bool EmitNullChecking(Type type, GroboIL.Label objIsNullLabel)
         {
-            if(!type.IsValueType)
+            if (!type.IsValueType)
             {
                 Il.Dup(); // stack: [obj, obj]
                 Il.Brfalse(objIsNullLabel); // if(obj == null) goto returnDefaultValue; stack: [obj]
                 return true;
             }
-            if(type.IsNullable())
+            if (type.IsNullable())
             {
-                using(var temp = DeclareLocal(type.MakeByRefType()))
+                using (var temp = DeclareLocal(type.MakeByRefType()))
                 {
                     Il.Stloc(temp);
                     Il.Ldnull();
@@ -98,7 +98,7 @@ namespace GrobExp.Compiler
         public void EmitValueAccess(Type type)
         {
             Type memberType;
-            if(SkipVisibility)
+            if (SkipVisibility)
                 EmitMemberAccess(type, type.GetField("value", BindingFlags.NonPublic | BindingFlags.Instance), ResultType.Value, out memberType);
             else
                 Il.Call(type.GetMethod("GetValueOrDefault", Type.EmptyTypes));
@@ -106,17 +106,17 @@ namespace GrobExp.Compiler
 
         public void Create(Type type)
         {
-            if(!type.IsArray)
+            if (!type.IsArray)
             {
                 var constructor = type.GetConstructor(Type.EmptyTypes);
-                if(constructor == null)
+                if (constructor == null)
                     throw new InvalidOperationException("Missing parameterless constructor for type '" + type + "'");
                 Il.Newobj(constructor);
             }
             else
             {
                 var rank = type.GetArrayRank();
-                if(rank == 1)
+                if (rank == 1)
                 {
                     Il.Ldc_I4(0);
                     Il.Newarr(type.GetElementType());
@@ -124,9 +124,9 @@ namespace GrobExp.Compiler
                 else
                 {
                     var constructor = type.GetConstructor(Enumerable.Repeat(typeof(int), rank).ToArray());
-                    if(constructor == null)
+                    if (constructor == null)
                         throw new InvalidOperationException(string.Format("Missing constructor accepting {0} integers for type '{1}'", rank, type));
-                    for(int i = 0; i < rank; ++i)
+                    for (int i = 0; i < rank; ++i)
                         Il.Ldc_I4(0);
                     Il.Newobj(constructor);
                 }
@@ -140,17 +140,17 @@ namespace GrobExp.Compiler
             Type type = node.Expression == null ? null : node.Expression.Type;
             Type ownerType;
             GroboIL il = Il;
-            if(node.Expression == null)
+            if (node.Expression == null)
                 ownerType = null;
             else
             {
                 result |= ExpressionEmittersCollection.Emit(node.Expression, this, returnDefaultValueLabel, ResultType.ByRefValueTypesOnly, extend, out type); // stack: [obj]
-                if(!type.IsValueType)
+                if (!type.IsValueType)
                     ownerType = type;
                 else
                 {
                     ownerType = type.MakeByRefType();
-                    using(var temp = DeclareLocal(type))
+                    using (var temp = DeclareLocal(type))
                     {
                         il.Stloc(temp);
                         il.Ldloca(temp);
@@ -163,11 +163,11 @@ namespace GrobExp.Compiler
             Type memberType = GetMemberType(node.Member);
             ConstructorInfo constructor = memberType.GetConstructor(Type.EmptyTypes);
             extend &= (memberType.IsClass && constructor != null) || memberType.IsArray;
-            if(!extend)
+            if (!extend)
                 EmitMemberAccess(type, node.Member, whatReturn, out resultType); // stack: [obj.member]
             else
             {
-                if(node.Expression == null)
+                if (node.Expression == null)
                 {
                     EmitMemberAccess(type, node.Member, whatReturn, out resultType); // stack: [obj.member]
                     var memberIsNotNullLabel = il.DefineLabel("memberIsNotNull");
@@ -175,7 +175,7 @@ namespace GrobExp.Compiler
                     il.Brtrue(memberIsNotNullLabel);
                     il.Pop();
                     Create(memberType);
-                    using(var newobj = DeclareLocal(memberType))
+                    using (var newobj = DeclareLocal(memberType))
                     {
                         il.Stloc(newobj);
                         il.Ldloc(newobj);
@@ -196,7 +196,7 @@ namespace GrobExp.Compiler
                     il.Pop();
                     il.Ldloc(owner);
                     Create(memberType);
-                    using(var newobj = DeclareLocal(memberType))
+                    using (var newobj = DeclareLocal(memberType))
                     {
                         il.Stloc(newobj);
                         il.Ldloc(newobj);
@@ -211,23 +211,23 @@ namespace GrobExp.Compiler
 
         public void EmitMemberAccess(Type type, MemberInfo member, ResultType whatReturn, out Type memberType)
         {
-            switch(member.MemberType)
+            switch (member.MemberType)
             {
             case MemberTypes.Property:
                 var property = (PropertyInfo)member;
                 var getter = property.GetGetMethod(SkipVisibility);
-                if(getter == null)
+                if (getter == null)
                     throw new MissingMemberException(member.DeclaringType.Name, member.Name + "_get");
                 Il.Call(getter, type);
                 Type propertyType = property.PropertyType;
-                switch(whatReturn)
+                switch (whatReturn)
                 {
                 case ResultType.ByRefValueTypesOnly:
-                    if(!propertyType.IsValueType)
+                    if (!propertyType.IsValueType)
                         memberType = propertyType;
                     else
                     {
-                        using(var temp = DeclareLocal(propertyType))
+                        using (var temp = DeclareLocal(propertyType))
                         {
                             Il.Stloc(temp);
                             Il.Ldloca(temp);
@@ -244,14 +244,14 @@ namespace GrobExp.Compiler
                 break;
             case MemberTypes.Field:
                 var field = (FieldInfo)member;
-                switch(whatReturn)
+                switch (whatReturn)
                 {
                 case ResultType.ByRefAll:
                     Il.Ldflda(field);
                     memberType = field.FieldType.MakeByRefType();
                     break;
                 case ResultType.ByRefValueTypesOnly:
-                    if(field.FieldType.IsValueType)
+                    if (field.FieldType.IsValueType)
                     {
                         Il.Ldflda(field);
                         memberType = field.FieldType.MakeByRefType();
@@ -275,11 +275,11 @@ namespace GrobExp.Compiler
 
         public void EmitMemberAssign(Type type, MemberInfo member)
         {
-            switch(member.MemberType)
+            switch (member.MemberType)
             {
             case MemberTypes.Property:
                 var setter = ((PropertyInfo)member).GetSetMethod(SkipVisibility);
-                if(setter == null)
+                if (setter == null)
                     throw new MissingMemberException(member.DeclaringType.Name, member.Name + "_set");
                 Il.Call(setter, type);
                 break;
@@ -291,7 +291,7 @@ namespace GrobExp.Compiler
 
         public void EmitLoadArguments(params Expression[] arguments)
         {
-            foreach(var argument in arguments)
+            foreach (var argument in arguments)
             {
                 Type argumentType;
                 EmitLoadArgument(argument, true, out argumentType);
@@ -302,24 +302,24 @@ namespace GrobExp.Compiler
         {
             var argumentIsNullLabel = CanReturn ? Il.DefineLabel("argumentIsNull") : null;
             bool labelUsed = ExpressionEmittersCollection.Emit(argument, this, argumentIsNullLabel, out argumentType);
-            if(convertToBool && argument.Type == typeof(bool) && argumentType == typeof(bool?))
+            if (convertToBool && argument.Type == typeof(bool) && argumentType == typeof(bool?))
             {
                 ConvertFromNullableBoolToBool();
                 argumentType = typeof(bool);
             }
-            if(labelUsed)
+            if (labelUsed)
                 EmitReturnDefaultValue(argument.Type, argumentIsNullLabel, Il.DefineLabel("argumentIsNotNull"));
         }
 
         public void EmitLoadDefaultValue(Type type)
         {
-            if(type == typeof(void))
+            if (type == typeof(void))
                 return;
-            if(!type.IsValueType)
+            if (!type.IsValueType)
                 Il.Ldnull();
             else
             {
-                using(var temp = DeclareLocal(type))
+                using (var temp = DeclareLocal(type))
                 {
                     Il.Ldloca(temp);
                     Il.Initobj(type);
@@ -339,47 +339,47 @@ namespace GrobExp.Compiler
 
         public void EmitArithmeticOperation(ExpressionType nodeType, Type resultType, Type leftType, Type rightType, MethodInfo method)
         {
-            if(!leftType.IsNullable() && !rightType.IsNullable())
+            if (!leftType.IsNullable() && !rightType.IsNullable())
             {
-                if(method != null)
+                if (method != null)
                     Il.Call(method);
                 else
                 {
-                    if(leftType.IsStruct())
+                    if (leftType.IsStruct())
                         throw new InvalidOperationException("Unable to perfrom operation '" + nodeType + "' to a struct of type '" + leftType + "'");
-                    if(rightType.IsStruct())
+                    if (rightType.IsStruct())
                         throw new InvalidOperationException("Unable to perfrom operation '" + nodeType + "' to a struct of type '" + rightType + "'");
                     EmitOp(Il, nodeType, resultType);
                 }
             }
             else
             {
-                using(var localLeft = DeclareLocal(leftType))
-                using(var localRight = DeclareLocal(rightType))
+                using (var localLeft = DeclareLocal(leftType))
+                using (var localRight = DeclareLocal(rightType))
                 {
                     Il.Stloc(localRight);
                     Il.Stloc(localLeft);
                     var returnNullLabel = Il.DefineLabel("returnNull");
-                    if(leftType.IsNullable())
+                    if (leftType.IsNullable())
                     {
                         Il.Ldloca(localLeft);
                         EmitHasValueAccess(leftType);
                         Il.Brfalse(returnNullLabel);
                     }
-                    if(rightType.IsNullable())
+                    if (rightType.IsNullable())
                     {
                         Il.Ldloca(localRight);
                         EmitHasValueAccess(rightType);
                         Il.Brfalse(returnNullLabel);
                     }
-                    if(!leftType.IsNullable())
+                    if (!leftType.IsNullable())
                         Il.Ldloc(localLeft);
                     else
                     {
                         Il.Ldloca(localLeft);
                         EmitValueAccess(leftType);
                     }
-                    if(!rightType.IsNullable())
+                    if (!rightType.IsNullable())
                         Il.Ldloc(localRight);
                     else
                     {
@@ -387,7 +387,7 @@ namespace GrobExp.Compiler
                         EmitValueAccess(rightType);
                     }
                     Type argumentType = resultType.GetGenericArguments()[0];
-                    if(method != null)
+                    if (method != null)
                         Il.Call(method);
                     else
                         EmitOp(Il, nodeType, argumentType);
@@ -404,35 +404,35 @@ namespace GrobExp.Compiler
 
         public void EmitConvert(Type from, Type to, bool check = false)
         {
-            if(from == to) return;
-            if(!from.IsValueType)
+            if (from == to) return;
+            if (!from.IsValueType)
             {
-                if(!to.IsValueType)
+                if (!to.IsValueType)
                     Il.Castclass(to);
                 else
                 {
-                    if(from != typeof(object) && !(from == typeof(Enum) && to.IsEnum))
+                    if (from != typeof(object) && !(from == typeof(Enum) && to.IsEnum))
                         throw new InvalidCastException("Cannot cast an object of type '" + from + "' to type '" + to + "'");
                     Il.Unbox_Any(to);
                 }
             }
             else
             {
-                if(!to.IsValueType)
+                if (!to.IsValueType)
                 {
-                    if(to != typeof(object) && !(to == typeof(Enum) && from.IsEnum))
+                    if (to != typeof(object) && !(to == typeof(Enum) && from.IsEnum))
                         throw new InvalidCastException("Cannot cast an object of type '" + from + "' to type '" + to + "'");
                     Il.Box(from);
                 }
                 else
                 {
-                    if(to.IsNullable())
+                    if (to.IsNullable())
                     {
                         var toArgument = to.GetGenericArguments()[0];
-                        if(from.IsNullable())
+                        if (from.IsNullable())
                         {
                             var fromArgument = from.GetGenericArguments()[0];
-                            using(var temp = DeclareLocal(from))
+                            using (var temp = DeclareLocal(from))
                             {
                                 Il.Stloc(temp);
                                 Il.Ldloca(temp);
@@ -441,7 +441,7 @@ namespace GrobExp.Compiler
                                 Il.Brfalse(valueIsNullLabel);
                                 Il.Ldloca(temp);
                                 EmitValueAccess(from);
-                                if(toArgument != fromArgument)
+                                if (toArgument != fromArgument)
                                     EmitConvert(fromArgument, toArgument, check);
                                 Il.Newobj(to.GetConstructor(new[] {toArgument}));
                                 var doneLabel = Il.DefineLabel("done");
@@ -453,15 +453,15 @@ namespace GrobExp.Compiler
                         }
                         else
                         {
-                            if(toArgument != from)
+                            if (toArgument != from)
                                 EmitConvert(from, toArgument, check);
                             Il.Newobj(to.GetConstructor(new[] {toArgument}));
                         }
                     }
-                    else if(from.IsNullable())
+                    else if (from.IsNullable())
                     {
                         var fromArgument = from.GetGenericArguments()[0];
-                        using(var temp = DeclareLocal(from))
+                        using (var temp = DeclareLocal(from))
                         {
                             Il.Stloc(temp);
                             Il.Ldloca(temp);
@@ -478,13 +478,13 @@ namespace GrobExp.Compiler
                             MarkLabelAndSurroundWithSP(doneLabel);
                         }
                     }
-                    else if(to.IsEnum || to == typeof(Enum))
+                    else if (to.IsEnum || to == typeof(Enum))
                         EmitConvert(from, typeof(int), check);
-                    else if(from.IsEnum || from == typeof(Enum))
+                    else if (from.IsEnum || from == typeof(Enum))
                         EmitConvert(typeof(int), to, check);
                     else
                     {
-                        if(!check)
+                        if (!check)
                             EmitConvertValue(Il, from, to);
                         else
                             EmitConvertValueChecked(Il, from, to);
@@ -496,12 +496,12 @@ namespace GrobExp.Compiler
         public LocalHolder DeclareLocal(Type type)
         {
             Queue<GroboIL.Local> queue;
-            if(!locals.TryGetValue(type, out queue))
+            if (!locals.TryGetValue(type, out queue))
             {
                 queue = new Queue<GroboIL.Local>();
                 locals.Add(type, queue);
             }
-            if(queue.Count == 0)
+            if (queue.Count == 0)
                 queue.Enqueue(Il.DeclareLocal(type));
             return new LocalHolder(this, type, queue.Dequeue());
         }
@@ -513,7 +513,7 @@ namespace GrobExp.Compiler
 
         public void ConvertFromNullableBoolToBool()
         {
-            using(var temp = DeclareLocal(typeof(bool?)))
+            using (var temp = DeclareLocal(typeof(bool?)))
             {
                 Il.Stloc(temp);
                 Il.Ldloca(temp);
@@ -524,7 +524,6 @@ namespace GrobExp.Compiler
         public CompilerOptions Options { get; set; }
         public TypeBuilder TypeBuilder { get; set; }
         public DebugInfoGenerator DebugInfoGenerator { get; set; }
-        private ISymbolDocumentWriter symbolDocumentWriter;
         public LambdaExpression Lambda { get; set; }
         public MethodInfo Method { get; set; }
         public bool SkipVisibility { get; set; }
@@ -532,39 +531,15 @@ namespace GrobExp.Compiler
         public ParsedLambda ParsedLambda { get; set; }
         public List<CompiledLambda> CompiledLambdas { get; set; }
         public GroboIL Il { get; set; }
-        public Dictionary<ParameterExpression, GroboIL.Local> VariablesToLocals { get { return variablesToLocals; } }
-        public Dictionary<LabelTarget, GroboIL.Label> Labels { get { return labels; } }
-        public Stack<ParameterExpression> Variables { get { return variables; } }
+        public Dictionary<ParameterExpression, GroboIL.Local> VariablesToLocals { get; } = new Dictionary<ParameterExpression, GroboIL.Local>();
+        public Dictionary<LabelTarget, GroboIL.Label> Labels { get; } = new Dictionary<LabelTarget, GroboIL.Label>();
+        public Stack<ParameterExpression> Variables { get; } = new Stack<ParameterExpression>();
 
         public bool CanReturn { get { return Options.HasFlag(CompilerOptions.CheckNullReferences) || Options.HasFlag(CompilerOptions.CheckArrayIndexes); } }
 
-        public class LocalHolder : IDisposable
-        {
-            public LocalHolder(EmittingContext owner, Type type, GroboIL.Local local)
-            {
-                this.owner = owner;
-                this.type = type;
-                this.local = local;
-            }
-
-            public void Dispose()
-            {
-                owner.FreeLocal(type, local);
-            }
-
-            public static implicit operator GroboIL.Local(LocalHolder holder)
-            {
-                return holder.local;
-            }
-
-            private readonly EmittingContext owner;
-            private readonly Type type;
-            private readonly GroboIL.Local local;
-        }
-
         private static void EmitOp(GroboIL il, ExpressionType nodeType, Type type)
         {
-            switch(nodeType)
+            switch (nodeType)
             {
             case ExpressionType.Add:
                 il.Add();
@@ -614,7 +589,7 @@ namespace GrobExp.Compiler
         {
             var fromTypeCode = Type.GetTypeCode(from);
             var toTypeCode = Type.GetTypeCode(to);
-            switch(fromTypeCode)
+            switch (fromTypeCode)
             {
             case TypeCode.DBNull:
             case TypeCode.DateTime:
@@ -624,9 +599,9 @@ namespace GrobExp.Compiler
             case TypeCode.String:
                 throw new NotSupportedException("Cast from type '" + from + "' to type '" + to + "' is not supported");
             }
-            if(toTypeCode == fromTypeCode)
+            if (toTypeCode == fromTypeCode)
                 return;
-            switch(toTypeCode)
+            switch (toTypeCode)
             {
             case TypeCode.SByte:
                 il.Conv<sbyte>();
@@ -642,38 +617,38 @@ namespace GrobExp.Compiler
                 il.Conv<ushort>();
                 break;
             case TypeCode.Int32:
-                if(fromTypeCode == TypeCode.Int64 || fromTypeCode == TypeCode.UInt64 || fromTypeCode == TypeCode.Double || fromTypeCode == TypeCode.Single /* || fromTypeCode == TypeCode.DateTime*/)
+                if (fromTypeCode == TypeCode.Int64 || fromTypeCode == TypeCode.UInt64 || fromTypeCode == TypeCode.Double || fromTypeCode == TypeCode.Single /* || fromTypeCode == TypeCode.DateTime*/)
                     il.Conv<int>();
                 break;
             case TypeCode.UInt32:
-                if(fromTypeCode == TypeCode.Int64 || fromTypeCode == TypeCode.UInt64 || fromTypeCode == TypeCode.Double || fromTypeCode == TypeCode.Single /* || fromTypeCode == TypeCode.DateTime*/)
+                if (fromTypeCode == TypeCode.Int64 || fromTypeCode == TypeCode.UInt64 || fromTypeCode == TypeCode.Double || fromTypeCode == TypeCode.Single /* || fromTypeCode == TypeCode.DateTime*/)
                     il.Conv<uint>();
                 break;
             case TypeCode.Int64:
-                if(fromTypeCode != TypeCode.UInt64)
+                if (fromTypeCode != TypeCode.UInt64)
                 {
-                    if(fromTypeCode == TypeCode.Byte || fromTypeCode == TypeCode.UInt16 || fromTypeCode == TypeCode.Char || fromTypeCode == TypeCode.UInt32)
+                    if (fromTypeCode == TypeCode.Byte || fromTypeCode == TypeCode.UInt16 || fromTypeCode == TypeCode.Char || fromTypeCode == TypeCode.UInt32)
                         il.Conv<ulong>();
                     else
                         il.Conv<long>();
                 }
                 break;
             case TypeCode.UInt64:
-                if(fromTypeCode != TypeCode.Int64 /* && fromTypeCode != TypeCode.DateTime*/)
+                if (fromTypeCode != TypeCode.Int64 /* && fromTypeCode != TypeCode.DateTime*/)
                 {
-                    if(fromTypeCode == TypeCode.SByte || fromTypeCode == TypeCode.Int16 || fromTypeCode == TypeCode.Int32)
+                    if (fromTypeCode == TypeCode.SByte || fromTypeCode == TypeCode.Int16 || fromTypeCode == TypeCode.Int32)
                         il.Conv<long>();
                     else
                         il.Conv<ulong>();
                 }
                 break;
             case TypeCode.Single:
-                if(fromTypeCode == TypeCode.UInt64 || fromTypeCode == TypeCode.UInt32)
+                if (fromTypeCode == TypeCode.UInt64 || fromTypeCode == TypeCode.UInt32)
                     il.Conv_R_Un();
                 il.Conv<float>();
                 break;
             case TypeCode.Double:
-                if(fromTypeCode == TypeCode.UInt64 || fromTypeCode == TypeCode.UInt32)
+                if (fromTypeCode == TypeCode.UInt64 || fromTypeCode == TypeCode.UInt32)
                     il.Conv_R_Un();
                 il.Conv<double>();
                 break;
@@ -686,7 +661,7 @@ namespace GrobExp.Compiler
         {
             var fromTypeCode = Type.GetTypeCode(from);
             var toTypeCode = Type.GetTypeCode(to);
-            switch(fromTypeCode)
+            switch (fromTypeCode)
             {
             case TypeCode.DBNull:
             case TypeCode.DateTime:
@@ -696,9 +671,9 @@ namespace GrobExp.Compiler
             case TypeCode.String:
                 throw new NotSupportedException("Cast from type '" + from + "' to type '" + to + "' is not supported");
             }
-            if(toTypeCode == fromTypeCode)
+            if (toTypeCode == fromTypeCode)
                 return;
-            switch(toTypeCode)
+            switch (toTypeCode)
             {
             case TypeCode.SByte:
                 il.Conv_Ovf<sbyte>(from.Unsigned());
@@ -714,17 +689,17 @@ namespace GrobExp.Compiler
                 il.Conv_Ovf<ushort>(from.Unsigned());
                 break;
             case TypeCode.Int32:
-                if(fromTypeCode == TypeCode.UInt32 || fromTypeCode == TypeCode.Int64 || fromTypeCode == TypeCode.UInt64
-                   || fromTypeCode == TypeCode.Double || fromTypeCode == TypeCode.Single /* || fromTypeCode == TypeCode.DateTime*/)
+                if (fromTypeCode == TypeCode.UInt32 || fromTypeCode == TypeCode.Int64 || fromTypeCode == TypeCode.UInt64
+                    || fromTypeCode == TypeCode.Double || fromTypeCode == TypeCode.Single /* || fromTypeCode == TypeCode.DateTime*/)
                     il.Conv_Ovf<int>(from.Unsigned());
                 break;
             case TypeCode.UInt32:
-                if(fromTypeCode == TypeCode.SByte || fromTypeCode == TypeCode.Int16 || fromTypeCode == TypeCode.Int32 || fromTypeCode == TypeCode.Int64
-                   || fromTypeCode == TypeCode.UInt64 || fromTypeCode == TypeCode.Double || fromTypeCode == TypeCode.Single /* || fromTypeCode == TypeCode.DateTime*/)
+                if (fromTypeCode == TypeCode.SByte || fromTypeCode == TypeCode.Int16 || fromTypeCode == TypeCode.Int32 || fromTypeCode == TypeCode.Int64
+                    || fromTypeCode == TypeCode.UInt64 || fromTypeCode == TypeCode.Double || fromTypeCode == TypeCode.Single /* || fromTypeCode == TypeCode.DateTime*/)
                     il.Conv_Ovf<uint>(from.Unsigned());
                 break;
             case TypeCode.Int64:
-                switch(fromTypeCode)
+                switch (fromTypeCode)
                 {
                 case TypeCode.Double:
                 case TypeCode.Single:
@@ -743,7 +718,7 @@ namespace GrobExp.Compiler
                 }
                 break;
             case TypeCode.UInt64:
-                switch(fromTypeCode)
+                switch (fromTypeCode)
                 {
                 case TypeCode.Double:
                 case TypeCode.Single:
@@ -762,12 +737,12 @@ namespace GrobExp.Compiler
                 }
                 break;
             case TypeCode.Single:
-                if(fromTypeCode == TypeCode.UInt64 || fromTypeCode == TypeCode.UInt32)
+                if (fromTypeCode == TypeCode.UInt64 || fromTypeCode == TypeCode.UInt32)
                     il.Conv_R_Un();
                 il.Conv<float>();
                 break;
             case TypeCode.Double:
-                if(fromTypeCode == TypeCode.UInt64 || fromTypeCode == TypeCode.UInt32)
+                if (fromTypeCode == TypeCode.UInt64 || fromTypeCode == TypeCode.UInt32)
                     il.Conv_R_Un();
                 il.Conv<double>();
                 break;
@@ -783,7 +758,7 @@ namespace GrobExp.Compiler
 
         private static Type GetMemberType(MemberInfo member)
         {
-            switch(member.MemberType)
+            switch (member.MemberType)
             {
             case MemberTypes.Field:
                 return ((FieldInfo)member).FieldType;
@@ -794,10 +769,32 @@ namespace GrobExp.Compiler
             }
         }
 
-        private readonly Dictionary<ParameterExpression, GroboIL.Local> variablesToLocals = new Dictionary<ParameterExpression, GroboIL.Local>();
-        private readonly Stack<ParameterExpression> variables = new Stack<ParameterExpression>();
-        private readonly Dictionary<LabelTarget, GroboIL.Label> labels = new Dictionary<LabelTarget, GroboIL.Label>();
+        private ISymbolDocumentWriter symbolDocumentWriter;
 
         private readonly Dictionary<Type, Queue<GroboIL.Local>> locals = new Dictionary<Type, Queue<GroboIL.Local>>();
+
+        public class LocalHolder : IDisposable
+        {
+            public LocalHolder(EmittingContext owner, Type type, GroboIL.Local local)
+            {
+                this.owner = owner;
+                this.type = type;
+                this.local = local;
+            }
+
+            public void Dispose()
+            {
+                owner.FreeLocal(type, local);
+            }
+
+            public static implicit operator GroboIL.Local(LocalHolder holder)
+            {
+                return holder.local;
+            }
+
+            private readonly EmittingContext owner;
+            private readonly Type type;
+            private readonly GroboIL.Local local;
+        }
     }
 }

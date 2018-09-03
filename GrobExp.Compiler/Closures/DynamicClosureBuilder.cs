@@ -7,13 +7,12 @@ using System.Reflection.Emit;
 using System.Runtime.CompilerServices;
 using System.Threading;
 
+using GrEmit.Utils;
+
 namespace GrobExp.Compiler.Closures
 {
     internal class DynamicClosureBuilder : IClosureBuilder
     {
-        private readonly ModuleBuilder module;
-        private TypeBuilder typeBuilder;
-
         public DynamicClosureBuilder(ModuleBuilder module)
         {
             this.module = module;
@@ -29,7 +28,7 @@ namespace GrobExp.Compiler.Closures
             var field = fields[id];
             var fieldInfo = root.Type.GetField(field.Name);
             var result = Expression.Field(root, fieldInfo);
-            if(field.IsPrivateType)
+            if (field.IsPrivateType)
                 result = Expression.Field(result, fieldInfo.FieldType.GetField("Value", BindingFlags.Public | BindingFlags.Instance));
             return result;
         }
@@ -38,7 +37,7 @@ namespace GrobExp.Compiler.Closures
         {
             var field = fields[id];
             var fieldInfo = root.Type.GetField(field.Name);
-            if(field.IsPrivateType)
+            if (field.IsPrivateType)
                 value = Expression.New(fieldInfo.FieldType.GetConstructor(new[] {value.Type}), value);
             return Expression.Assign(Expression.Field(root, fieldInfo), value);
         }
@@ -50,13 +49,13 @@ namespace GrobExp.Compiler.Closures
 
         public int DefineField(Type type)
         {
-            if(typeBuilder == null)
+            if (typeBuilder == null)
             {
                 var id = (uint)Interlocked.Increment(ref closureId);
                 typeBuilder = module.DefineType("Closure_" + id, TypeAttributes.Public | TypeAttributes.Class);
             }
             int fieldId = fields.Count;
-            var fieldName = GrEmit.Utils.Formatter.Format(type) + "_" + fieldId;
+            var fieldName = Formatter.Format(type) + "_" + fieldId;
             var isPrivateType = IsPrivate(type) && type.IsValueType;
             var fieldType = !isPrivateType ? type : typeof(StrongBox<>).MakeGenericType(type);
             typeBuilder.DefineField(fieldName, fieldType, FieldAttributes.Public);
@@ -67,7 +66,7 @@ namespace GrobExp.Compiler.Closures
                 });
             return fieldId;
         }
-        
+
         public static bool IsPrivate(Type type)
         {
             // TODO check this method
@@ -75,6 +74,9 @@ namespace GrobExp.Compiler.Closures
                 return true;
             return type.IsGenericType && type.GetGenericArguments().Any(IsPrivate);
         }
+
+        private readonly ModuleBuilder module;
+        private TypeBuilder typeBuilder;
 
         private readonly List<Field> fields = new List<Field>();
         private static int closureId;

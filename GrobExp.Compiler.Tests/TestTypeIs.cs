@@ -83,18 +83,18 @@ namespace GrobExp.Compiler.Tests
             Assert.IsTrue(f(TestEnum.One));
         }
 
+        public enum TestEnum
+        {
+            One,
+            Two
+        }
+
         public class TestClassA
         {
         }
 
         public class TestClassB : TestClassA
         {
-        }
-
-        public enum TestEnum
-        {
-            One,
-            Two
         }
     }
 }

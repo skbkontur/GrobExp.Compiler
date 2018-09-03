@@ -7,6 +7,7 @@ using System.Reflection;
 using System.Reflection.Emit;
 
 using GrEmit;
+using GrEmit.Utils;
 
 namespace GrobExp.Compiler.Closures
 {
@@ -23,7 +24,7 @@ namespace GrobExp.Compiler.Closures
         {
             var visitedLambda = (LambdaExpression)Visit(lambda);
             int delegatesFieldId = -1;
-            if(hasSubLambdas && dynamic)
+            if (hasSubLambdas && dynamic)
                 delegatesFieldId = constantsBuilder.DefineField(typeof(Delegate[]));
             Type closureType = closureBuilder.Create();
             var closureParameter = parameters.Count > 0 ? Expression.Parameter(closureType) : null;
@@ -45,34 +46,20 @@ namespace GrobExp.Compiler.Closures
                 };
         }
 
-        public class Result
-        {
-            public LambdaExpression Lambda { get; set; }
-            public Type ClosureType { get; set; }
-            public Type ConstantsType { get; set; }
-            public ParameterExpression ClosureParameter { get; set; }
-            public ParameterExpression ConstantsParameter { get; set; }
-            public object Constants { get; set; }
-            public int DelegatesFieldId { get; set; }
-            public Dictionary<ParameterExpression, int> ParsedParameters { get; set; }
-            public Dictionary<ConstantExpression, int> ParsedConstants { get; set; }
-            public Dictionary<SwitchExpression, Tuple<int, int, int>> ParsedSwitches { get; set; }
-        }
-
         protected override Expression VisitSwitch(SwitchExpression node)
         {
             object switchCaseValues;
             object switchCaseIndexes;
             int count;
             var type = node.SwitchValue.Type;
-            if(type.IsNullable())
+            if (type.IsNullable())
                 type = type.GetGenericArguments()[0];
-            if(node.Cases.All(@case => @case.TestValues.All(expression => expression.NodeType == ExpressionType.Constant)) && TryBuildSwitchCaseValues(type, node.Cases, out switchCaseValues, out switchCaseIndexes, out count))
+            if (node.Cases.All(@case => @case.TestValues.All(expression => expression.NodeType == ExpressionType.Constant)) && TryBuildSwitchCaseValues(type, node.Cases, out switchCaseValues, out switchCaseIndexes, out count))
             {
                 switches.Add(node, new Tuple<int, int, int>(BuildConstField(type.MakeArrayType(), switchCaseValues), BuildConstField(typeof(int[]), switchCaseIndexes), count));
                 Visit(node.SwitchValue);
                 Visit(node.DefaultBody);
-                foreach(var @case in node.Cases)
+                foreach (var @case in node.Cases)
                     Visit(@case.Body);
                 return node;
             }
@@ -81,14 +68,14 @@ namespace GrobExp.Compiler.Closures
 
         protected override Expression VisitUnary(UnaryExpression node)
         {
-            if(node.NodeType != ExpressionType.Quote)
+            if (node.NodeType != ExpressionType.Quote)
                 return base.VisitUnary(node);
             ++quoteDepth;
             localParameters.Push(new HashSet<ParameterExpression>());
             var result = base.VisitUnary(node);
             localParameters.Pop();
             --quoteDepth;
-            if(quoteDepth == 0)
+            if (quoteDepth == 0)
                 result = Visit(Expression.Constant(((UnaryExpression)result).Operand, result.Type));
             return result;
         }
@@ -96,9 +83,9 @@ namespace GrobExp.Compiler.Closures
         protected override Expression VisitLambda<T>(Expression<T> node)
         {
             Expression res;
-            if(quoteDepth == 0)
+            if (quoteDepth == 0)
             {
-                if(node != lambda)
+                if (node != lambda)
                     hasSubLambdas = true;
                 localParameters.Push(new HashSet<ParameterExpression>(node.Parameters));
                 res = base.VisitLambda(node);
@@ -107,10 +94,10 @@ namespace GrobExp.Compiler.Closures
             else
             {
                 var peek = localParameters.Peek();
-                foreach(var parameter in node.Parameters)
+                foreach (var parameter in node.Parameters)
                     peek.Add(parameter);
                 res = base.VisitLambda(node);
-                foreach(var parameter in node.Parameters)
+                foreach (var parameter in node.Parameters)
                     peek.Remove(parameter);
             }
             return res;
@@ -120,10 +107,10 @@ namespace GrobExp.Compiler.Closures
         {
             var peek = localParameters.Peek();
             var variables = node.Variables.Where(variable => !peek.Contains(variable)).ToArray();
-            foreach(var variable in variables)
+            foreach (var variable in variables)
                 peek.Add(variable);
             var res = base.VisitBlock(node);
-            foreach(var variable in variables)
+            foreach (var variable in variables)
                 peek.Remove(variable);
             return res;
         }
@@ -132,21 +119,21 @@ namespace GrobExp.Compiler.Closures
         {
             var peek = localParameters.Peek();
             var variable = node.Variable;
-            if(variable != null && peek.Contains(variable))
+            if (variable != null && peek.Contains(variable))
                 variable = null;
-            if(variable != null)
+            if (variable != null)
                 peek.Add(variable);
             var res = base.VisitCatchBlock(node);
-            if(variable != null)
+            if (variable != null)
                 peek.Remove(variable);
             return res;
         }
 
         protected override Expression VisitConstant(ConstantExpression node)
         {
-            if(quoteDepth > 0 || node.Value == null || IsPrimitiveConstantType(node.Type))
+            if (quoteDepth > 0 || node.Value == null || IsPrimitiveConstantType(node.Type))
                 return node;
-            if(!constants.ContainsKey(node))
+            if (!constants.ContainsKey(node))
                 constants.Add(node, BuildConstField(node.Type, node.Value));
             return node;
         }
@@ -161,7 +148,7 @@ namespace GrobExp.Compiler.Closures
         protected override Expression VisitParameter(ParameterExpression node)
         {
             var peek = localParameters.Peek();
-            if(!peek.Contains(node) && !parameters.ContainsKey(node))
+            if (!peek.Contains(node) && !parameters.ContainsKey(node))
             {
                 var field = closureBuilder.DefineField(node.Type);
                 parameters.Add(node, field);
@@ -175,7 +162,7 @@ namespace GrobExp.Compiler.Closures
             switchCaseIndexes = null;
             count = 0;
             var typeCode = Type.GetTypeCode(type);
-            switch(typeCode)
+            switch (typeCode)
             {
             case TypeCode.DBNull:
             case TypeCode.Boolean:
@@ -187,17 +174,17 @@ namespace GrobExp.Compiler.Closures
                 return false;
             }
             var hashCodes = new Dictionary<ulong, object>();
-            foreach(var @case in cases)
+            foreach (var @case in cases)
             {
-                foreach(ConstantExpression constant in @case.TestValues)
+                foreach (ConstantExpression constant in @case.TestValues)
                 {
                     var value = constant.Value;
-                    if(value == null)
+                    if (value == null)
                         continue;
                     ulong hashCode;
                     unchecked
                     {
-                        switch(typeCode)
+                        switch (typeCode)
                         {
                         case TypeCode.Byte:
                             hashCode = (byte)value;
@@ -231,22 +218,22 @@ namespace GrobExp.Compiler.Closures
                             break;
                         }
                     }
-                    if(hashCodes.ContainsKey(hashCode))
+                    if (hashCodes.ContainsKey(hashCode))
                         return false;
                     hashCodes.Add(hashCode, value);
                 }
             }
             var was = new HashSet<uint>();
-            for(int length = hashCodes.Count; length < 100000; ++length)
+            for (int length = hashCodes.Count; length < 100000; ++length)
             {
                 bool ok = true;
                 was.Clear();
-                foreach(var entry in hashCodes)
+                foreach (var entry in hashCodes)
                 {
                     unchecked
                     {
                         var index = (uint)(entry.Key % (uint)length);
-                        if(was.Contains(index))
+                        if (was.Contains(index))
                         {
                             ok = false;
                             break;
@@ -254,14 +241,14 @@ namespace GrobExp.Compiler.Closures
                         was.Add(index);
                     }
                 }
-                if(!ok) continue;
+                if (!ok) continue;
                 var values = new object[length];
                 var indexes = new int[length];
-                for(int k = 0; k < length; ++k)
+                for (int k = 0; k < length; ++k)
                 {
                     unchecked
                     {
-                        switch(typeCode)
+                        switch (typeCode)
                         {
                         case TypeCode.Byte:
                             values[k] = (byte)(k + 1);
@@ -298,7 +285,7 @@ namespace GrobExp.Compiler.Closures
                     indexes[k] = -1;
                 }
                 int i = 0;
-                foreach(var entry in hashCodes)
+                foreach (var entry in hashCodes)
                 {
                     unchecked
                     {
@@ -325,7 +312,7 @@ namespace GrobExp.Compiler.Closures
         {
             var key = new Tuple<Type, object>(type, value);
             var field = (int?)hashtable[key];
-            if(field == null)
+            if (field == null)
             {
                 field = constantsBuilder.DefineField(type);
                 hashtable[key] = field;
@@ -336,16 +323,16 @@ namespace GrobExp.Compiler.Closures
         private Func<object> BuildConstants(Type type, ClosureSubstituter closureSubstituter)
         {
             var method = new DynamicMethod(Guid.NewGuid().ToString(), typeof(object), new[] {typeof(object[])},
-                typeof(ExpressionClosureBuilder), true);
+                                           typeof(ExpressionClosureBuilder), true);
             var root = Expression.Parameter(type);
             var consts = new object[hashtable.Count];
-            using(var il = new GroboIL(method))
+            using (var il = new GroboIL(method))
             {
                 il.Newobj(type.GetConstructor(Type.EmptyTypes)); // stack: [new Constants()]
                 var result = il.DeclareLocal(type, "result");
                 il.Stloc(result); // result = new Constants(); stack: []
                 int index = 0;
-                foreach(DictionaryEntry entry in hashtable)
+                foreach (DictionaryEntry entry in hashtable)
                 {
                     var pair = (Tuple<Type, object>)entry.Key;
                     var constType = pair.Item1;
@@ -353,7 +340,7 @@ namespace GrobExp.Compiler.Closures
 
                     var fieldAccessor = constantsBuilder.MakeAccess(root, ((int?)entry.Value).Value);
                     var pathToField = new List<FieldInfo>();
-                    while(fieldAccessor.NodeType != ExpressionType.Parameter)
+                    while (fieldAccessor.NodeType != ExpressionType.Parameter)
                     {
                         var memberExpression = (MemberExpression)fieldAccessor;
                         pathToField.Add((FieldInfo)memberExpression.Member);
@@ -361,7 +348,7 @@ namespace GrobExp.Compiler.Closures
                     }
                     pathToField.Reverse();
                     il.Ldloc(result);
-                    for(int i = 0; i < pathToField.Count - 1; ++i)
+                    for (int i = 0; i < pathToField.Count - 1; ++i)
                     {
                         il.Ldflda(pathToField[i]); // stack: [ref result.field]
                         il.Dup(); // stack: [ref result.field, ref result.field]
@@ -379,17 +366,17 @@ namespace GrobExp.Compiler.Closures
                     il.Ldc_I4(index++); // stack: [path, args, index]
                     il.Ldelem(typeof(object)); // stack: [path, args[index]]
                     var field = pathToField.Last();
-                    if(!constType.IsValueType)
+                    if (!constType.IsValueType)
                         il.Castclass(field.FieldType); // stack: [path, (FieldType)args[index]]
                     else
                     {
                         il.Unbox_Any(constType);
-                        if(field.FieldType != constType)
+                        if (field.FieldType != constType)
                         {
                             var constructor = field.FieldType.GetConstructor(new[] {constType});
-                            if(constructor == null)
+                            if (constructor == null)
                                 throw new InvalidOperationException(string.Format("Missing constructor of type '{0}' with parameter of type '{1}'",
-                                    GrEmit.Utils.Formatter.Format(field.FieldType), GrEmit.Utils.Formatter.Format(constType)));
+                                                                                  Formatter.Format(field.FieldType), Formatter.Format(constType)));
                             il.Newobj(constructor);
                         }
                     }
@@ -404,7 +391,7 @@ namespace GrobExp.Compiler.Closures
 
         private static bool IsPrivate(Type type)
         {
-            if(type.IsNestedPrivate || type.IsNotPublic)
+            if (type.IsNestedPrivate || type.IsNotPublic)
                 return true;
             return type.IsGenericType && type.GetGenericArguments().Any(IsPrivate);
         }
@@ -425,5 +412,18 @@ namespace GrobExp.Compiler.Closures
         private readonly Dictionary<ParameterExpression, int> parameters = new Dictionary<ParameterExpression, int>();
         private readonly Dictionary<SwitchExpression, Tuple<int, int, int>> switches = new Dictionary<SwitchExpression, Tuple<int, int, int>>();
 
+        public class Result
+        {
+            public LambdaExpression Lambda { get; set; }
+            public Type ClosureType { get; set; }
+            public Type ConstantsType { get; set; }
+            public ParameterExpression ClosureParameter { get; set; }
+            public ParameterExpression ConstantsParameter { get; set; }
+            public object Constants { get; set; }
+            public int DelegatesFieldId { get; set; }
+            public Dictionary<ParameterExpression, int> ParsedParameters { get; set; }
+            public Dictionary<ConstantExpression, int> ParsedConstants { get; set; }
+            public Dictionary<SwitchExpression, Tuple<int, int, int>> ParsedSwitches { get; set; }
+        }
     }
 }

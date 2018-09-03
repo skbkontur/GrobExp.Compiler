@@ -32,12 +32,11 @@ using GrEmit.Utils;
 #if CLR2
 namespace Microsoft.Scripting.Ast {
 #else
+
 namespace GrobExp.Compiler
 {
     public sealed class LambdaTraverser : ExpressionVisitor
     {
-        private readonly Dictionary<LambdaExpression, LambdaExpression> newLambdaReference;
-
         public LambdaTraverser(Dictionary<LambdaExpression, LambdaExpression> newLambdaReference)
         {
             this.newLambdaReference = newLambdaReference;
@@ -50,6 +49,8 @@ namespace GrobExp.Compiler
             var newBody = Visit(lambda.Body);
             return Expression.Lambda<T>(newBody, lambda.Name, lambda.TailCall, lambda.Parameters);
         }
+
+        private readonly Dictionary<LambdaExpression, LambdaExpression> newLambdaReference;
     }
 
     public static class MethodExtensions
@@ -70,13 +71,27 @@ namespace GrobExp.Compiler
 
     public enum BlockType
     {
-        None, Body, Return
+        None,
+        Body,
+        Return
     }
 
 #endif
+
     [SuppressMessage("Microsoft.Maintainability", "CA1506:AvoidExcessiveClassCoupling")]
     public sealed class AdvancedDebugViewWriter : ExpressionVisitor
     {
+        // End DebugInfo section
+
+        private AdvancedDebugViewWriter(Type constantsType, ParameterExpression constantsParam, object constants, string filename)
+        {
+            symbolDocument = Expression.SymbolDocument(filename, Guid.Empty, Guid.Empty, Guid.Empty);
+            this.constantsType = constantsType;
+            this.constantsParam = constantsParam;
+            this.constants = constants;
+            this.result = new StringBuilder();
+        }
+
         [Flags]
         private enum Flow
         {
@@ -84,65 +99,13 @@ namespace GrobExp.Compiler
             Space,
             NewLine,
 
-            Break = 0x8000      // newline if column > MaxColumn
+            Break = 0x8000 // newline if column > MaxColumn
         };
 
         private const int breakArgsCount = 2;
 
         private const int Tab = 4;
         private const int MaxColumn = 120;
-
-        private int _column;
-
-        private Stack<int> _stack = new Stack<int>();
-        private int _delta;
-        private Flow _flow;
-
-        // All the unique lambda expressions in the ET, will be used for displaying all
-        // the lambda definitions.
-        private Queue<LambdaExpression> _lambdas;
-
-        // Associate every unique anonymous LambdaExpression in the tree with an integer.
-        // The id is used to create a name for the anonymous lambda.
-        //
-        private Dictionary<LambdaExpression, int> _lambdaIds;
-
-        // Associate every unique anonymous parameter or variable in the tree with an integer.
-        // The id is used to create a name for the anonymous parameter or variable.
-        //
-        private Dictionary<ParameterExpression, int> _paramIds;
-
-        // Associate every unique anonymous LabelTarget in the tree with an integer.
-        // The id is used to create a name for the anonymous LabelTarget.
-        //
-        private Dictionary<LabelTarget, int> _labelIds;
-
-        // Result string
-        public StringBuilder result;
-
-        // Constants object
-        private readonly Type constantsType;
-        private readonly ParameterExpression constantsParam;
-        private readonly object constants;
-
-        // DebugInfo section
-        private class SelectionItem
-        {
-            public int StartRow { get; set; }
-            public int StartColumn { get; set; }
-            public bool PassSpaces { get; set; }
-
-            public SelectionItem(int startRow, int startColumn)
-            {
-                StartRow = startRow;
-                StartColumn = startColumn;
-                PassSpaces = true;
-            }
-        }
-
-        private int row;
-        private readonly Stack<SelectionItem> selectionStack = new Stack<SelectionItem>();
-        private readonly SymbolDocumentInfo symbolDocument;
 
         private void StartSelection()
         {
@@ -165,47 +128,26 @@ namespace GrobExp.Compiler
         Expression GetBlock(Expression e)
         {
             var sel = EndSelection();
-            if(e.NodeType == ExpressionType.Block ||
-               e.NodeType == ExpressionType.Conditional)
+            if (e.NodeType == ExpressionType.Block ||
+                e.NodeType == ExpressionType.Conditional)
                 return e;
             return Expression.Block(sel, e);
         }
-        // End DebugInfo section
 
-        private AdvancedDebugViewWriter(Type constantsType, ParameterExpression constantsParam, object constants, string filename)
-        {
-            symbolDocument = Expression.SymbolDocument(filename, Guid.Empty, Guid.Empty, Guid.Empty);
-            this.constantsType = constantsType;
-            this.constantsParam = constantsParam;
-            this.constants = constants;
-            this.result = new StringBuilder();
-        }
+        private int Base { get { return _stack.Count > 0 ? _stack.Peek() : 0; } }
 
-        private int Base
-        {
-            get
-            {
-                return _stack.Count > 0 ? _stack.Peek() : 0;
-            }
-        }
+        private int Delta { get; set; }
 
-        private int Delta
-        {
-            get { return _delta; }
-        }
-
-        private int Depth
-        {
-            get { return Base + Delta; }
-        }
+        private int Depth { get { return Base + Delta; } }
 
         private void Indent()
         {
-            _delta += Tab;
+            Delta += Tab;
         }
+
         private void Dedent()
         {
-            _delta -= Tab;
+            Delta -= Tab;
         }
 
         private void NewLine()
@@ -253,7 +195,7 @@ namespace GrobExp.Compiler
         }
 
         public static LambdaExpression WriteToModifying(Expression node, Type constantsType, ParameterExpression constantsParam,
-            object constants, string filename)
+                                                        object constants, string filename)
         {
             var visitor = new AdvancedDebugViewWriter(constantsType, constantsParam, constants, filename);
             var newNode = visitor.WriteTo(node);
@@ -263,7 +205,7 @@ namespace GrobExp.Compiler
             {
                 File.WriteAllText(filename, debugOutput.ToString());
             }
-            catch(IOException)
+            catch (IOException)
             {
                 //nothing
             }
@@ -307,6 +249,57 @@ namespace GrobExp.Compiler
             return res;
         }
 
+        private int _column;
+
+        private readonly Stack<int> _stack = new Stack<int>();
+        private Flow _flow;
+
+        // All the unique lambda expressions in the ET, will be used for displaying all
+        // the lambda definitions.
+        private Queue<LambdaExpression> _lambdas;
+
+        // Associate every unique anonymous LambdaExpression in the tree with an integer.
+        // The id is used to create a name for the anonymous lambda.
+        //
+        private Dictionary<LambdaExpression, int> _lambdaIds;
+
+        // Associate every unique anonymous parameter or variable in the tree with an integer.
+        // The id is used to create a name for the anonymous parameter or variable.
+        //
+        private Dictionary<ParameterExpression, int> _paramIds;
+
+        // Associate every unique anonymous LabelTarget in the tree with an integer.
+        // The id is used to create a name for the anonymous LabelTarget.
+        //
+        private Dictionary<LabelTarget, int> _labelIds;
+
+        // Result string
+        public StringBuilder result;
+
+        // Constants object
+        private readonly Type constantsType;
+        private readonly ParameterExpression constantsParam;
+        private readonly object constants;
+
+        private int row;
+        private readonly Stack<SelectionItem> selectionStack = new Stack<SelectionItem>();
+        private readonly SymbolDocumentInfo symbolDocument;
+
+        // DebugInfo section
+        private class SelectionItem
+        {
+            public SelectionItem(int startRow, int startColumn)
+            {
+                StartRow = startRow;
+                StartColumn = startColumn;
+                PassSpaces = true;
+            }
+
+            public int StartRow { get; set; }
+            public int StartColumn { get; set; }
+            public bool PassSpaces { get; set; }
+        }
+
         #region The printing code
 
         private void Out(string s)
@@ -328,15 +321,15 @@ namespace GrobExp.Compiler
         {
             switch (GetFlow(before))
             {
-                case Flow.None:
-                    break;
-                case Flow.Space:
-                    Write(" ");
-                    break;
-                case Flow.NewLine:
-                    WriteLine();
-                    Write(new String(' ', Depth));
-                    break;
+            case Flow.None:
+                break;
+            case Flow.Space:
+                Write(" ");
+                break;
+            case Flow.NewLine:
+                WriteLine();
+                Write(new String(' ', Depth));
+                break;
             }
             Write(s);
             _flow = after;
@@ -386,7 +379,7 @@ namespace GrobExp.Compiler
         {
             if ((flow & Flow.Break) != 0)
             {
-                if (_column > (MaxColumn/* + Depth*/))
+                if (_column > (MaxColumn /* + Depth*/))
                 {
                     flow = Flow.NewLine;
                 }
@@ -470,7 +463,7 @@ namespace GrobExp.Compiler
         //ignore TypedDebugInfoExpression
         public override Expression Visit(Expression node)
         {
-            if(node is TypedDebugInfoExpression)
+            if (node is TypedDebugInfoExpression)
             {
                 throw new NotSupportedException("Nobody should use TypedDebugInfoExpression, it is dangerous!");
                 /*
@@ -487,7 +480,7 @@ namespace GrobExp.Compiler
         }
 
         private List<object> VisitExpressions<T>(char open, char separator, IList<T> expressions,
-            BlockType blockType = BlockType.None) where T : Expression
+                                                 BlockType blockType = BlockType.None) where T : Expression
         {
             return VisitExpressions(open, separator, expressions, Visit, blockType);
         }
@@ -495,23 +488,23 @@ namespace GrobExp.Compiler
         private List<object> VisitDeclarations(IList<ParameterExpression> expressions)
         {
             return VisitExpressions('(', ',', expressions, variable =>
-            {
-                Out(Formatter.Format(variable.Type));
-                if(variable.IsByRef)
                 {
-                    Out("&");
-                }
-                Out(" ");
-                return VisitParameter(variable);
-            });
+                    Out(Formatter.Format(variable.Type));
+                    if (variable.IsByRef)
+                    {
+                        Out("&");
+                    }
+                    Out(" ");
+                    return VisitParameter(variable);
+                });
         }
 
         //open = 0 means no brackets
         private List<object> VisitExpressions<T>(char open, char separator, IList<T> expressions,
-            Func<T, object> visit, BlockType blockType = BlockType.None)
+                                                 Func<T, object> visit, BlockType blockType = BlockType.None)
         {
             var nonSemicolonFlow = Flow.NewLine;
-            if(open != '{' && expressions.Count < breakArgsCount)
+            if (open != '{' && expressions.Count < breakArgsCount)
                 nonSemicolonFlow = Flow.Space | Flow.Break;
 
             if (open != '0' && blockType != BlockType.Return)
@@ -522,7 +515,7 @@ namespace GrobExp.Compiler
             if (expressions != null)
             {
                 //if (separator == ';')
-                    Indent();
+                Indent();
                 bool isFirst = true;
                 foreach (T e in expressions)
                 {
@@ -534,7 +527,7 @@ namespace GrobExp.Compiler
                     }
                     else
                     {
-                        if(separator != ';')
+                        if (separator != ';')
                         {
                             _flow &= ~Flow.Break;
                             Out(separator.ToString(), nonSemicolonFlow);
@@ -544,7 +537,7 @@ namespace GrobExp.Compiler
 
                     bool needSelection = false;
                     var eAsExp = e as Expression;
-                    if(eAsExp != null)
+                    if (eAsExp != null)
                     {
                         needSelection = eAsExp.NodeType != ExpressionType.Conditional &&
                                         eAsExp.NodeType != ExpressionType.Block;
@@ -557,7 +550,7 @@ namespace GrobExp.Compiler
                     var cursorDump = Tuple.Create(row, _column);
                     var newExp = visit(e);
                     bool anyText = !Equals(cursorDump, Tuple.Create(row, _column));
-                    if(separator == ';' && anyText)
+                    if (separator == ';' && anyText)
                     {
                         _flow &= ~Flow.Break;
                         Out(separator.ToString(), Flow.NewLine);
@@ -565,26 +558,34 @@ namespace GrobExp.Compiler
                     DebugInfoExpression debugInfo = null;
                     if (separator == ';' || isComplex)
                         debugInfo = EndSelection();
-                    if((separator == ';' || isComplex) && anyText && newExp is Expression && needSelection)
+                    if ((separator == ';' || isComplex) && anyText && newExp is Expression && needSelection)
                         newBlock.Add(Expression.Block(debugInfo, newExp as Expression));
                     else
                         newBlock.Add(newExp);
                 }
                 //if (separator == ';')
-                    Dedent();
+                Dedent();
             }
 
             char close = '0';
             switch (open)
             {
-                case '(': close = ')'; break;
-                case '{': close = '}'; break;
-                case '[': close = ']'; break;
-                case '<': close = '>'; break;
-                //default:
+            case '(':
+                close = ')';
+                break;
+            case '{':
+                close = '}';
+                break;
+            case '[':
+                close = ']';
+                break;
+            case '<':
+                close = '>';
+                break;
+            //default:
             }
 
-            if(close != '0' && blockType != BlockType.Body)
+            if (close != '0' && blockType != BlockType.Body)
             {
                 _flow &= ~Flow.Break;
                 Out(nonSemicolonFlow == Flow.NewLine ? Flow.NewLine : Flow.None, close.ToString(), Flow.Break);
@@ -596,15 +597,15 @@ namespace GrobExp.Compiler
         private bool IsComplexArgument(object obj)
         {
             var node = obj as Expression;
-            if(node == null)
+            if (node == null)
                 return false;
 
-            if(node.NodeType == ExpressionType.Constant || node.NodeType == ExpressionType.Parameter)
+            if (node.NodeType == ExpressionType.Constant || node.NodeType == ExpressionType.Parameter)
                 return false;
 
-            if(node.NodeType == ExpressionType.Convert)
+            if (node.NodeType == ExpressionType.Convert)
                 return IsComplexArgument((node as UnaryExpression).Operand);
-            if(node.NodeType == ExpressionType.MemberAccess)
+            if (node.NodeType == ExpressionType.MemberAccess)
             {
                 var bin = node as MemberExpression;
                 return IsComplexArgument(bin.Expression) || IsComplexArgument(bin.Member);
@@ -624,7 +625,7 @@ namespace GrobExp.Compiler
         private bool? GetBooleanConstantValue(Expression node)
         {
             var constant = node as ConstantExpression;
-            if(constant == null)
+            if (constant == null)
                 return null;
             var value = constant.Value as bool?;
             return value;
@@ -641,7 +642,7 @@ namespace GrobExp.Compiler
                 newRight = Visit(node.Right);
                 Out("]");
             }
-            else if(node.NodeType == ExpressionType.Equal && GetBooleanConstantValue(node.Right) == true) //TODO redundant brackets
+            else if (node.NodeType == ExpressionType.Equal && GetBooleanConstantValue(node.Right) == true) //TODO redundant brackets
             {
                 newLeft = ParenthesizedVisit(node, node.Left);
             }
@@ -655,47 +656,131 @@ namespace GrobExp.Compiler
                 Flow beforeOp = Flow.Space;
                 switch (node.NodeType)
                 {
-                    case ExpressionType.Assign: op = "="; break;
-                    case ExpressionType.Equal: op = "=="; break;
-                    case ExpressionType.NotEqual: op = "!="; break;
-                    case ExpressionType.AndAlso: op = "&&"; beforeOp = Flow.Break | Flow.Space; break;
-                    case ExpressionType.OrElse: op = "||"; beforeOp = Flow.Break | Flow.Space; break;
-                    case ExpressionType.GreaterThan: op = ">"; break;
-                    case ExpressionType.LessThan: op = "<"; break;
-                    case ExpressionType.GreaterThanOrEqual: op = ">="; break;
-                    case ExpressionType.LessThanOrEqual: op = "<="; break;
-                    case ExpressionType.Add: op = "+"; break;
-                    case ExpressionType.AddAssign: op = "+="; break;
-                    case ExpressionType.AddAssignChecked: op = "+="; isChecked = true; break;
-                    case ExpressionType.AddChecked: op = "+"; isChecked = true; break;
-                    case ExpressionType.Subtract: op = "-"; break;
-                    case ExpressionType.SubtractAssign: op = "-="; break;
-                    case ExpressionType.SubtractAssignChecked: op = "-="; isChecked = true; break;
-                    case ExpressionType.SubtractChecked: op = "-"; isChecked = true; break;
-                    case ExpressionType.Divide: op = "/"; break;
-                    case ExpressionType.DivideAssign: op = "/="; break;
-                    case ExpressionType.Modulo: op = "%"; break;
-                    case ExpressionType.ModuloAssign: op = "%="; break;
-                    case ExpressionType.Multiply: op = "*"; break;
-                    case ExpressionType.MultiplyAssign: op = "*="; break;
-                    case ExpressionType.MultiplyAssignChecked: op = "*="; isChecked = true; break;
-                    case ExpressionType.MultiplyChecked: op = "*"; isChecked = true; break;
-                    case ExpressionType.LeftShift: op = "<<"; break;
-                    case ExpressionType.LeftShiftAssign: op = "<<="; break;
-                    case ExpressionType.RightShift: op = ">>"; break;
-                    case ExpressionType.RightShiftAssign: op = ">>="; break;
-                    case ExpressionType.And: op = "&"; break;
-                    case ExpressionType.AndAssign: op = "&="; break;
-                    case ExpressionType.Or: op = "|"; break;
-                    case ExpressionType.OrAssign: op = "|="; break;
-                    case ExpressionType.ExclusiveOr: op = "^"; break;
-                    case ExpressionType.ExclusiveOrAssign: op = "^="; break;
-                    case ExpressionType.Power: op = "**"; break;
-                    case ExpressionType.PowerAssign: op = "**="; break;
-                    case ExpressionType.Coalesce: op = "??"; break;
+                case ExpressionType.Assign:
+                    op = "=";
+                    break;
+                case ExpressionType.Equal:
+                    op = "==";
+                    break;
+                case ExpressionType.NotEqual:
+                    op = "!=";
+                    break;
+                case ExpressionType.AndAlso:
+                    op = "&&";
+                    beforeOp = Flow.Break | Flow.Space;
+                    break;
+                case ExpressionType.OrElse:
+                    op = "||";
+                    beforeOp = Flow.Break | Flow.Space;
+                    break;
+                case ExpressionType.GreaterThan:
+                    op = ">";
+                    break;
+                case ExpressionType.LessThan:
+                    op = "<";
+                    break;
+                case ExpressionType.GreaterThanOrEqual:
+                    op = ">=";
+                    break;
+                case ExpressionType.LessThanOrEqual:
+                    op = "<=";
+                    break;
+                case ExpressionType.Add:
+                    op = "+";
+                    break;
+                case ExpressionType.AddAssign:
+                    op = "+=";
+                    break;
+                case ExpressionType.AddAssignChecked:
+                    op = "+=";
+                    isChecked = true;
+                    break;
+                case ExpressionType.AddChecked:
+                    op = "+";
+                    isChecked = true;
+                    break;
+                case ExpressionType.Subtract:
+                    op = "-";
+                    break;
+                case ExpressionType.SubtractAssign:
+                    op = "-=";
+                    break;
+                case ExpressionType.SubtractAssignChecked:
+                    op = "-=";
+                    isChecked = true;
+                    break;
+                case ExpressionType.SubtractChecked:
+                    op = "-";
+                    isChecked = true;
+                    break;
+                case ExpressionType.Divide:
+                    op = "/";
+                    break;
+                case ExpressionType.DivideAssign:
+                    op = "/=";
+                    break;
+                case ExpressionType.Modulo:
+                    op = "%";
+                    break;
+                case ExpressionType.ModuloAssign:
+                    op = "%=";
+                    break;
+                case ExpressionType.Multiply:
+                    op = "*";
+                    break;
+                case ExpressionType.MultiplyAssign:
+                    op = "*=";
+                    break;
+                case ExpressionType.MultiplyAssignChecked:
+                    op = "*=";
+                    isChecked = true;
+                    break;
+                case ExpressionType.MultiplyChecked:
+                    op = "*";
+                    isChecked = true;
+                    break;
+                case ExpressionType.LeftShift:
+                    op = "<<";
+                    break;
+                case ExpressionType.LeftShiftAssign:
+                    op = "<<=";
+                    break;
+                case ExpressionType.RightShift:
+                    op = ">>";
+                    break;
+                case ExpressionType.RightShiftAssign:
+                    op = ">>=";
+                    break;
+                case ExpressionType.And:
+                    op = "&";
+                    break;
+                case ExpressionType.AndAssign:
+                    op = "&=";
+                    break;
+                case ExpressionType.Or:
+                    op = "|";
+                    break;
+                case ExpressionType.OrAssign:
+                    op = "|=";
+                    break;
+                case ExpressionType.ExclusiveOr:
+                    op = "^";
+                    break;
+                case ExpressionType.ExclusiveOrAssign:
+                    op = "^=";
+                    break;
+                case ExpressionType.Power:
+                    op = "**";
+                    break;
+                case ExpressionType.PowerAssign:
+                    op = "**=";
+                    break;
+                case ExpressionType.Coalesce:
+                    op = "??";
+                    break;
 
-                    default:
-                        throw new InvalidOperationException();
+                default:
+                    throw new InvalidOperationException();
                 }
 
                 if (parenthesizeLeft)
@@ -713,10 +798,10 @@ namespace GrobExp.Compiler
                 if (isChecked)
                 {
                     op = String.Format(
-                            CultureInfo.CurrentCulture,
-                            "{0}",
-                            op
-                    );
+                        CultureInfo.CurrentCulture,
+                        "{0}",
+                        op
+                        );
                 }
                 Out(beforeOp, op, Flow.Space | Flow.Break);
 
@@ -739,7 +824,7 @@ namespace GrobExp.Compiler
 
         private string GetName(ParameterExpression param)
         {
-            if(!parameterNames.ContainsKey(param))
+            if (!parameterNames.ContainsKey(param))
             {
                 string typeName = BeutifyName(Formatter.Format(param.Type));
                 int counter;
@@ -755,15 +840,15 @@ namespace GrobExp.Compiler
 
         private string BeutifyName(string name)
         {
-            if(char.IsUpper(name[0]))
+            if (char.IsUpper(name[0]))
                 name = char.ToLower(name[0]) + name.Substring(1);
 
             int position = name.LastIndexOf('_');
-            if(position != -1)
+            if (position != -1)
                 name = name.Substring(0, position);
 
             position = name.IndexOf('<');
-            if(position != -1)
+            if (position != -1)
                 name = name.Substring(0, position);
 
             return name;
@@ -771,7 +856,7 @@ namespace GrobExp.Compiler
 
         protected override Expression VisitParameter(ParameterExpression node)
         {
-            if(string.IsNullOrEmpty(node.Name))
+            if (string.IsNullOrEmpty(node.Name))
             {
                 var name = GetName(node);
                 field.SetValue(node, name);
@@ -798,12 +883,12 @@ namespace GrobExp.Compiler
         {
             Out(
                 String.Format(CultureInfo.CurrentCulture,
-                    "{0} {1}<{2}>",
-                    "LAMBDA",
-                    GetLambdaName(node),
-                    Formatter.Format(node.Type)
-                )
-            );
+                              "{0} {1}<{2}>",
+                              "LAMBDA",
+                              GetLambdaName(node),
+                              Formatter.Format(node.Type)
+                    )
+                );
 
             if (_lambdas == null)
             {
@@ -833,7 +918,7 @@ namespace GrobExp.Compiler
         private bool HasEmptyBody(Expression node)
         {
             var defaultNode = node as DefaultExpression;
-            if(defaultNode == null)
+            if (defaultNode == null)
                 return false;
             return defaultNode.Type == typeof(void);
         }
@@ -842,7 +927,7 @@ namespace GrobExp.Compiler
         {
             Expression newTest = node.Test, newTrue = node.IfTrue, newFalse = node.IfFalse;
 
-            if(node.Type != typeof(void))
+            if (node.Type != typeof(void))
             {
                 StartSelection();
                 var ifTestBody = Visit(node.Test);
@@ -872,7 +957,7 @@ namespace GrobExp.Compiler
             var newTrueBody = Visit(node.IfTrue);
             newTrue = GetBlock(newTrueBody);
             Dedent();
-            if(!HasEmptyBody(node.IfFalse))
+            if (!HasEmptyBody(node.IfFalse))
             {
                 Out(Flow.NewLine, "} ELSE {", Flow.NewLine);
                 Indent();
@@ -912,7 +997,7 @@ namespace GrobExp.Compiler
                     value));
             }
             else if ((value is int) && node.Type == typeof(int)
-              || (value is bool) && node.Type == typeof(bool))
+                     || (value is bool) && node.Type == typeof(bool))
             {
                 Out(value.ToString());
             }
@@ -1005,27 +1090,27 @@ namespace GrobExp.Compiler
 
         protected override Expression VisitInvocation(InvocationExpression node)
         {
-            if(node.Expression.NodeType == ExpressionType.Convert)
+            if (node.Expression.NodeType == ExpressionType.Convert)
             {
                 var convert = (UnaryExpression)node.Expression;
-                if(convert.Operand.NodeType == ExpressionType.MemberAccess)
+                if (convert.Operand.NodeType == ExpressionType.MemberAccess)
                 {
                     var access = (MemberExpression)convert.Operand;
-                    if(access.Expression.NodeType == ExpressionType.Parameter)
+                    if (access.Expression.NodeType == ExpressionType.Parameter)
                     {
                         var param = (ParameterExpression)access.Expression;
-                        if(param == constantsParam)
+                        if (param == constantsParam)
                         {
                             var funcName = ExtractNameUsingReflection(access.Member.Name);
                             var result = GetRealPrivateName(funcName, "MethodInvoker$");
 
-                            if(result != null)
+                            if (result != null)
                             {
                                 var realName = result.Item2;
                                 var className = result.Item1;
                                 var arguments = node.Arguments.ToArray();
 
-                                if(className == null)
+                                if (className == null)
                                 {
                                     var obj = arguments[0];
                                     arguments = arguments.Skip(1).ToArray();
@@ -1056,15 +1141,15 @@ namespace GrobExp.Compiler
 
         private static Tuple<string, string> GetRealPrivateName(string name, string prefix)
         {
-            if(!name.StartsWith(prefix))
+            if (!name.StartsWith(prefix))
                 return null;
             int firstPos = name.IndexOf('$');
             int secondPos = name.IndexOf('$', firstPos + 1);
             int thirdPos = name.IndexOf('$', secondPos + 1);
-            if(thirdPos == -1)
+            if (thirdPos == -1)
                 return Tuple.Create<string, string>(null, name.Substring(firstPos + 1, secondPos - firstPos - 1));
             return Tuple.Create(name.Substring(firstPos + 1, secondPos - firstPos - 1),
-                name.Substring(secondPos + 1, thirdPos - secondPos - 1));
+                                name.Substring(secondPos + 1, thirdPos - secondPos - 1));
         }
 
         [SuppressMessage("Microsoft.Maintainability", "CA1502:AvoidExcessiveComplexity")]
@@ -1080,12 +1165,12 @@ namespace GrobExp.Compiler
             // displayed, for example: ".Unbox(obj.Foo)"
             switch (parent.NodeType)
             {
-                case ExpressionType.Increment:
-                case ExpressionType.Decrement:
-                case ExpressionType.IsTrue:
-                case ExpressionType.IsFalse:
-                case ExpressionType.Unbox:
-                    return true;
+            case ExpressionType.Increment:
+            case ExpressionType.Decrement:
+            case ExpressionType.IsTrue:
+            case ExpressionType.IsFalse:
+            case ExpressionType.Unbox:
+                return true;
             }
 
             int childOpPrec = GetOperatorPrecedence(child);
@@ -1106,36 +1191,36 @@ namespace GrobExp.Compiler
                 // 
                 switch (parent.NodeType)
                 {
-                    case ExpressionType.AndAlso:
-                    case ExpressionType.OrElse:
-                    case ExpressionType.And:
-                    case ExpressionType.Or:
-                    case ExpressionType.ExclusiveOr:
-                        // Since these ops are the only ones on their precedence,
-                        // the child op must be the same.
-                        Debug.Assert(child.NodeType == parent.NodeType);
-                        // We remove the parenthesis, e.g. x && y && z
-                        return false;
-                    case ExpressionType.Add:
-                    case ExpressionType.AddChecked:
-                    case ExpressionType.Multiply:
-                    case ExpressionType.MultiplyChecked:
-                        return false;
-                    case ExpressionType.Subtract:
-                    case ExpressionType.SubtractChecked:
-                    case ExpressionType.Divide:
-                    case ExpressionType.Modulo:
-                        BinaryExpression binary = parent as BinaryExpression;
-                        Debug.Assert(binary != null);
-                        // Need to have parenthesis for the right operand.
-                        return child == binary.Right;
-                    case ExpressionType.MemberAccess:
-                    case ExpressionType.Call:
-                    case ExpressionType.ArrayLength:
-                    case ExpressionType.ArrayIndex:
-                    case ExpressionType.Index:
-                    case ExpressionType.Convert:
-                        return false;
+                case ExpressionType.AndAlso:
+                case ExpressionType.OrElse:
+                case ExpressionType.And:
+                case ExpressionType.Or:
+                case ExpressionType.ExclusiveOr:
+                    // Since these ops are the only ones on their precedence,
+                    // the child op must be the same.
+                    Debug.Assert(child.NodeType == parent.NodeType);
+                    // We remove the parenthesis, e.g. x && y && z
+                    return false;
+                case ExpressionType.Add:
+                case ExpressionType.AddChecked:
+                case ExpressionType.Multiply:
+                case ExpressionType.MultiplyChecked:
+                    return false;
+                case ExpressionType.Subtract:
+                case ExpressionType.SubtractChecked:
+                case ExpressionType.Divide:
+                case ExpressionType.Modulo:
+                    BinaryExpression binary = parent as BinaryExpression;
+                    Debug.Assert(binary != null);
+                    // Need to have parenthesis for the right operand.
+                    return child == binary.Right;
+                case ExpressionType.MemberAccess:
+                case ExpressionType.Call:
+                case ExpressionType.ArrayLength:
+                case ExpressionType.ArrayIndex:
+                case ExpressionType.Index:
+                case ExpressionType.Convert:
+                    return false;
                 }
                 return true;
             }
@@ -1161,116 +1246,116 @@ namespace GrobExp.Compiler
             // such as conditional and type testing, don't use this mechanism.
             switch (node.NodeType)
             {
-                // Assignment
-                case ExpressionType.Assign:
-                case ExpressionType.ExclusiveOrAssign:
-                case ExpressionType.AddAssign:
-                case ExpressionType.AddAssignChecked:
-                case ExpressionType.SubtractAssign:
-                case ExpressionType.SubtractAssignChecked:
-                case ExpressionType.DivideAssign:
-                case ExpressionType.ModuloAssign:
-                case ExpressionType.MultiplyAssign:
-                case ExpressionType.MultiplyAssignChecked:
-                case ExpressionType.LeftShiftAssign:
-                case ExpressionType.RightShiftAssign:
-                case ExpressionType.AndAssign:
-                case ExpressionType.OrAssign:
-                case ExpressionType.PowerAssign:
-                case ExpressionType.Coalesce:
-                    return 1;
+            // Assignment
+            case ExpressionType.Assign:
+            case ExpressionType.ExclusiveOrAssign:
+            case ExpressionType.AddAssign:
+            case ExpressionType.AddAssignChecked:
+            case ExpressionType.SubtractAssign:
+            case ExpressionType.SubtractAssignChecked:
+            case ExpressionType.DivideAssign:
+            case ExpressionType.ModuloAssign:
+            case ExpressionType.MultiplyAssign:
+            case ExpressionType.MultiplyAssignChecked:
+            case ExpressionType.LeftShiftAssign:
+            case ExpressionType.RightShiftAssign:
+            case ExpressionType.AndAssign:
+            case ExpressionType.OrAssign:
+            case ExpressionType.PowerAssign:
+            case ExpressionType.Coalesce:
+                return 1;
 
-                // Conditional (?:) would go here
+            // Conditional (?:) would go here
 
-                // Conditional OR
-                case ExpressionType.OrElse:
-                    return 2;
+            // Conditional OR
+            case ExpressionType.OrElse:
+                return 2;
 
-                // Conditional AND
-                case ExpressionType.AndAlso:
-                    return 3;
+            // Conditional AND
+            case ExpressionType.AndAlso:
+                return 3;
 
-                // Logical OR
-                case ExpressionType.Or:
-                    return 4;
+            // Logical OR
+            case ExpressionType.Or:
+                return 4;
 
-                // Logical XOR
-                case ExpressionType.ExclusiveOr:
-                    return 5;
+            // Logical XOR
+            case ExpressionType.ExclusiveOr:
+                return 5;
 
-                // Logical AND
-                case ExpressionType.And:
-                    return 6;
+            // Logical AND
+            case ExpressionType.And:
+                return 6;
 
-                // Equality
-                case ExpressionType.Equal:
-                case ExpressionType.NotEqual:
-                    return 7;
+            // Equality
+            case ExpressionType.Equal:
+            case ExpressionType.NotEqual:
+                return 7;
 
-                // Relational, type testing
-                case ExpressionType.GreaterThan:
-                case ExpressionType.LessThan:
-                case ExpressionType.GreaterThanOrEqual:
-                case ExpressionType.LessThanOrEqual:
-                case ExpressionType.TypeAs:
-                case ExpressionType.TypeIs:
-                case ExpressionType.TypeEqual:
-                    return 8;
+            // Relational, type testing
+            case ExpressionType.GreaterThan:
+            case ExpressionType.LessThan:
+            case ExpressionType.GreaterThanOrEqual:
+            case ExpressionType.LessThanOrEqual:
+            case ExpressionType.TypeAs:
+            case ExpressionType.TypeIs:
+            case ExpressionType.TypeEqual:
+                return 8;
 
-                // Shift
-                case ExpressionType.LeftShift:
-                case ExpressionType.RightShift:
-                    return 9;
+            // Shift
+            case ExpressionType.LeftShift:
+            case ExpressionType.RightShift:
+                return 9;
 
-                // Additive
-                case ExpressionType.Add:
-                case ExpressionType.AddChecked:
-                case ExpressionType.Subtract:
-                case ExpressionType.SubtractChecked:
-                    return 10;
+            // Additive
+            case ExpressionType.Add:
+            case ExpressionType.AddChecked:
+            case ExpressionType.Subtract:
+            case ExpressionType.SubtractChecked:
+                return 10;
 
-                // Multiplicative
-                case ExpressionType.Divide:
-                case ExpressionType.Modulo:
-                case ExpressionType.Multiply:
-                case ExpressionType.MultiplyChecked:
-                    return 11;
+            // Multiplicative
+            case ExpressionType.Divide:
+            case ExpressionType.Modulo:
+            case ExpressionType.Multiply:
+            case ExpressionType.MultiplyChecked:
+                return 11;
 
-                // Unary
-                case ExpressionType.Negate:
-                case ExpressionType.NegateChecked:
-                case ExpressionType.UnaryPlus:
-                case ExpressionType.Not:
-                case ExpressionType.Convert:
-                case ExpressionType.ConvertChecked:
-                case ExpressionType.PreIncrementAssign:
-                case ExpressionType.PreDecrementAssign:
-                case ExpressionType.OnesComplement:
-                case ExpressionType.Increment:
-                case ExpressionType.Decrement:
-                case ExpressionType.IsTrue:
-                case ExpressionType.IsFalse:
-                case ExpressionType.Unbox:
-                case ExpressionType.Throw:
-                    return 12;
+            // Unary
+            case ExpressionType.Negate:
+            case ExpressionType.NegateChecked:
+            case ExpressionType.UnaryPlus:
+            case ExpressionType.Not:
+            case ExpressionType.Convert:
+            case ExpressionType.ConvertChecked:
+            case ExpressionType.PreIncrementAssign:
+            case ExpressionType.PreDecrementAssign:
+            case ExpressionType.OnesComplement:
+            case ExpressionType.Increment:
+            case ExpressionType.Decrement:
+            case ExpressionType.IsTrue:
+            case ExpressionType.IsFalse:
+            case ExpressionType.Unbox:
+            case ExpressionType.Throw:
+                return 12;
 
-                // Power, which is not in C#
-                // But VB/Python/Ruby put it here, above unary.
-                case ExpressionType.Power:
-                    return 13;
+            // Power, which is not in C#
+            // But VB/Python/Ruby put it here, above unary.
+            case ExpressionType.Power:
+                return 13;
 
-                // Primary, which includes all other node types:
-                //   member access, calls, indexing, new.
-                case ExpressionType.PostIncrementAssign:
-                case ExpressionType.PostDecrementAssign:
-                default:
-                    return 14;
+            // Primary, which includes all other node types:
+            //   member access, calls, indexing, new.
+            case ExpressionType.PostIncrementAssign:
+            case ExpressionType.PostDecrementAssign:
+            default:
+                return 14;
 
-                // These aren't expressions, so never need parentheses:
-                //   constants, variables
-                case ExpressionType.Constant:
-                case ExpressionType.Parameter:
-                    return 15;
+            // These aren't expressions, so never need parentheses:
+            //   constants, variables
+            case ExpressionType.Constant:
+            case ExpressionType.Parameter:
+                return 15;
             }
         }
 
@@ -1303,16 +1388,16 @@ namespace GrobExp.Compiler
                 Out(node.Method.Name);
                 newArguments = new ReadOnlyCollection<Expression>(
                     newArguments.Concat(new ReadOnlyCollection<Expression>(
-                        VisitExpressions('(', node.Arguments.Skip(1).ToArray())
-                            .Cast<Expression>().ToList()).ToList()).ToList());
+                                            VisitExpressions('(', node.Arguments.Skip(1).ToArray())
+                                                .Cast<Expression>().ToList()).ToList()).ToList());
             }
             else
             {
-                if(node.Object != null)
+                if (node.Object != null)
                 {
                     newObject = ParenthesizedVisit(node, node.Object);
                 }
-                else if(node.Method.DeclaringType != null)
+                else if (node.Method.DeclaringType != null)
                 {
                     Out(Formatter.Format(node.Method.DeclaringType));
                 }
@@ -1323,7 +1408,7 @@ namespace GrobExp.Compiler
                 Out(".");
                 Out(node.Method.Name);
                 newArguments = new ReadOnlyCollection<Expression>(VisitExpressions('(', node.Arguments)
-                    .Cast<Expression>().ToList());
+                                                                      .Cast<Expression>().ToList());
             }
             return node.Update(newObject, newArguments);
         }
@@ -1351,7 +1436,7 @@ namespace GrobExp.Compiler
             Out("new " + Formatter.Format(node.Type));
             var newArguments = VisitExpressions('(', node.Arguments);
             // ReSharper disable once ConditionIsAlwaysTrueOrFalse
-            if(node.Constructor == null)
+            if (node.Constructor == null)
                 return Expression.New(node.Type);
             return node.Update(newArguments.Cast<Expression>().ToList());
         }
@@ -1385,7 +1470,7 @@ namespace GrobExp.Compiler
             Out(assignment.Member.Name);
             Out(Flow.Space, "=", Flow.Space);
             var newExp = Visit(assignment.Expression);
-            if(isComplex)
+            if (isComplex)
                 return assignment.Update(GetBlock(newExp));
             return assignment.Update(newExp);
         }
@@ -1419,12 +1504,12 @@ namespace GrobExp.Compiler
             var newExp = ParenthesizedVisit(node, node.Expression);
             switch (node.NodeType)
             {
-                case ExpressionType.TypeIs:
-                    Out(Flow.Space, ".Is", Flow.Space);
-                    break;
-                case ExpressionType.TypeEqual:
-                    Out(Flow.Space, ".TypeEqual", Flow.Space);
-                    break;
+            case ExpressionType.TypeIs:
+                Out(Flow.Space, ".Is", Flow.Space);
+                break;
+            case ExpressionType.TypeEqual:
+                Out(Flow.Space, ".TypeEqual", Flow.Space);
+                break;
             }
             Out(Formatter.Format(node.TypeOperand));
             return node.Update(newExp);
@@ -1435,28 +1520,28 @@ namespace GrobExp.Compiler
         {
             switch (node.NodeType)
             {
-                case ExpressionType.Convert:
+            case ExpressionType.Convert:
 
-                if(node.Operand.NodeType == ExpressionType.Invoke)
+                if (node.Operand.NodeType == ExpressionType.Invoke)
                 {
                     var invoke = (InvocationExpression)node.Operand;
-                    if(invoke.Expression.NodeType == ExpressionType.MemberAccess)
+                    if (invoke.Expression.NodeType == ExpressionType.MemberAccess)
                     {
                         var access = (MemberExpression)invoke.Expression;
-                        if(access.Expression.NodeType == ExpressionType.Parameter)
+                        if (access.Expression.NodeType == ExpressionType.Parameter)
                         {
                             var param = (ParameterExpression)access.Expression;
-                            if(param == constantsParam)
+                            if (param == constantsParam)
                             {
                                 var funcName = ExtractNameUsingReflection(access.Member.Name);
                                 var result = GetRealPrivateName(funcName, "FieldExtractor$");
 
-                                if(result != null)
+                                if (result != null)
                                 {
                                     var realName = result.Item2;
                                     var className = result.Item1;
 
-                                    if(className == null)
+                                    if (className == null)
                                     {
                                         var cursorDump = Tuple.Create(row, _column);
                                         var obj = Visit(invoke.Arguments[0]);
@@ -1478,93 +1563,93 @@ namespace GrobExp.Compiler
                     }
                 }
 
-                if(node.Type != node.Operand.Type &&
-                   !(node.Type.IsGenericType &&
-                     node.Type.GetGenericTypeDefinition() == typeof(Nullable<>) &&
-                     node.Type.GetGenericArgument() == node.Operand.Type))
+                if (node.Type != node.Operand.Type &&
+                    !(node.Type.IsGenericType &&
+                      node.Type.GetGenericTypeDefinition() == typeof(Nullable<>) &&
+                      node.Type.GetGenericArgument() == node.Operand.Type))
                 {
                     Out("(" + Formatter.Format(node.Type) + ")");
                 }
                 break;
 
-                case ExpressionType.ConvertChecked:
-                    Out("(" + Formatter.Format(node.Type) + ")");
-                    break;
-                case ExpressionType.TypeAs:
-                    break;
-                case ExpressionType.Not:
-                    Out(node.Type == typeof(bool) ? "!" : "~");
-                    break;
-                case ExpressionType.OnesComplement:
-                    Out("~");
-                    break;
-                case ExpressionType.Negate:
-                    Out("-");
-                    break;
-                case ExpressionType.NegateChecked:
-                    Out("-");
-                    break;
-                case ExpressionType.UnaryPlus:
-                    Out("+");
-                    break;
-                case ExpressionType.ArrayLength:
-                    break;
-                case ExpressionType.Quote:
-                    Out("'");
-                    break;
-                case ExpressionType.Throw:
-                    if (node.Operand == null)
-                    {
-                        Out("RETHROW");
-                    }
-                    else
-                    {
-                        Out("THROW", Flow.Space);
-                    }
-                    break;
-                case ExpressionType.IsFalse:
-                    Out(".IsFalse");
-                    break;
-                case ExpressionType.IsTrue:
-                    Out(".IsTrue");
-                    break;
-                case ExpressionType.Decrement:
-                    Out(".Decrement");
-                    break;
-                case ExpressionType.Increment:
-                    Out(".Increment");
-                    break;
-                case ExpressionType.PreDecrementAssign:
-                    Out("--");
-                    break;
-                case ExpressionType.PreIncrementAssign:
-                    Out("++");
-                    break;
-                case ExpressionType.Unbox:
-                    Out(".Unbox");
-                    break;
+            case ExpressionType.ConvertChecked:
+                Out("(" + Formatter.Format(node.Type) + ")");
+                break;
+            case ExpressionType.TypeAs:
+                break;
+            case ExpressionType.Not:
+                Out(node.Type == typeof(bool) ? "!" : "~");
+                break;
+            case ExpressionType.OnesComplement:
+                Out("~");
+                break;
+            case ExpressionType.Negate:
+                Out("-");
+                break;
+            case ExpressionType.NegateChecked:
+                Out("-");
+                break;
+            case ExpressionType.UnaryPlus:
+                Out("+");
+                break;
+            case ExpressionType.ArrayLength:
+                break;
+            case ExpressionType.Quote:
+                Out("'");
+                break;
+            case ExpressionType.Throw:
+                if (node.Operand == null)
+                {
+                    Out("RETHROW");
+                }
+                else
+                {
+                    Out("THROW", Flow.Space);
+                }
+                break;
+            case ExpressionType.IsFalse:
+                Out(".IsFalse");
+                break;
+            case ExpressionType.IsTrue:
+                Out(".IsTrue");
+                break;
+            case ExpressionType.Decrement:
+                Out(".Decrement");
+                break;
+            case ExpressionType.Increment:
+                Out(".Increment");
+                break;
+            case ExpressionType.PreDecrementAssign:
+                Out("--");
+                break;
+            case ExpressionType.PreIncrementAssign:
+                Out("++");
+                break;
+            case ExpressionType.Unbox:
+                Out(".Unbox");
+                break;
             }
 
             var newOperand = ParenthesizedVisit(node, node.Operand);
 
             switch (node.NodeType)
             {
-                case ExpressionType.TypeAs:
-                    Out(Flow.Space, ".As", Flow.Space | Flow.Break);
-                    Out(Formatter.Format(node.Type));
-                    break;
+            case ExpressionType.TypeAs:
+                Out(Flow.Space, ".As", Flow.Space | Flow.Break);
+                Out(Formatter.Format(node.Type));
+                break;
 
-                case ExpressionType.ArrayLength:
-                    Out(".Length");
-                    break;
+            case ExpressionType.ArrayLength:
+                Out(".Length");
+                break;
 
-                case ExpressionType.PostDecrementAssign:
-                    Out("--");
-                    break;
+            case ExpressionType.PostDecrementAssign:
+                Out("--");
+                break;
 
-                case ExpressionType.PostIncrementAssign:
-                    Out("++");
-                    break;
+            case ExpressionType.PostIncrementAssign:
+                Out("++");
+                break;
             }
             return node.Update(newOperand);
         }
@@ -1593,12 +1678,12 @@ namespace GrobExp.Compiler
             var newVars = VisitDeclarations(node.Variables).Cast<ParameterExpression>();
             Out(" ");
             // Use ; to separate expressions in the block
-            if(node.Type != typeof(void))
+            if (node.Type != typeof(void))
             {
                 newBlock = VisitExpressions('{', ';', node.Expressions.Take(node.Expressions.Count - 1).ToArray(), BlockType.Body)
                     .Cast<Expression>().ToList();
-                newBlock = newBlock.Concat(VisitExpressions('{', ';', new[] { node.Expressions.Last() }, BlockType.Return)
-                    .Cast<Expression>().ToList()).ToList();
+                newBlock = newBlock.Concat(VisitExpressions('{', ';', new[] {node.Expressions.Last()}, BlockType.Return)
+                                               .Cast<Expression>().ToList()).ToList();
             }
             else
             {
@@ -1665,9 +1750,11 @@ namespace GrobExp.Compiler
                 newBody = Visit(test);
                 Out("):", Flow.NewLine);
             }
-            Indent(); Indent();
+            Indent();
+            Indent();
             newBody = Visit(node.Body);
-            Dedent(); Dedent();
+            Dedent();
+            Dedent();
             NewLine();
             return node.Update(node.TestValues, newBody);
         }
@@ -1683,9 +1770,11 @@ namespace GrobExp.Compiler
             if (node.DefaultBody != null)
             {
                 Out("DEFAULT:", Flow.NewLine);
-                Indent(); Indent();
+                Indent();
+                Indent();
                 newDefault = Visit(node.DefaultBody);
-                Dedent(); Dedent();
+                Dedent();
+                Dedent();
                 NewLine();
             }
             Out("}");
@@ -1793,7 +1882,6 @@ namespace GrobExp.Compiler
             return node;
         }
 
-
         private void DumpLabel(LabelTarget target)
         {
             Out(String.Format(CultureInfo.CurrentCulture, "{0}:", GetLabelTargetName(target)));
@@ -1820,7 +1908,7 @@ namespace GrobExp.Compiler
                     "LAMBDA {0}<{1}>",
                     GetLambdaName(lambda),
                     Formatter.Format(lambda.Type))
-            );
+                );
 
             var newParams = VisitDeclarations(lambda.Parameters).Cast<ParameterExpression>();
 
@@ -1848,8 +1936,8 @@ namespace GrobExp.Compiler
         }
 
         /// <summary>
-        /// Return true if the input string contains any whitespace character.
-        /// Otherwise false.
+        ///     Return true if the input string contains any whitespace character.
+        ///     Otherwise false.
         /// </summary>
         private static bool ContainsWhiteSpace(string name)
         {

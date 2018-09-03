@@ -13,11 +13,11 @@ namespace GrobExp.Compiler.ExpressionEmitters
         protected override bool EmitInternal(Expression node, EmittingContext context, GroboIL.Label returnDefaultValueLabel, ResultType whatReturn, bool extend, out Type resultType)
         {
             resultType = typeof(void);
-            if(context.DebugInfoGenerator == null)
+            if (context.DebugInfoGenerator == null)
                 return false;
             var result = false;
             DebugInfoExpression debugInfo;
-            if(!(node is TypedDebugInfoExpression))
+            if (!(node is TypedDebugInfoExpression))
                 debugInfo = (DebugInfoExpression)node;
             else
             {
@@ -34,7 +34,7 @@ namespace GrobExp.Compiler.ExpressionEmitters
         {
             var parameterTypes = new[] {typeof(DebugInfoGenerator), typeof(LambdaExpression), typeof(MethodBase), typeof(GroboIL), typeof(DebugInfoExpression)};
             var dynamicMethod = new DynamicMethod(Guid.NewGuid().ToString(), typeof(void), parameterTypes, typeof(DebugInfoExpressionEmitter), true);
-            using(var il = new GroboIL(dynamicMethod))
+            using (var il = new GroboIL(dynamicMethod))
             {
                 il.Ldarg(0);
                 il.Ldarg(1);

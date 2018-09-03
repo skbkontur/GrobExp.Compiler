@@ -52,14 +52,15 @@ namespace GrobExp.Compiler.Tests
                 new[] {result},
                 Expression.Assign(result, Expression.Constant(1)),
                 Expression.Loop(
-                    Expression.Block(typeof(void), new[] {
-                    Expression.IfThenElse(
-                        Expression.GreaterThan(value, Expression.Constant(1)),
-                        Expression.MultiplyAssign(result,
-                                                  Expression.PostDecrementAssign(value)),
-                        Expression.Break(label, result)
-                        )
-                    }),
+                    Expression.Block(typeof(void), new[]
+                        {
+                            Expression.IfThenElse(
+                                Expression.GreaterThan(value, Expression.Constant(1)),
+                                Expression.MultiplyAssign(result,
+                                                          Expression.PostDecrementAssign(value)),
+                                Expression.Break(label, result)
+                                                       )
+                        }),
                     label
                     )
                 );

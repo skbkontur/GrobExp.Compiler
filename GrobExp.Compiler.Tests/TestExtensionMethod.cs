@@ -35,8 +35,8 @@ namespace GrobExp.Compiler.Tests
             var f = LambdaCompiler.Compile(exp, CompilerOptions.All);
             Assert.IsTrue(f(null));
             Assert.IsTrue(f(new int[0]));
-            Assert.IsTrue(f(new [] {1}));
-            Assert.IsFalse(f(new[] { -1 }));
+            Assert.IsTrue(f(new[] {1}));
+            Assert.IsFalse(f(new[] {-1}));
         }
 
         [Test]
@@ -50,7 +50,7 @@ namespace GrobExp.Compiler.Tests
         }
 
         /// <summary>
-        /// Test validates that null reference check not applied to the first argument of an extension method
+        ///     Test validates that null reference check not applied to the first argument of an extension method
         /// </summary>
         [Test]
         public void TestNullTargetArgument()

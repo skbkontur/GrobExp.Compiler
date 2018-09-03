@@ -5,7 +5,7 @@ using NUnit.Framework;
 
 namespace GrobExp.Compiler.Tests
 {
-    public class TestComparison: TestBase
+    public class TestComparison : TestBase
     {
         [Test]
         public void TestGreaterThan1()
@@ -143,7 +143,7 @@ namespace GrobExp.Compiler.Tests
         public void TestGreaterThanOrEqual4()
         {
             Expression<Func<uint, uint, bool>> exp = (a, b) => a >= b;
-            var f = Compile(exp,CompilerOptions.All);
+            var f = Compile(exp, CompilerOptions.All);
             Assert.IsTrue(f(3, 1));
             Assert.IsFalse(f(1, uint.MaxValue));
             Assert.IsTrue(f(3000000000, 3000000000));

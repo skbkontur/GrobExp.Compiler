@@ -15,7 +15,7 @@ namespace GrobExp.Compiler.Closures
         {
             if (type == null || type.IsGenericParameter) return true;
 
-            if(type.IsArray)
+            if (type.IsArray)
             {
                 if (!type.IsNested)
                 {
@@ -28,14 +28,14 @@ namespace GrobExp.Compiler.Closures
                 return IsNestedlyPublic(elem);
             }
 
-            if(type.IsGenericType)
+            if (type.IsGenericType)
             {
-                if(!type.IsNested)
+                if (!type.IsNested)
                 {
-                    if(!type.IsPublic)
+                    if (!type.IsPublic)
                         return false;
                 }
-                else if(!type.IsNestedPublic || !IsNestedlyPublic(type.DeclaringType))
+                else if (!type.IsNestedPublic || !IsNestedlyPublic(type.DeclaringType))
                     return false;
                 var parameters = type.GetGenericArguments();
                 return parameters.All(IsNestedlyPublic);
@@ -82,18 +82,18 @@ namespace GrobExp.Compiler.Closures
             var invocation = (InvocationExpression)convert.Operand;
             var obj = invocation.Arguments[0];
             var asConst = obj as ConstantExpression;
-            if(asConst != null && asConst.Value == null)
+            if (asConst != null && asConst.Value == null)
                 return null;
             return obj;
         }
 
         private static Expression GetInvocation(MethodInfo method, Expression obj, Expression[] arguments)
         {
-            if(obj != null)
+            if (obj != null)
                 arguments = new[] {obj}.Concat(arguments).ToArray();
 
-            foreach(var arg in arguments)
-                if(!IsNestedlyPublic(arg.Type))
+            foreach (var arg in arguments)
+                if (!IsNestedlyPublic(arg.Type))
                 {
                     throw new InvalidOperationException(string.Format(
                         "Non-public method '{0}' with argument or return value of non-public type '{1}' is not allowed!",
@@ -108,7 +108,7 @@ namespace GrobExp.Compiler.Closures
 
         private void CheckTypePublicity(Type type)
         {
-            if(!IsNestedlyPublic(type))
+            if (!IsNestedlyPublic(type))
                 throw new InvalidOperationException(string.Format("Non-public type '{0}' is not allowed!", Formatter.Format(type)));
         }
 
@@ -132,7 +132,7 @@ namespace GrobExp.Compiler.Closures
             if (NeedsToBeReplacedByGetter(node))
             {
                 CheckTypePublicity(node.Type);
-                switch(node.Member.MemberType)
+                switch (node.Member.MemberType)
                 {
                 case MemberTypes.Property:
                     {
@@ -163,9 +163,9 @@ namespace GrobExp.Compiler.Closures
             var beforeInvocation = new List<Expression>();
             var afterInvocation = new List<Expression>();
 
-            for(int i = 0; i < arguments.Count; i++)
+            for (int i = 0; i < arguments.Count; i++)
             {
-                if(NeedsToBeReplacedByGetter(arguments[i]) && argumentsTypes[i].IsByRef)
+                if (NeedsToBeReplacedByGetter(arguments[i]) && argumentsTypes[i].IsByRef)
                 {
                     var access = (MemberExpression)arguments[i];
                     var getter = newArguments[i];
@@ -180,15 +180,15 @@ namespace GrobExp.Compiler.Closures
             }
 
             Expression newInvocation;
-            if(node.Method.IsPublic && IsNestedlyPublic(node.Method.DeclaringType))
+            if (node.Method.IsPublic && IsNestedlyPublic(node.Method.DeclaringType))
                 newInvocation = node.Update(newObject, newArguments);
             else
                 newInvocation = GetInvocation(node.Method, newObject, newArguments);
 
-            if(variables.Count > 0)
+            if (variables.Count > 0)
             {
                 ParameterExpression returnVariable = null;
-                if(newInvocation.Type != typeof(void))
+                if (newInvocation.Type != typeof(void))
                 {
                     returnVariable = Expression.Parameter(newInvocation.Type);
                     variables.Add(returnVariable);
@@ -199,7 +199,7 @@ namespace GrobExp.Compiler.Closures
                 blockExpressions.AddRange(beforeInvocation);
                 blockExpressions.Add(newInvocation);
                 blockExpressions.AddRange(afterInvocation);
-                if(returnVariable != null)
+                if (returnVariable != null)
                     blockExpressions.Add(returnVariable);
 
                 return Expression.Block(variables, blockExpressions);

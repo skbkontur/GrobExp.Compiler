@@ -58,12 +58,12 @@ namespace GrobExp.Compiler.Tests
             var f = LambdaCompiler.Compile(exp, CompilerOptions.All);
             var collectingThread = new Thread(Collect);
             collectingThread.Start();
-            for(int i = 0; i < 10; ++i)
+            for (int i = 0; i < 10; ++i)
             {
                 var generatingTrashThread = new Thread(GenerateTrash);
                 generatingTrashThread.Start();
             }
-            for(int i = 0; i < 100000; ++i)
+            for (int i = 0; i < 100000; ++i)
             {
                 var o = new TestClassA {ArrayB = new TestClassB[100], IntArray = new int[100]};
                 Assert.IsTrue(f(o));
@@ -81,12 +81,12 @@ namespace GrobExp.Compiler.Tests
             var f = LambdaCompiler.Compile(exp, CompilerOptions.All);
             var collectingThread = new Thread(Collect);
             collectingThread.Start();
-            for(int i = 0; i < 10; ++i)
+            for (int i = 0; i < 10; ++i)
             {
                 var generatingTrashThread = new Thread(GenerateTrash);
                 generatingTrashThread.Start();
             }
-            for(int i = 0; i < 100000; ++i)
+            for (int i = 0; i < 100000; ++i)
             {
                 var o = new TestClassA {ArrayB = new TestClassB[100], IntArray = new int[100], StringArray = new string[100]};
                 Assert.IsTrue(f(o));
@@ -102,12 +102,12 @@ namespace GrobExp.Compiler.Tests
                 Expression.Block(
                     Expression.Call(threadSleepMethod, new[] {Expression.Constant(10)}),
                     Expression.Equal(parameter, Expression.Constant(guid), false, typeof(Guid).GetMethod("op_Equality"))
-                ),
+                    ),
                 parameter);
 
             new Thread(Collect).Start();
 
-            for(int iter = 0; iter < 100; ++iter)
+            for (int iter = 0; iter < 100; ++iter)
                 DoTestConstsAreNotFreedWhileRunning(exp, new Guid("2e224f5f-e392-4753-a19a-4304f226b965"));
         }
 
@@ -428,14 +428,14 @@ namespace GrobExp.Compiler.Tests
 
         private static unsafe void Qzz3(TestClassA a, int x)
         {
-            fixed(int* p = &a.IntArray[0])
+            fixed (int* p = &a.IntArray[0])
                 *(p + 1) = x;
         }
 
         private static string GetString()
         {
             int j = 0;
-            for(int i = 0; i < 100000; ++i)
+            for (int i = 0; i < 100000; ++i)
             {
                 var o = new TestClassA {ArrayB = new TestClassB[100]};
                 j += i * o.ArrayB.Length;
@@ -445,17 +445,17 @@ namespace GrobExp.Compiler.Tests
 
         private void GenerateTrash()
         {
-            for(;;)
+            for (;;)
             {
                 var list = new List<TestClassA>();
-                for(int i = 0; i < 1000; ++i)
+                for (int i = 0; i < 1000; ++i)
                     list.Add(new TestClassA {ArrayB = new TestClassB[100], IntArray = new int[100]});
             }
         }
 
         private void Collect()
         {
-            for(;;)
+            for (;;)
             {
                 GC.Collect();
                 Thread.Sleep(100);
@@ -490,12 +490,12 @@ namespace GrobExp.Compiler.Tests
         private void Run(object param)
         {
             var f = (Func<TestClassA, List<string>>)param;
-            for(int i = 0; i < 1000000; ++i)
+            for (int i = 0; i < 1000000; ++i)
             {
                 string s = Guid.NewGuid().ToString();
                 var a = new TestClassA {ArrayB = new[] {new TestClassB {S = s}}};
                 var list = f(a);
-                if(list.Count == 0 || list[0] != s)
+                if (list.Count == 0 || list[0] != s)
                     wasBug = true;
             }
         }
@@ -507,15 +507,15 @@ namespace GrobExp.Compiler.Tests
 
         public static int NotExtension(TestClassA x, TestClassA y)
         {
-            if(x == null) return 1;
-            if(y == null) return 2;
+            if (x == null) return 1;
+            if (y == null) return 2;
             return 3;
         }
 
         public static TestClassA NotExtension2(TestClassA x, TestClassA y)
         {
-            if(x == null) return new TestClassA {Y = 1};
-            if(y == null) return new TestClassA {Y = 2};
+            if (x == null) return new TestClassA {Y = 1};
+            if (y == null) return new TestClassA {Y = 2};
             return new TestClassA {Y = 3};
         }
 

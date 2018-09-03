@@ -12,15 +12,15 @@ namespace GrobExp.Compiler
         {
             var hashCodes = new List<int>();
             CalcHashCode(node, new Context
-            {
-                Strictly = strictly,
-                Parameters = new Dictionary<Type, Dictionary<ParameterExpression, int>>(),
-                Labels = new Dictionary<LabelTarget, int>(),
-                HashCodes = hashCodes
-            });
+                {
+                    Strictly = strictly,
+                    Parameters = new Dictionary<Type, Dictionary<ParameterExpression, int>>(),
+                    Labels = new Dictionary<LabelTarget, int>(),
+                    HashCodes = hashCodes
+                });
             const int x = 1084996987; //for sake of primality
             var result = 0;
-            foreach(var hashCode in hashCodes)
+            foreach (var hashCode in hashCodes)
             {
                 unchecked
                 {
@@ -32,20 +32,20 @@ namespace GrobExp.Compiler
 
         private static void CalcHashCode(IEnumerable<Expression> list, Context context)
         {
-            foreach(var exp in list)
+            foreach (var exp in list)
                 CalcHashCode(exp, context);
         }
 
         private static void CalcHashCode(Expression node, Context context)
         {
-            if(node == null)
+            if (node == null)
             {
                 context.HashCodes.Add(0);
                 return;
             }
             context.HashCodes.Add(CalcHashCode(node.NodeType));
             context.HashCodes.Add(CalcHashCode(node.Type));
-            switch(node.NodeType)
+            switch (node.NodeType)
             {
             case ExpressionType.Add:
             case ExpressionType.AddAssign:
@@ -231,7 +231,7 @@ namespace GrobExp.Compiler
 
         private static void CalcHashCodeParameter(ParameterExpression node, Context context)
         {
-            if(node == null)
+            if (node == null)
             {
                 context.HashCodes.Add(0);
                 return;
@@ -239,15 +239,15 @@ namespace GrobExp.Compiler
 
             var parameterType = node.IsByRef ? node.Type.MakeByRefType() : node.Type;
             context.HashCodes.Add(CalcHashCode(parameterType));
-            if(context.Strictly)
+            if (context.Strictly)
                 context.HashCodes.Add(CalcHashCode(node.Name));
             else
             {
                 Dictionary<ParameterExpression, int> parameters;
-                if(!context.Parameters.TryGetValue(parameterType, out parameters))
+                if (!context.Parameters.TryGetValue(parameterType, out parameters))
                     context.Parameters.Add(parameterType, parameters = new Dictionary<ParameterExpression, int>());
                 int index;
-                if(!parameters.TryGetValue(node, out index))
+                if (!parameters.TryGetValue(node, out index))
                     parameters.Add(node, index = parameters.Count);
                 context.HashCodes.Add(CalcHashCode(index));
             }
@@ -268,26 +268,26 @@ namespace GrobExp.Compiler
 
         private static void CalcHashCodeBlock(BlockExpression node, Context context)
         {
-            if(context.Strictly)
+            if (context.Strictly)
             {
-                foreach(var variable in node.Variables)
+                foreach (var variable in node.Variables)
                     CalcHashCodeParameter(variable, context);
             }
 
-            if(!context.Strictly)
+            if (!context.Strictly)
             {
-                foreach(var variable in node.Variables)
+                foreach (var variable in node.Variables)
                 {
                     Dictionary<ParameterExpression, int> parameters;
-                    if(!context.Parameters.TryGetValue(variable.Type, out parameters))
+                    if (!context.Parameters.TryGetValue(variable.Type, out parameters))
                         context.Parameters.Add(variable.Type, parameters = new Dictionary<ParameterExpression, int>());
                     parameters.Add(variable, parameters.Count);
                 }
             }
             CalcHashCode(node.Expressions, context);
-            if(!context.Strictly)
+            if (!context.Strictly)
             {
-                foreach(var variable in node.Variables)
+                foreach (var variable in node.Variables)
                     context.Parameters[variable.Type].Remove(variable);
             }
         }
@@ -333,7 +333,7 @@ namespace GrobExp.Compiler
 
         private static void CalcHashCodeLabel(LabelTarget target, Context context)
         {
-            if(target == null)
+            if (target == null)
             {
                 context.HashCodes.Add(0);
                 return;
@@ -378,27 +378,27 @@ namespace GrobExp.Compiler
 
         private static void CalcHashCodeLambda(LambdaExpression node, Context context)
         {
-            if(!context.Strictly)
+            if (!context.Strictly)
             {
-                foreach(var parameter in node.Parameters)
+                foreach (var parameter in node.Parameters)
                 {
                     Dictionary<ParameterExpression, int> parameters;
-                    if(!context.Parameters.TryGetValue(parameter.Type, out parameters))
+                    if (!context.Parameters.TryGetValue(parameter.Type, out parameters))
                         context.Parameters.Add(parameter.Type, parameters = new Dictionary<ParameterExpression, int>());
                     parameters.Add(parameter, parameters.Count);
                 }
             }
             CalcHashCode(node.Body, context);
-            if(!context.Strictly)
+            if (!context.Strictly)
             {
-                foreach(var parameter in node.Parameters)
+                foreach (var parameter in node.Parameters)
                     context.Parameters[parameter.Type].Remove(parameter);
             }
         }
 
         private static void CalcHashCodeElemInits(IEnumerable<ElementInit> inits, Context context)
         {
-            foreach(var init in inits)
+            foreach (var init in inits)
             {
                 context.HashCodes.Add(CalcHashCode(init.AddMethod));
                 CalcHashCode(init.Arguments, context);
@@ -427,7 +427,7 @@ namespace GrobExp.Compiler
         private static void CalcHashCodeMemberInit(MemberInitExpression node, Context context)
         {
             CalcHashCode(node.NewExpression, context);
-            foreach(var memberBinding in node.Bindings)
+            foreach (var memberBinding in node.Bindings)
             {
                 var binding = (MemberAssignment)memberBinding;
                 context.HashCodes.Add(CalcHashCode(binding.BindingType));
@@ -441,17 +441,17 @@ namespace GrobExp.Compiler
             context.HashCodes.Add(CalcHashCode(node.Constructor));
             CalcHashCode(node.Arguments, context);
 
-            if(node.Members != null)
+            if (node.Members != null)
             {
                 var normalizedMembers = node.Members.ToList();
-                if(!context.Strictly)
+                if (!context.Strictly)
                 {
                     normalizedMembers.Sort((first, second) =>
-                    {
-                        if(first.Module != second.Module)
-                            return string.Compare(first.Module.FullyQualifiedName, second.Module.FullyQualifiedName, StringComparison.InvariantCulture);
-                        return first.MetadataToken - second.MetadataToken;
-                    });
+                        {
+                            if (first.Module != second.Module)
+                                return string.Compare(first.Module.FullyQualifiedName, second.Module.FullyQualifiedName, StringComparison.InvariantCulture);
+                            return first.MetadataToken - second.MetadataToken;
+                        });
                 }
                 context.HashCodes.AddRange(node.Members.Select(CalcHashCode));
             }
@@ -469,7 +469,7 @@ namespace GrobExp.Compiler
 
         private static void CalcHashCodeCases(IEnumerable<SwitchCase> cases, Context context)
         {
-            foreach(var oneCase in cases)
+            foreach (var oneCase in cases)
             {
                 CalcHashCode(oneCase.Body, context);
                 CalcHashCode(oneCase.TestValues, context);
@@ -486,7 +486,7 @@ namespace GrobExp.Compiler
 
         private static void CalcHashCodeCatchBlocks(IEnumerable<CatchBlock> handlers, Context context)
         {
-            foreach(var handler in handlers)
+            foreach (var handler in handlers)
             {
                 CalcHashCode(handler.Body, context);
                 CalcHashCode(handler.Filter, context);

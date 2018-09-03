@@ -47,8 +47,8 @@ namespace GrobExp.Compiler
         {
             var parameters = new ParametersExtractor().Extract(lambda.Body);
             var hashset = new HashSet<ParameterExpression>(lambda.Parameters);
-            foreach(var parameter in parameters)
-                if(!hashset.Contains(parameter))
+            foreach (var parameter in parameters)
+                if (!hashset.Contains(parameter))
                     throw new InvalidOperationException($"Lambda contains parameter not presented in Lambda.Parameters: {parameter}");
         }
 
@@ -64,7 +64,7 @@ namespace GrobExp.Compiler
             bool internalCall,
             List<CompiledLambda> compiledLambdas)
         {
-            if(debugInfoGenerator == null)
+            if (debugInfoGenerator == null)
                 return CompileToDynamicMethod(lambda, parsedLambda, options, internalCall, compiledLambdas);
 
             var parameters = lambda.Parameters.ToArray();
@@ -73,15 +73,15 @@ namespace GrobExp.Compiler
 
             var typeBuilder = Module.DefineType(Guid.NewGuid().ToString(), TypeAttributes.Public | TypeAttributes.Class);
             var method = typeBuilder.DefineMethod(lambda.Name ?? Guid.NewGuid().ToString(), MethodAttributes.Static | MethodAttributes.Public, returnType, parameterTypes);
-            for(var i = 0; i < parameters.Length; ++i)
+            for (var i = 0; i < parameters.Length; ++i)
                 method.DefineParameter(i + 1, ParameterAttributes.None, parameters[i].Name);
             CompileToMethodInternal(lambda, debugInfoGenerator, parsedLambda, options, compiledLambdas, method);
 
             var type = typeBuilder.CreateTypeInfo();
             var dynamicMethod = new DynamicMethod(Guid.NewGuid().ToString(), returnType, parameterTypes, Module, true);
-            using(var il = new GroboIL(dynamicMethod))
+            using (var il = new GroboIL(dynamicMethod))
             {
-                for(var i = 0; i < parameterTypes.Length; ++i)
+                for (var i = 0; i < parameterTypes.Length; ++i)
                     il.Ldarg(i);
                 il.Call(type.GetMethod(method.Name));
                 il.Ret();
@@ -89,7 +89,7 @@ namespace GrobExp.Compiler
             return new CompiledLambda
                 {
                     Delegate = Extensions.IsMono && internalCall ? dynamicMethod.CreateDelegate(Extensions.GetDelegateType(parameterTypes, returnType))
-                    : dynamicMethod.CreateDelegate(Extensions.GetDelegateType(parsedLambda.ConstantsParameter == null ? parameterTypes : parameterTypes.Skip(1).ToArray(), lambda.ReturnType), parsedLambda.Constants),
+                                   : dynamicMethod.CreateDelegate(Extensions.GetDelegateType(parsedLambda.ConstantsParameter == null ? parameterTypes : parameterTypes.Skip(1).ToArray(), lambda.ReturnType), parsedLambda.Constants),
                     Method = method
                 };
         }
@@ -103,9 +103,9 @@ namespace GrobExp.Compiler
             MethodBuilder method)
         {
             var typeBuilder = method.ReflectedType as TypeBuilder;
-            if(typeBuilder == null)
+            if (typeBuilder == null)
                 throw new ArgumentException("Unable to obtain type builder of the method", "method");
-            using(var il = new GroboIL(method, AnalyzeILStack))
+            using (var il = new GroboIL(method, AnalyzeILStack))
             {
                 var context = new EmittingContext
                     {
@@ -135,7 +135,7 @@ namespace GrobExp.Compiler
         private static string GenerateFileName(Expression expression)
         {
             var hash = ExpressionHashCalculator.CalcHashCode(expression, true);
-            if(!Directory.Exists(DebugOutputDirectory))
+            if (!Directory.Exists(DebugOutputDirectory))
                 Directory.CreateDirectory(DebugOutputDirectory);
             return Path.Combine(DebugOutputDirectory, "Z" + Math.Abs(hash) + ".lambda");
         }
@@ -148,25 +148,25 @@ namespace GrobExp.Compiler
             Type resultType;
             var whatReturn = returnType == typeof(void) ? ResultType.Void : ResultType.Value;
             var labelUsed = ExpressionEmittersCollection.Emit(lambda.Body, context, returnDefaultValueLabel, whatReturn, false, out resultType);
-            if(returnType == typeof(bool) && resultType == typeof(bool?))
+            if (returnType == typeof(bool) && resultType == typeof(bool?))
                 context.ConvertFromNullableBoolToBool();
-            if(returnType == typeof(void) && resultType != typeof(void))
+            if (returnType == typeof(void) && resultType != typeof(void))
             {
-                using(var temp = context.DeclareLocal(resultType))
+                using (var temp = context.DeclareLocal(resultType))
                     il.Stloc(temp);
             }
             il.Ret();
-            if(!labelUsed)
+            if (!labelUsed)
                 return;
             context.MarkLabelAndSurroundWithSP(returnDefaultValueLabel);
             il.Pop();
-            if(returnType != typeof(void))
+            if (returnType != typeof(void))
             {
-                if(!returnType.IsValueType)
+                if (!returnType.IsValueType)
                     il.Ldnull();
                 else
                 {
-                    using(var defaultValue = context.DeclareLocal(returnType))
+                    using (var defaultValue = context.DeclareLocal(returnType))
                     {
                         il.Ldloca(defaultValue);
                         il.Initobj(returnType);
@@ -188,7 +188,7 @@ namespace GrobExp.Compiler
             var parameterTypes = parameters.Select(parameter => parameter.Type).ToArray();
             var returnType = lambda.ReturnType;
             var method = new DynamicMethod(lambda.Name ?? Guid.NewGuid().ToString(), MethodAttributes.Static | MethodAttributes.Public, CallingConventions.Standard, returnType, parameterTypes, Module, true);
-            using(var il = new GroboIL(method, AnalyzeILStack))
+            using (var il = new GroboIL(method, AnalyzeILStack))
             {
                 var context = new EmittingContext
                     {
@@ -204,11 +204,11 @@ namespace GrobExp.Compiler
                 CompileInternal(lambda, context);
             }
             return new CompiledLambda
-            {
-                Delegate = Extensions.IsMono && internalCall ? method.CreateDelegate(Extensions.GetDelegateType(parameterTypes, returnType))
-                    : method.CreateDelegate(Extensions.GetDelegateType(parsedLambda.ConstantsParameter == null ? parameterTypes : parameterTypes.Skip(1).ToArray(), lambda.ReturnType), parsedLambda.Constants),
-                Method = method
-            };
+                {
+                    Delegate = Extensions.IsMono && internalCall ? method.CreateDelegate(Extensions.GetDelegateType(parameterTypes, returnType))
+                                   : method.CreateDelegate(Extensions.GetDelegateType(parsedLambda.ConstantsParameter == null ? parameterTypes : parameterTypes.Skip(1).ToArray(), lambda.ReturnType), parsedLambda.Constants),
+                    Method = method
+                };
         }
 
         private static AssemblyBuilder CreateAssembly()
@@ -232,14 +232,14 @@ namespace GrobExp.Compiler
             ParsedLambda parsedLambda;
             var emitToDynamicMethod = debugInfoGenerator == null;
             var resolvedLambda = new ExpressionClosureResolver(lambda, Module, emitToDynamicMethod, options).Resolve(out parsedLambda);
-            if(!string.IsNullOrEmpty(DebugOutputDirectory))
+            if (!string.IsNullOrEmpty(DebugOutputDirectory))
             {
                 resolvedLambda = AdvancedDebugViewWriter.WriteToModifying(resolvedLambda, parsedLambda.ConstantsType,
                                                                           parsedLambda.ConstantsParameter, parsedLambda.Constants, GenerateFileName(resolvedLambda));
             }
             var compiledLambda = CompileInternal(resolvedLambda, debugInfoGenerator, parsedLambda, options, false, compiledLambdas);
             subLambdas = compiledLambdas.ToArray();
-            if(compiledLambdas.Count > 0 && emitToDynamicMethod)
+            if (compiledLambdas.Count > 0 && emitToDynamicMethod)
                 BuildDelegatesFoister(parsedLambda)(parsedLambda.Constants, compiledLambdas.Select(compIledLambda => compIledLambda.Delegate).ToArray());
             return compiledLambda.Delegate;
         }
@@ -249,12 +249,12 @@ namespace GrobExp.Compiler
             var compiledLambdas = new List<CompiledLambda>();
             ParsedLambda parsedLambda;
             var module = method.Module as ModuleBuilder;
-            if(module == null)
+            if (module == null)
                 throw new ArgumentException("Unable to obtain module builder of the method", "method");
             method.SetReturnType(lambda.ReturnType);
             method.SetParameters(lambda.Parameters.Select(parameter => parameter.Type).ToArray());
             var resolvedLambda = new ExpressionClosureResolver(lambda, module, false, options).Resolve(out parsedLambda);
-            if(!string.IsNullOrEmpty(DebugOutputDirectory))
+            if (!string.IsNullOrEmpty(DebugOutputDirectory))
             {
                 resolvedLambda = AdvancedDebugViewWriter.WriteToModifying(resolvedLambda, parsedLambda.ConstantsType,
                                                                           parsedLambda.ConstantsParameter, parsedLambda.Constants, GenerateFileName(resolvedLambda));
@@ -270,8 +270,8 @@ namespace GrobExp.Compiler
             var delegates = Expression.Parameter(typeof(Delegate[]));
             var castedConstants = Expression.Parameter(parsedLambda.ConstantsType);
             var body = Expression.Block(new[] {castedConstants},
-                             Expression.Assign(castedConstants, Expression.Convert(constants, parsedLambda.ConstantsType)),
-                             parsedLambda.ConstantsBuilder.Assign(castedConstants, parsedLambda.DelegatesFieldId, delegates));
+                                        Expression.Assign(castedConstants, Expression.Convert(constants, parsedLambda.ConstantsType)),
+                                        parsedLambda.ConstantsBuilder.Assign(castedConstants, parsedLambda.DelegatesFieldId, delegates));
             var lambda = Expression.Lambda<Action<object, Delegate[]>>(body, constants, delegates);
             return Compile(lambda, CompilerOptions.None);
         }

@@ -16,31 +16,31 @@ namespace GrobExp.Compiler.ExpressionEmitters
             var needClosure = context.ParsedLambda.ClosureParameter != null;
             var needConstants = context.ParsedLambda.ConstantsParameter != null;
             var constantParameters = new List<ParameterExpression>();
-            if(needConstants)
+            if (needConstants)
                 constantParameters.Add(context.ParsedLambda.ConstantsParameter);
-            if(needClosure)
+            if (needClosure)
                 constantParameters.Add(context.ParsedLambda.ClosureParameter);
             var parameters = constantParameters.Concat(node.Parameters).ToList();
             var lambda = Expression.Lambda(Extensions.GetDelegateType(parameters.Select(parameter => parameter.Type).ToArray(), node.ReturnType), node.Body, node.Name, node.TailCall, parameters);
             CompiledLambda compiledLambda;
-            if(context.TypeBuilder == null)
+            if (context.TypeBuilder == null)
                 compiledLambda = LambdaCompiler.CompileInternal(lambda, context.DebugInfoGenerator, context.ParsedLambda, context.Options, true, context.CompiledLambdas);
             else
             {
                 var method = context.TypeBuilder.DefineMethod(Guid.NewGuid().ToString(), MethodAttributes.Public | MethodAttributes.Static, lambda.ReturnType, lambda.Parameters.Select(parameter => parameter.Type).ToArray());
-                for(var i = 0; i < parameters.Count; ++i)
+                for (var i = 0; i < parameters.Count; ++i)
                     method.DefineParameter(i + 1, ParameterAttributes.None, parameters[i].Name);
                 LambdaCompiler.CompileToMethodInternal(lambda, context.DebugInfoGenerator, context.ParsedLambda, context.Options, context.CompiledLambdas, method);
                 compiledLambda = new CompiledLambda {Method = method};
             }
             compiledLambda.Index = context.CompiledLambdas.Count;
             context.CompiledLambdas.Add(compiledLambda);
-            if(needConstants)
+            if (needConstants)
             {
                 Type constantsType;
                 ExpressionEmittersCollection.Emit(context.ParsedLambda.ConstantsParameter, context, out constantsType);
             }
-            if(needClosure)
+            if (needClosure)
             {
                 Type closureType;
                 ExpressionEmittersCollection.Emit(context.ParsedLambda.ClosureParameter, context, out closureType);
@@ -58,7 +58,7 @@ namespace GrobExp.Compiler.ExpressionEmitters
 
             var il = context.Il;
             Type rawSubLambdaType;
-            if(!Extensions.IsMono)
+            if (!Extensions.IsMono)
             {
                 context.LoadCompiledLambdaPointer(compiledLambda);
                 rawSubLambdaType = typeof(IntPtr);

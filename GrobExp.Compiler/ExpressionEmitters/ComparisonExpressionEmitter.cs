@@ -16,38 +16,38 @@ namespace GrobExp.Compiler.ExpressionEmitters
             context.EmitLoadArgument(left, false, out leftType);
             context.EmitLoadArgument(right, false, out rightType);
             var il = context.Il;
-            if(node.Method != null)
+            if (node.Method != null)
             {
-                if(!leftType.IsNullable() && !rightType.IsNullable())
+                if (!leftType.IsNullable() && !rightType.IsNullable())
                     il.Call(node.Method);
                 else
                 {
-                    using(var localLeft = context.DeclareLocal(leftType))
-                    using(var localRight = context.DeclareLocal(rightType))
+                    using (var localLeft = context.DeclareLocal(leftType))
+                    using (var localRight = context.DeclareLocal(rightType))
                     {
                         il.Stloc(localRight);
                         il.Stloc(localLeft);
                         var returnNullLabel = il.DefineLabel("returnNull");
-                        if(leftType.IsNullable())
+                        if (leftType.IsNullable())
                         {
                             il.Ldloca(localLeft);
                             context.EmitHasValueAccess(leftType);
                             il.Brfalse(returnNullLabel);
                         }
-                        if(rightType.IsNullable())
+                        if (rightType.IsNullable())
                         {
                             il.Ldloca(localRight);
                             context.EmitHasValueAccess(rightType);
                             il.Brfalse(returnNullLabel);
                         }
-                        if(!leftType.IsNullable())
+                        if (!leftType.IsNullable())
                             il.Ldloc(localLeft);
                         else
                         {
                             il.Ldloca(localLeft);
                             context.EmitValueAccess(leftType);
                         }
-                        if(!rightType.IsNullable())
+                        if (!rightType.IsNullable())
                             il.Ldloc(localRight);
                         else
                         {
@@ -68,11 +68,11 @@ namespace GrobExp.Compiler.ExpressionEmitters
             else
             {
                 var type = leftType;
-                if(type != rightType)
+                if (type != rightType)
                     throw new InvalidOperationException("Cannot compare objects of different types '" + leftType + "' and '" + rightType + "'");
-                if(!type.IsNullable())
+                if (!type.IsNullable())
                 {
-                    switch(node.NodeType)
+                    switch (node.NodeType)
                     {
                     case ExpressionType.GreaterThan:
                         il.Cgt(type.Unsigned());
@@ -97,10 +97,10 @@ namespace GrobExp.Compiler.ExpressionEmitters
                 }
                 else
                 {
-                    if(!context.Options.HasFlag(CompilerOptions.UseTernaryLogic))
+                    if (!context.Options.HasFlag(CompilerOptions.UseTernaryLogic))
                     {
-                        using(var localLeft = context.DeclareLocal(type))
-                        using(var localRight = context.DeclareLocal(type))
+                        using (var localLeft = context.DeclareLocal(type))
+                        using (var localRight = context.DeclareLocal(type))
                         {
                             il.Stloc(localRight);
                             il.Stloc(localLeft);
@@ -111,7 +111,7 @@ namespace GrobExp.Compiler.ExpressionEmitters
                             var returnFalseLabel = il.DefineLabel("returnFalse");
 
                             var argument = type.GetGenericArguments()[0];
-                            switch(node.NodeType)
+                            switch (node.NodeType)
                             {
                             case ExpressionType.GreaterThan:
                                 il.Ble(returnFalseLabel, argument.Unsigned());
@@ -143,8 +143,8 @@ namespace GrobExp.Compiler.ExpressionEmitters
                     }
                     else
                     {
-                        using(var localLeft = context.DeclareLocal(type))
-                        using(var localRight = context.DeclareLocal(type))
+                        using (var localLeft = context.DeclareLocal(type))
+                        using (var localRight = context.DeclareLocal(type))
                         {
                             il.Stloc(localRight);
                             il.Stloc(localLeft);
@@ -161,7 +161,7 @@ namespace GrobExp.Compiler.ExpressionEmitters
                             context.EmitValueAccess(type);
                             var argumentType = type.GetGenericArguments()[0];
 
-                            switch(node.NodeType)
+                            switch (node.NodeType)
                             {
                             case ExpressionType.GreaterThan:
                                 il.Cgt(argumentType.Unsigned());

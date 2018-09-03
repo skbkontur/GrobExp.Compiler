@@ -12,7 +12,7 @@ namespace GrobExp.Compiler.ExpressionEmitters
         {
             var il = context.Il;
 
-            if(node.Expressions.Count != 1)
+            if (node.Expressions.Count != 1)
             {
                 context.EmitLoadArguments(node.Expressions.ToArray());
                 il.Newobj(node.Type.GetConstructor(node.Expressions.Select(exp => exp.Type).ToArray()));
@@ -22,9 +22,9 @@ namespace GrobExp.Compiler.ExpressionEmitters
                 GroboIL.Label lengthIsNullLabel = context.CanReturn ? il.DefineLabel("lengthIsNull") : null;
                 Type lengthType;
                 var labelUsed = ExpressionEmittersCollection.Emit(node.Expressions.Single(), context, lengthIsNullLabel, out lengthType);
-                if(lengthType != typeof(int))
+                if (lengthType != typeof(int))
                     throw new InvalidOperationException("Cannot create an array with length of type '" + lengthType + "'");
-                if(labelUsed && context.CanReturn)
+                if (labelUsed && context.CanReturn)
                 {
                     var lengthIsNotNullLabel = il.DefineLabel("lengthIsNotNull");
                     il.Br(lengthIsNotNullLabel);

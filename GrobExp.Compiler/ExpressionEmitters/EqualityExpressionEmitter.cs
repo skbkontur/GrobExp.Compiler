@@ -15,16 +15,16 @@ namespace GrobExp.Compiler.ExpressionEmitters
             context.EmitLoadArgument(left, false, out leftType);
             context.EmitLoadArgument(right, false, out rightType);
             GroboIL il = context.Il;
-            if(!leftType.IsNullable() && !rightType.IsNullable())
+            if (!leftType.IsNullable() && !rightType.IsNullable())
             {
-                if(node.Method != null)
+                if (node.Method != null)
                     il.Call(node.Method);
                 else
                 {
-                    if(leftType.IsStruct() || rightType.IsStruct())
+                    if (leftType.IsStruct() || rightType.IsStruct())
                         throw new InvalidOperationException("Cannot compare structs");
                     il.Ceq();
-                    if(node.NodeType == ExpressionType.NotEqual)
+                    if (node.NodeType == ExpressionType.NotEqual)
                     {
                         il.Ldc_I4(1);
                         il.Xor();
@@ -34,14 +34,14 @@ namespace GrobExp.Compiler.ExpressionEmitters
             else
             {
                 var type = leftType;
-                if(type != rightType)
+                if (type != rightType)
                     throw new InvalidOperationException("Cannot compare objects of different types '" + leftType + "' and '" + rightType + "'");
-                using(var localLeft = context.DeclareLocal(type))
-                using(var localRight = context.DeclareLocal(type))
+                using (var localLeft = context.DeclareLocal(type))
+                using (var localRight = context.DeclareLocal(type))
                 {
                     il.Stloc(localRight);
                     il.Stloc(localLeft);
-                    if(node.Method != null)
+                    if (node.Method != null)
                     {
                         il.Ldloca(localLeft); // stack: [&left]
                         context.EmitHasValueAccess(type); // stack: [left.HasValue]
@@ -85,7 +85,7 @@ namespace GrobExp.Compiler.ExpressionEmitters
                         context.MarkLabelAndSurroundWithSP(notEqualLabel);
                         il.Ldc_I4(0);
                         context.MarkLabelAndSurroundWithSP(doneLabel);
-                        if(node.NodeType == ExpressionType.NotEqual)
+                        if (node.NodeType == ExpressionType.NotEqual)
                         {
                             il.Ldc_I4(1);
                             il.Xor();

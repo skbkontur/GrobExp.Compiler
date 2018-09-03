@@ -38,11 +38,11 @@ namespace GrobExp.Compiler
 
         protected override Expression VisitBinary(BinaryExpression node)
         {
-            if(node.NodeType == ExpressionType.Equal || node.NodeType == ExpressionType.NotEqual)
+            if (node.NodeType == ExpressionType.Equal || node.NodeType == ExpressionType.NotEqual)
             {
                 var left = Visit(node.Left);
                 var right = Visit(node.Right);
-                if(left.Type.IsNullable() && right.Type == typeof(object))
+                if (left.Type.IsNullable() && right.Type == typeof(object))
                     right = Expression.Convert(right, node.Left.Type);
                 return node.Update(left, (LambdaExpression)Visit(node.Conversion), right);
             }
@@ -51,10 +51,10 @@ namespace GrobExp.Compiler
 
         protected override Expression VisitMethodCall(MethodCallExpression node)
         {
-            if(node.Object == null)
+            if (node.Object == null)
                 return base.VisitMethodCall(node);
             var indexer = node.Object.Type.GetProperty("Item", BindingFlags.Public | BindingFlags.Instance);
-            if(indexer != null && indexer.GetGetMethod(true) == node.Method)
+            if (indexer != null && indexer.GetGetMethod(true) == node.Method)
                 return Expression.MakeIndex(node.Object, indexer, node.Arguments);
             return base.VisitMethodCall(node);
         }

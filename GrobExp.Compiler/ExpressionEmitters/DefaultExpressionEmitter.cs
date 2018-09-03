@@ -10,7 +10,7 @@ namespace GrobExp.Compiler.ExpressionEmitters
         protected override bool EmitInternal(DefaultExpression node, EmittingContext context, GroboIL.Label returnDefaultValueLabel, ResultType whatReturn, bool extend, out Type resultType)
         {
             resultType = node.Type;
-            if(node.Type != typeof(void))
+            if (node.Type != typeof(void))
                 context.EmitLoadDefaultValue(node.Type);
             return false;
         }

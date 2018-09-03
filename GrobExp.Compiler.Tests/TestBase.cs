@@ -22,7 +22,7 @@ namespace GrobExp.Compiler.Tests
             LambdaCompiler.CompileToMethod(lambda, method, options);
             var type = typeBuilder.CreateType();
             var dynamicMethod = new DynamicMethod(Guid.NewGuid().ToString(), MethodAttributes.Static | MethodAttributes.Public, CallingConventions.Standard, typeof(TDelegate), null, TestPerformance.Module, true);
-            using(var il = new GroboIL(dynamicMethod))
+            using (var il = new GroboIL(dynamicMethod))
             {
                 il.Ldnull();
                 il.Ldftn(type.GetMethod("lambda"));

@@ -9,12 +9,12 @@ namespace GrobExp.Compiler.ExpressionEmitters
     {
         protected override bool EmitInternal(ConstantExpression node, EmittingContext context, GroboIL.Label returnDefaultValueLabel, ResultType whatReturn, bool extend, out Type resultType)
         {
-            if(node.Value == null)
+            if (node.Value == null)
                 context.EmitLoadDefaultValue(node.Type);
             else
             {
                 var typeCode = Type.GetTypeCode(node.Type.IsNullable() ? node.Type.GetGenericArguments()[0] : node.Type);
-                switch(typeCode)
+                switch (typeCode)
                 {
                 case TypeCode.Boolean:
                     context.Il.Ldc_I4(((bool)node.Value) ? 1 : 0);
@@ -67,7 +67,7 @@ namespace GrobExp.Compiler.ExpressionEmitters
                 default:
                     throw new NotSupportedException("Constant of type '" + node.Type + "' is not supported");
                 }
-                if(node.Type.IsNullable())
+                if (node.Type.IsNullable())
                     context.Il.Newobj(node.Type.GetConstructor(new[] {node.Type.GetGenericArguments()[0]}));
             }
             resultType = node.Type;

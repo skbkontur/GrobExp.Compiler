@@ -16,27 +16,27 @@ namespace GrobExp.Compiler
 
         protected override Expression VisitLambda<T>(Expression<T> lambda)
         {
-            foreach(var parameter in lambda.Parameters)
+            foreach (var parameter in lambda.Parameters)
                 localParameters.Add(parameter);
             var res = base.VisitLambda(lambda);
-            foreach(var parameter in lambda.Parameters)
+            foreach (var parameter in lambda.Parameters)
                 localParameters.Remove(parameter);
             return res;
         }
 
         protected override Expression VisitBlock(BlockExpression node)
         {
-            foreach(var variable in node.Variables)
+            foreach (var variable in node.Variables)
                 localParameters.Add(variable);
             var res = base.VisitBlock(node);
-            foreach(var variable in node.Variables)
+            foreach (var variable in node.Variables)
                 localParameters.Remove(variable);
             return res;
         }
 
         protected override Expression VisitParameter(ParameterExpression p)
         {
-            if(!localParameters.Contains(p))
+            if (!localParameters.Contains(p))
                 result.Add(p);
             return base.VisitParameter(p);
         }

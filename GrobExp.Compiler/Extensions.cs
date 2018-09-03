@@ -6,9 +6,7 @@ namespace GrobExp.Compiler
 {
     public static class Extensions
     {
-        private static readonly bool isMono = Type.GetType("Mono.Runtime") != null;
-
-        public static bool IsMono { get { return isMono; } }
+        public static bool IsMono { get; } = Type.GetType("Mono.Runtime") != null;
 
         public static bool IsNullable(this Type type)
         {
@@ -37,11 +35,11 @@ namespace GrobExp.Compiler
 
         public static bool Unsigned(this Type type)
         {
-            if(type == typeof(IntPtr))
+            if (type == typeof(IntPtr))
                 return false;
-            if(type == typeof(UIntPtr))
+            if (type == typeof(UIntPtr))
                 return true;
-            switch(Type.GetTypeCode(type))
+            switch (Type.GetTypeCode(type))
             {
             case TypeCode.Boolean:
             case TypeCode.Byte:
@@ -64,9 +62,9 @@ namespace GrobExp.Compiler
 
         public static Type GetDelegateType(Type[] parameterTypes, Type returnType)
         {
-            if(returnType == typeof(void))
+            if (returnType == typeof(void))
             {
-                switch(parameterTypes.Length)
+                switch (parameterTypes.Length)
                 {
                 case 0:
                     return typeof(Action);
@@ -87,7 +85,7 @@ namespace GrobExp.Compiler
                 }
             }
             parameterTypes = parameterTypes.Concat(new[] {returnType}).ToArray();
-            switch(parameterTypes.Length)
+            switch (parameterTypes.Length)
             {
             case 1:
                 return typeof(Func<>).MakeGenericType(parameterTypes);

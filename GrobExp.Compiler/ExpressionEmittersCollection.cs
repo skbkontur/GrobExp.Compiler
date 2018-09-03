@@ -23,7 +23,7 @@ namespace GrobExp.Compiler
         public static bool Emit(Expression node, EmittingContext context, GroboIL.Label returnDefaultValueLabel, ResultType whatReturn, bool extend, out Type resultType)
         {
             IExpressionEmitter emitter;
-            if(!expressionEmitters.TryGetValue(node.NodeType, out emitter))
+            if (!expressionEmitters.TryGetValue(node.NodeType, out emitter))
                 throw new NotSupportedException("Node type '" + node.NodeType + "' is not supported");
             return emitter.Emit(node, context, returnDefaultValueLabel, whatReturn, extend, out resultType);
         }

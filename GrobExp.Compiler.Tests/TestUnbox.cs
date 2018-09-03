@@ -55,16 +55,16 @@ namespace GrobExp.Compiler.Tests
             Assert.Throws<NullReferenceException>(() => f(null));
         }
 
-        public class TestClassA
-        {
-            public object X;
-        }
-
         public enum TestEnum
         {
             Zero,
             One,
             Two
+        }
+
+        public class TestClassA
+        {
+            public object X;
         }
     }
 }

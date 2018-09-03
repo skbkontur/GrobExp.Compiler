@@ -15,7 +15,7 @@ namespace GrobExp.Compiler.Tests.AssignTests.PowerAssign
             ParameterExpression b = Expression.Parameter(typeof(double), "b");
             Expression<Func<TestClassA, double, double>> exp = Expression.Lambda<Func<TestClassA, double, double>>(Expression.PowerAssign(Expression.ArrayAccess(Expression.MakeMemberAccess(a, typeof(TestClassA).GetField("DoubleArray")), Expression.Constant(0), Expression.Constant(0)), b), a, b);
             var f = LambdaCompiler.Compile(exp, CompilerOptions.CheckNullReferences);
-            var o = new TestClassA {DoubleArray = new double[1,1]};
+            var o = new TestClassA {DoubleArray = new double[1, 1]};
             o.DoubleArray[0, 0] = 0;
             Assert.AreEqual(1, f(o, 0));
             Assert.AreEqual(1, o.DoubleArray[0, 0]);
@@ -31,7 +31,7 @@ namespace GrobExp.Compiler.Tests.AssignTests.PowerAssign
             Assert.AreEqual(0, f(null, 1));
 
             f = LambdaCompiler.Compile(exp, CompilerOptions.None);
-            o = new TestClassA {DoubleArray = new double[1,1]};
+            o = new TestClassA {DoubleArray = new double[1, 1]};
             o.DoubleArray[0, 0] = 0;
             Assert.AreEqual(1, f(o, 0));
             Assert.AreEqual(1, o.DoubleArray[0, 0]);
@@ -54,7 +54,7 @@ namespace GrobExp.Compiler.Tests.AssignTests.PowerAssign
             ParameterExpression b = Expression.Parameter(typeof(double?), "b");
             Expression<Func<TestClassA, double?, double?>> exp = Expression.Lambda<Func<TestClassA, double?, double?>>(Expression.PowerAssign(Expression.ArrayAccess(Expression.MakeMemberAccess(a, typeof(TestClassA).GetProperty("NullableDoubleArray")), Expression.Constant(0), Expression.Constant(0)), b), a, b);
             var f = LambdaCompiler.Compile(exp, CompilerOptions.CheckNullReferences);
-            var o = new TestClassA {NullableDoubleArray = new double?[1,1]};
+            var o = new TestClassA {NullableDoubleArray = new double?[1, 1]};
             o.NullableDoubleArray[0, 0] = 0;
             Assert.AreEqual(1, f(o, 0));
             Assert.AreEqual(1, o.NullableDoubleArray[0, 0]);
@@ -78,7 +78,7 @@ namespace GrobExp.Compiler.Tests.AssignTests.PowerAssign
             Assert.IsNull(o.NullableDoubleArray[0, 0]);
 
             f = LambdaCompiler.Compile(exp, CompilerOptions.None);
-            o = new TestClassA {NullableDoubleArray = new double?[1,1]};
+            o = new TestClassA {NullableDoubleArray = new double?[1, 1]};
             o.NullableDoubleArray[0, 0] = 0;
             Assert.AreEqual(1, f(o, 0));
             Assert.AreEqual(1, o.NullableDoubleArray[0, 0]);
