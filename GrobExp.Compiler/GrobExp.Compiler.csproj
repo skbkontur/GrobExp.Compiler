@@ -1,4 +1,5 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
+
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0;net45</TargetFrameworks>
     <PackageId>GrobExp.Compiler</PackageId>
@@ -6,16 +7,15 @@
     <Version>$(VersionPrefix)</Version>
     <AssemblyVersion>$(VersionPrefix).0</AssemblyVersion>
     <Authors>Igor Chevdar</Authors>
-    <Company>SKB Kontur</Company>
-    <Copyright>SKB Kontur 2012-2018</Copyright>
-    <RequireLicenseAcceptance>false</RequireLicenseAcceptance>
-    <Description>Efficient compiler of .NET expression trees</Description>
     <PackageTags>.NET Expression Tree Compiler</PackageTags>
-    <PackageProjectUrl>https://github.com/skbkontur/GrobExp.Compiler</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/skbkontur/GrobExp.Compiler</RepositoryUrl>
+    <Description>Efficient compiler of .NET expression trees</Description>
     <RepositoryType>git</RepositoryType>
+    <RepositoryUrl>https://github.com/skbkontur/GrobExp.Compiler</RepositoryUrl>
+    <PackageProjectUrl>$(RepositoryUrl)</PackageProjectUrl>
   </PropertyGroup>
+
   <ItemGroup>
     <PackageReference Include="GrEmit" Version="2.2.3" />
   </ItemGroup>
+
 </Project>
