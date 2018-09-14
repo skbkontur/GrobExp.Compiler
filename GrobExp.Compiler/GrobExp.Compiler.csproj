@@ -2,20 +2,10 @@
 
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0;net45</TargetFrameworks>
-    <PackageId>GrobExp.Compiler</PackageId>
-    <VersionPrefix>1.1.1</VersionPrefix>
-    <Version>$(VersionPrefix)</Version>
-    <AssemblyVersion>$(VersionPrefix).0</AssemblyVersion>
-    <Authors>Igor Chevdar</Authors>
-    <PackageTags>.NET Expression Tree Compiler</PackageTags>
-    <Description>Efficient compiler of .NET expression trees</Description>
-    <RepositoryType>git</RepositoryType>
-    <RepositoryUrl>https://github.com/skbkontur/GrobExp.Compiler</RepositoryUrl>
-    <PackageProjectUrl>$(RepositoryUrl)</PackageProjectUrl>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="GrEmit" Version="2.2.3" />
+    <PackageReference Include="GrEmit" Version="2.3.6" />
   </ItemGroup>
 
 </Project>

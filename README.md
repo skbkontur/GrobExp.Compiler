@@ -5,3 +5,7 @@
 [![Build status](https://ci.appveyor.com/api/projects/status/acccupshv2d0980e?svg=true)](https://ci.appveyor.com/project/skbkontur/grobexp-compiler)
 
 GrobExp.Compiler helps efficiently compile expression trees.
+
+## Release Notes
+
+See [CHANGELOG](CHANGELOG.md).

@@ -7,4 +7,17 @@
     </ItemGroup>
   </Target>
 
+  <Target Name="SetNuSpecProperties" BeforeTargets="GenerateNuspec" DependsOnTargets="GetBuildVersion">
+    <PropertyGroup>
+      <PackageId>$(AssemblyName)</PackageId>
+      <Authors>Igor Chevdar</Authors>
+      <PackageTags>.NET Expression Tree Compiler</PackageTags>
+      <Description>Efficient compiler of .NET expression trees</Description>
+      <RepositoryType>git</RepositoryType>
+      <RepositoryUrl>https://github.com/skbkontur/GrobExp.Compiler</RepositoryUrl>
+      <PackageProjectUrl>$(RepositoryUrl)</PackageProjectUrl>
+      <PackageReleaseNotes>$(RepositoryUrl)/releases/tag/v$(MajorMinorVersion)-release</PackageReleaseNotes>
+    </PropertyGroup>
+  </Target>
+
 </Project>
