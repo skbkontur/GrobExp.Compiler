@@ -12,7 +12,7 @@
       <PackageId>$(AssemblyName)</PackageId>
       <Authors>Igor Chevdar</Authors>
       <PackageTags>.NET Expression Tree Compiler</PackageTags>
-      <Description>Efficient compiler of .NET expression trees</Description>
+      <PackageDescription>Efficient compiler of .NET expression trees</PackageDescription>
       <RepositoryType>git</RepositoryType>
       <RepositoryUrl>https://github.com/skbkontur/GrobExp.Compiler</RepositoryUrl>
       <PackageProjectUrl>$(RepositoryUrl)</PackageProjectUrl>
