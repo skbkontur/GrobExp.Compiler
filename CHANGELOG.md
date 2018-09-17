@@ -3,7 +3,7 @@
 ## v1.2 - 2018.09.15
 - Use [Nerdbank.GitVersioning](https://github.com/AArnott/Nerdbank.GitVersioning) to automate generation of assembly 
   and nuget package versions.
-- Update [Gremit](https://github.com/skbkontur/gremit) dependency to v2.3.6.
+- Update [Gremit](https://github.com/skbkontur/gremit) dependency to v2.3.
 - Fix bugs in `CallExpressionEmitter` (PR [#5](https://github.com/skbkontur/GrobExp.Compiler/pull/5)).
 - Support `enum`, `decimal`, and `Nullable<TConstant>` as types of constants in expressions passed 
   to `LambdaCompiler.CompileToMethod()` (PR [#6](https://github.com/skbkontur/GrobExp.Compiler/pull/6)).
