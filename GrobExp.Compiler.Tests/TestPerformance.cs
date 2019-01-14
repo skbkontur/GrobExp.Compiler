@@ -145,7 +145,7 @@ namespace GrobExp.Compiler.Tests
             }
         }
 
-#if !NETCOREAPP2_0
+#if NET45
         [Test]
         [Ignore("Is used for debugging")]
         public unsafe void TestWriteAssemblerCode3()
@@ -318,7 +318,7 @@ namespace GrobExp.Compiler.Tests
         [Test]
         public unsafe void TestMarshal()
         {
-#if NETCOREAPP2_0
+#if NETCOREAPP
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             {
 #endif
@@ -371,7 +371,7 @@ namespace GrobExp.Compiler.Tests
 //            }
 //            var elapsed = stopwatch.Elapsed;
 //            Console.WriteLine(elapsed.TotalMilliseconds);
-#if NETCOREAPP2_0
+#if NETCOREAPP
             }
 #endif
         }

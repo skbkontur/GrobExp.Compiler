@@ -293,7 +293,7 @@ namespace GrobExp.Compiler.Tests
             public int X { get; set; }
         }
 
-#if !NETCOREAPP2_0
+#if NET45
         [Test]
         [Ignore("Is used for debugging")]
         public void CompileAndSave()

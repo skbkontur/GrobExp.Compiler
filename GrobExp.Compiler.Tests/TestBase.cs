@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
@@ -35,7 +35,7 @@ namespace GrobExp.Compiler.Tests
 
         protected static string SelectValue(string netcoreValue, string net45Value)
         {
-#if NETCOREAPP2_0
+#if NETCOREAPP
             return netcoreValue;
 #else
             return net45Value;
