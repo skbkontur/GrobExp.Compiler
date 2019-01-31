@@ -264,6 +264,7 @@ namespace GrobExp.Compiler
             context.HashCodes.Add(CalcHashCode(node.Method));
             CalcHashCode(node.Left, context);
             CalcHashCode(node.Right, context);
+            CalcHashCode(node.Conversion, context);
         }
 
         private static void CalcHashCodeBlock(BlockExpression node, Context context)
