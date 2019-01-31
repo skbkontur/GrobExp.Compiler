@@ -430,10 +430,38 @@ namespace GrobExp.Compiler
             CalcHashCode(node.NewExpression, context);
             foreach (var memberBinding in node.Bindings)
             {
-                var binding = (MemberAssignment)memberBinding;
-                context.HashCodes.Add(CalcHashCode(binding.BindingType));
-                context.HashCodes.Add(CalcHashCode(binding.Member));
-                CalcHashCode(binding.Expression, context);
+                CalcHashCodeMemberBinding(memberBinding, context);
+            }
+        }
+
+        private static void CalcHashCodeMemberBinding(MemberBinding binding, Context context)
+        {
+            context.HashCodes.Add(CalcHashCode(binding.BindingType));
+            context.HashCodes.Add(CalcHashCode(binding.Member));
+
+            switch (binding)
+            {
+            case MemberAssignment memberAssignment:
+                CalcHashCode(memberAssignment.Expression, context);
+                break;
+            case MemberListBinding memberListBinding:
+                foreach (var initializer in memberListBinding.Initializers)
+                {
+                    CalcHashCode(initializer.AddMethod);
+                    foreach (var argument in initializer.Arguments)
+                    {
+                        CalcHashCode(argument, context);
+                    }
+                }
+                break;
+            case MemberMemberBinding memberMemberBinding:
+                foreach (var memberBinding in memberMemberBinding.Bindings)
+                {
+                    CalcHashCodeMemberBinding(memberBinding, context);
+                }
+                break;
+            default:
+                throw new ArgumentOutOfRangeException(nameof(binding));
             }
         }
 
