@@ -216,7 +216,7 @@ namespace GrobExp.Compiler
 
         private static int CalcHashCode(Type type)
         {
-            return unchecked(type.Module.MetadataToken * 397 + type.MetadataToken);
+            return type.GetHashCode();
         }
 
         private static int CalcHashCode(GotoExpressionKind kind)
