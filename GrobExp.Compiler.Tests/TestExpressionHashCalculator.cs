@@ -559,12 +559,11 @@ namespace GrobExp.Compiler.Tests
             var one = Expression.Constant(1);
             var two = Expression.Constant(2);
 
+            TestHashNotEquivalent(Expression.Switch(one, one, Expression.SwitchCase(one, one)),
+                                  Expression.Switch(two, one, Expression.SwitchCase(one, one)));
 
-            TestHashNotEquivalent(Expression.Switch(one),
-                                  Expression.Switch(two));
-
-            TestHashNotEquivalent(Expression.Switch(one, one),
-                                  Expression.Switch(one, two));
+            TestHashNotEquivalent(Expression.Switch(one, one, Expression.SwitchCase(one, one)),
+                                  Expression.Switch(one, two, Expression.SwitchCase(one, one)));
 
             TestHashNotEquivalent(Expression.Switch(one, one, Expression.SwitchCase(one, one)),
                                   Expression.Switch(one, one, Expression.SwitchCase(two, one)));
