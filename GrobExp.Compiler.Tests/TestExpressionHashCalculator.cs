@@ -118,7 +118,8 @@ namespace GrobExp.Compiler.Tests
                                      Expression.Subtract,
                                      Expression.SubtractChecked,
                                      Expression.SubtractAssign,
-                                     Expression.SubtractAssignChecked
+                                     Expression.SubtractAssignChecked,
+                                     Expression.Assign
                 );
         }
 
@@ -135,7 +136,8 @@ namespace GrobExp.Compiler.Tests
                                      Expression.LeftShift,
                                      Expression.LeftShiftAssign,
                                      Expression.RightShift,
-                                     Expression.RightShiftAssign
+                                     Expression.RightShiftAssign,
+                                     Expression.Assign
                 );
         }
 
@@ -159,12 +161,6 @@ namespace GrobExp.Compiler.Tests
                                  Expression.AndAlso,
                                  Expression.OrElse
                 );
-        }
-
-        [Test]
-        public void TestHashBinaryAssign()
-        {
-            TestHashBinaryExpression(typeof(int), Expression.Assign);
         }
 
         [Test]
@@ -639,14 +635,6 @@ namespace GrobExp.Compiler.Tests
             // ReSharper restore ObjectCreationAsStatement
         }
 
-        public void TestMemberInitNotEquivalent(Expression<Action> firstMemberInit, Expression<Action> secondMemberInit)
-        {
-            Assert.That(firstMemberInit.Body, Is.TypeOf<MemberInitExpression>());
-            Assert.That(secondMemberInit.Body, Is.TypeOf<MemberInitExpression>());
-
-            TestHashNotEquivalent(firstMemberInit.Body, secondMemberInit.Body);
-        }
-
         [Test]
         public void TestHashNotSupportedExpression()
         {
@@ -655,7 +643,15 @@ namespace GrobExp.Compiler.Tests
             // TestNotSupported(Expression.Dynamic());
         }
 
-        public void TestHashUnaryExpression(Type parameterType, params Func<Expression, UnaryExpression>[] unaryOperations)
+        private void TestMemberInitNotEquivalent(Expression<Action> firstMemberInit, Expression<Action> secondMemberInit)
+        {
+            Assert.That(firstMemberInit.Body, Is.TypeOf<MemberInitExpression>());
+            Assert.That(secondMemberInit.Body, Is.TypeOf<MemberInitExpression>());
+
+            TestHashNotEquivalent(firstMemberInit.Body, secondMemberInit.Body);
+        }
+
+        private void TestHashUnaryExpression(Type parameterType, params Func<Expression, UnaryExpression>[] unaryOperations)
         {
             foreach (var operation in unaryOperations)
             {
@@ -674,7 +670,7 @@ namespace GrobExp.Compiler.Tests
             }
         }
 
-        public void TestHashBinaryExpression(Type parameterType, params Func<Expression, Expression, BinaryExpression>[] binaryOperations)
+        private static void TestHashBinaryExpression(Type parameterType, params Func<Expression, Expression, BinaryExpression>[] binaryOperations)
         {
             foreach (var operation in binaryOperations)
             {
@@ -721,7 +717,7 @@ namespace GrobExp.Compiler.Tests
             TestHashNotEquivalent(first, second, strictly: false);
         }
 
-        public void TestNotSupported(Expression expr)
+        private static void TestNotSupported(Expression expr)
         {
             Assert.Throws<NotSupportedException>(() => CalcHashCode(expr, strictly: true));
             Assert.Throws<NotSupportedException>(() => CalcHashCode(expr, strictly: false));
