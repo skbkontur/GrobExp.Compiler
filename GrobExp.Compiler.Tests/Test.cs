@@ -21,6 +21,13 @@ namespace GrobExp.Compiler.Tests
         }
 
         [Test]
+        public void TestLambdaExpressionCreator()
+        {
+            Expression<Func<string, string>> e = x => x.Substring(1, 2);
+            LambdaExpressionCreator.Create<Func<string, string>>(e.Body, e.Parameters.ToArray());
+        }
+
+        [Test]
         public void TestRefParameter()
         {
             Expression<Action<TestClassA>> exp = a => Array.Resize(ref a.IntArray2, 5);

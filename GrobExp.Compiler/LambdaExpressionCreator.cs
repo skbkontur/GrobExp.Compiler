@@ -69,7 +69,7 @@ namespace GrobExp.Compiler
                 il.Ldarg(1);
                 il.Ldarg(2);
                 il.Ldarg(3);
-                il.Newobj(resultType.GetConstructors(BindingFlags.NonPublic | BindingFlags.Instance).Single());
+                il.Callnonvirt(resultType.GetMethods(BindingFlags.NonPublic | BindingFlags.Static).Single(x => x.Name == "Create"));
                 il.Ret();
             }
             return (LambdaCreateDelegate)method.CreateDelegate(typeof(LambdaCreateDelegate));
