@@ -24,7 +24,8 @@ namespace GrobExp.Compiler.Tests
         public void TestLambdaExpressionCreator()
         {
             Expression<Func<string, string>> e = x => x.Substring(1, 2);
-            LambdaExpressionCreator.Create<Func<string, string>>(e.Body, e.Parameters.ToArray());
+            var lambda = LambdaExpressionCreator.Create<Func<string, string>>(e.Body, e.Parameters.ToArray());
+            Assert.That(lambda.Compile()("abcd"), Is.EqualTo("bc"));
         }
 
         [Test]
