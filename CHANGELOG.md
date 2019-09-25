@@ -1,5 +1,9 @@
 # Changelog
 
+## v1.3 - 2019.09.25
+- Fix bug in `LambdaExpressionCreator`
+- Update dependencies
+
 ## v1.2 - 2018.09.15
 - Use [Nerdbank.GitVersioning](https://github.com/AArnott/Nerdbank.GitVersioning) to automate generation of assembly 
   and nuget package versions.
