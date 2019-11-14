@@ -1,5 +1,7 @@
-﻿using System;
+using System;
+using System.Globalization;
 using System.Linq.Expressions;
+using System.Threading;
 
 using NUnit.Framework;
 
@@ -123,6 +125,7 @@ namespace GrobExp.Compiler.Tests.TryCatchTests
         [Test]
         public void TestTryCatchFinally2()
         {
+            Thread.CurrentThread.CurrentUICulture = CultureInfo.InvariantCulture;
             ParameterExpression a = Expression.Parameter(typeof(TestClassA), "a");
             ParameterExpression b = Expression.Parameter(typeof(TestClassA), "b");
             ParameterExpression overflow = Expression.Parameter(typeof(OverflowException), "overflow");
