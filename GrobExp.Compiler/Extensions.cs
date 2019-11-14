@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -6,6 +6,17 @@ namespace GrobExp.Compiler
 {
     public static class Extensions
     {
+        static Extensions()
+        {
+            var systemTypes = typeof(Func<>).Assembly.ExportedTypes.ToArray();
+
+            funcTypesByNumberOfGenericParameters = systemTypes.Where(type => type.FullName?.StartsWith("System.Func`") == true)
+                                                              .ToDictionary(type => type.GetGenericArguments().Length);
+
+            actionTypesByNumberOfGenericParameters = systemTypes.Where(type => type.FullName?.StartsWith("System.Action`") == true)
+                                                                .ToDictionary(type => type.GetGenericArguments().Length);
+        }
+
         public static bool IsMono { get; } = Type.GetType("Mono.Runtime") != null;
 
         public static bool IsNullable(this Type type)
@@ -56,7 +67,7 @@ namespace GrobExp.Compiler
             case TypeCode.Double:
                 return false;
             default:
-                throw new InvalidOperationException(string.Format("Type '{0}' cannot be used in comparison operations", type));
+                throw new InvalidOperationException($"Type '{type}' cannot be used in comparison operations");
             }
         }
 
@@ -64,44 +75,24 @@ namespace GrobExp.Compiler
         {
             if (returnType == typeof(void))
             {
-                switch (parameterTypes.Length)
-                {
-                case 0:
+                if (parameterTypes.Length == 0)
                     return typeof(Action);
-                case 1:
-                    return typeof(Action<>).MakeGenericType(parameterTypes);
-                case 2:
-                    return typeof(Action<,>).MakeGenericType(parameterTypes);
-                case 3:
-                    return typeof(Action<,,>).MakeGenericType(parameterTypes);
-                case 4:
-                    return typeof(Action<,,,>).MakeGenericType(parameterTypes);
-                case 5:
-                    return typeof(Action<,,,,>).MakeGenericType(parameterTypes);
-                case 6:
-                    return typeof(Action<,,,,,>).MakeGenericType(parameterTypes);
-                default:
-                    throw new NotSupportedException("Too many parameters for Action: " + parameterTypes.Length);
-                }
+
+                if (actionTypesByNumberOfGenericParameters.TryGetValue(parameterTypes.Length, out var actionType))
+                    return actionType.MakeGenericType(parameterTypes);
+
+                throw new NotSupportedException($"Too many parameters for creating Action type: {parameterTypes.Length}");
             }
+
             parameterTypes = parameterTypes.Concat(new[] {returnType}).ToArray();
-            switch (parameterTypes.Length)
-            {
-            case 1:
-                return typeof(Func<>).MakeGenericType(parameterTypes);
-            case 2:
-                return typeof(Func<,>).MakeGenericType(parameterTypes);
-            case 3:
-                return typeof(Func<,,>).MakeGenericType(parameterTypes);
-            case 4:
-                return typeof(Func<,,,>).MakeGenericType(parameterTypes);
-            case 5:
-                return typeof(Func<,,,,>).MakeGenericType(parameterTypes);
-            case 6:
-                return typeof(Func<,,,,,>).MakeGenericType(parameterTypes);
-            default:
-                throw new NotSupportedException("Too many parameters for Func: " + parameterTypes.Length);
-            }
+
+            if (funcTypesByNumberOfGenericParameters.TryGetValue(parameterTypes.Length, out var funcType))
+                return funcType.MakeGenericType(parameterTypes);
+
+            throw new NotSupportedException($"Too many parameters for creating Func type: {parameterTypes.Length}");
         }
+
+        private static readonly Dictionary<int, Type> funcTypesByNumberOfGenericParameters;
+        private static readonly Dictionary<int, Type> actionTypesByNumberOfGenericParameters;
     }
 }
