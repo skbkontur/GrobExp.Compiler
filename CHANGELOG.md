@@ -1,6 +1,6 @@
 # Changelog
 
-## v1.3.x - 2019.11.21
+## v1.3.10 - 2019.11.21
 - Update GrEmit to v3.2.2 supporting SourceLink
 
 ## v1.3.7 - 2019.11.21
