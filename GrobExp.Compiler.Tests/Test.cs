@@ -110,7 +110,7 @@ namespace GrobExp.Compiler.Tests
                 Expression.Block(
                     Expression.Call(threadSleepMethod, new[] {Expression.Constant(10)}),
                     Expression.Equal(parameter, Expression.Constant(guid), false, typeof(Guid).GetMethod("op_Equality"))
-                    ),
+                ),
                 parameter);
 
             new Thread(Collect).Start();

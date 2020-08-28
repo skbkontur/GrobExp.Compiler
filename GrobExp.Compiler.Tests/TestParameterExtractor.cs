@@ -87,8 +87,10 @@ namespace GrobExp.Compiler.Tests
         public void ExtractFromPureLambda()
         {
             Expression<Func<A, B, string, string>> lambda = (a, b, s) => s + a.B.S + b.S + a.S;
-            Assert.That(extractor.Extract(lambda.Body), Is.EqualTo(new []{lambda.Parameters[2], lambda.Parameters[0], lambda.Parameters[1]}));
+            Assert.That(extractor.Extract(lambda.Body), Is.EqualTo(new[] {lambda.Parameters[2], lambda.Parameters[0], lambda.Parameters[1]}));
         }
+
+        private readonly ParametersExtractor extractor = new ParametersExtractor();
 
         private class A
         {
@@ -101,7 +103,5 @@ namespace GrobExp.Compiler.Tests
         {
             public string S { get; set; }
         }
-
-        private readonly ParametersExtractor extractor = new ParametersExtractor();
     }
 }

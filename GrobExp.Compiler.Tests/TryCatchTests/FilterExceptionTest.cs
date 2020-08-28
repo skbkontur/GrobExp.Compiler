@@ -20,24 +20,24 @@ namespace GrobExp.Compiler.Tests.TryCatchTests
                         Expression.MultiplyChecked(
                             Expression.Convert(Expression.MakeMemberAccess(a, typeof(TestClassA).GetProperty("X")), typeof(int)),
                             Expression.Convert(Expression.MakeMemberAccess(b, typeof(TestClassA).GetProperty("X")), typeof(int))
-                            ), typeof(object).GetMethod("ToString")),
+                        ), typeof(object).GetMethod("ToString")),
                     Expression.Assign(Expression.MakeMemberAccess(null, typeof(FilterExceptionTest).GetField("B")), Expression.Constant(true)),
                     Expression.Catch(
                         typeof(OverflowException),
                         Expression.Constant("Overflow"),
                         Expression.Equal(Expression.MakeMemberAccess(null, typeof(FilterExceptionTest).GetField("F")), Expression.Constant("zzz"))
-                        ),
+                    ),
                     Expression.Catch(
                         typeof(InvalidCastException),
                         Expression.Constant("Invalid cast"),
                         Expression.Equal(Expression.MakeMemberAccess(null, typeof(FilterExceptionTest).GetField("F")), Expression.Constant("zzz"))
-                        ),
+                    ),
                     Expression.Catch(
                         typeof(NullReferenceException),
                         Expression.Constant("Null reference"),
                         Expression.Equal(Expression.MakeMemberAccess(null, typeof(FilterExceptionTest).GetField("F")), Expression.Constant("zzz"))
-                        )
-                    );
+                    )
+                );
             var exp = Expression.Lambda<Func<TestClassA, TestClassA, string>>(tryExpr, a, b);
             var f = CompileToMethod(exp, CompilerOptions.None);
             B = false;
@@ -211,24 +211,24 @@ namespace GrobExp.Compiler.Tests.TryCatchTests
                         Expression.MultiplyChecked(
                             Expression.Convert(Expression.MakeMemberAccess(a, typeof(TestClassA).GetProperty("X")), typeof(int)),
                             Expression.Convert(Expression.MakeMemberAccess(b, typeof(TestClassA).GetProperty("X")), typeof(int))
-                            ), typeof(object).GetMethod("ToString")),
+                        ), typeof(object).GetMethod("ToString")),
                     Expression.Assign(Expression.MakeMemberAccess(null, typeof(FilterExceptionTest).GetField("B")), Expression.Constant(true)),
                     Expression.Catch(
                         overflow,
                         Expression.MakeMemberAccess(overflow, typeof(Exception).GetProperty("Message")),
                         Expression.Equal(Expression.MakeMemberAccess(null, typeof(FilterExceptionTest).GetField("F")), Expression.Constant("zzz"))
-                        ),
+                    ),
                     Expression.Catch(
                         invalidCast,
                         Expression.MakeMemberAccess(invalidCast, typeof(Exception).GetProperty("Message")),
                         Expression.Equal(Expression.MakeMemberAccess(null, typeof(FilterExceptionTest).GetField("F")), Expression.Constant("zzz"))
-                        ),
+                    ),
                     Expression.Catch(
                         nullReference,
                         Expression.MakeMemberAccess(nullReference, typeof(Exception).GetProperty("Message")),
                         Expression.Equal(Expression.MakeMemberAccess(null, typeof(FilterExceptionTest).GetField("F")), Expression.Constant("zzz"))
-                        )
-                    );
+                    )
+                );
             var exp = Expression.Lambda<Func<TestClassA, TestClassA, string>>(Expression.Block(new[] {overflow, invalidCast, nullReference}, tryExpr), a, b);
             var f = CompileToMethod(exp, CompilerOptions.None);
             B = false;

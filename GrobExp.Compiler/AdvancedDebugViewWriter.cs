@@ -801,7 +801,7 @@ namespace GrobExp.Compiler
                         CultureInfo.CurrentCulture,
                         "{0}",
                         op
-                        );
+                    );
                 }
                 Out(beforeOp, op, Flow.Space | Flow.Break);
 
@@ -887,8 +887,8 @@ namespace GrobExp.Compiler
                               "LAMBDA",
                               GetLambdaName(node),
                               Formatter.Format(node.Type)
-                    )
-                );
+                )
+            );
 
             if (_lambdas == null)
             {
@@ -985,16 +985,16 @@ namespace GrobExp.Compiler
             else if ((value is string) && node.Type == typeof(string))
             {
                 Out(String.Format(
-                    CultureInfo.CurrentCulture,
-                    "\"{0}\"",
-                    value));
+                        CultureInfo.CurrentCulture,
+                        "\"{0}\"",
+                        value));
             }
             else if ((value is char) && node.Type == typeof(char))
             {
                 Out(String.Format(
-                    CultureInfo.CurrentCulture,
-                    "'{0}'",
-                    value));
+                        CultureInfo.CurrentCulture,
+                        "'{0}'",
+                        value));
             }
             else if ((value is int) && node.Type == typeof(int)
                      || (value is bool) && node.Type == typeof(bool))
@@ -1012,10 +1012,10 @@ namespace GrobExp.Compiler
                 else
                 {
                     Out(String.Format(
-                        CultureInfo.CurrentCulture,
-                        "const<{0}>({1})",
-                        Formatter.Format(node.Type),
-                        value));
+                            CultureInfo.CurrentCulture,
+                            "const<{0}>({1})",
+                            Formatter.Format(node.Type),
+                            value));
                 }
             }
             return node;
@@ -1408,7 +1408,7 @@ namespace GrobExp.Compiler
                 Out(".");
                 Out(node.Method.Name);
                 newArguments = new ReadOnlyCollection<Expression>(VisitExpressions('(', node.Arguments)
-                                                                      .Cast<Expression>().ToList());
+                                                                  .Cast<Expression>().ToList());
             }
             return node.Update(newObject, newArguments);
         }
@@ -1681,9 +1681,9 @@ namespace GrobExp.Compiler
             if (node.Type != typeof(void))
             {
                 newBlock = VisitExpressions('{', ';', node.Expressions.Take(node.Expressions.Count - 1).ToArray(), BlockType.Body)
-                    .Cast<Expression>().ToList();
+                           .Cast<Expression>().ToList();
                 newBlock = newBlock.Concat(VisitExpressions('{', ';', new[] {node.Expressions.Last()}, BlockType.Return)
-                                               .Cast<Expression>().ToList()).ToList();
+                                           .Cast<Expression>().ToList()).ToList();
             }
             else
             {
@@ -1908,7 +1908,7 @@ namespace GrobExp.Compiler
                     "LAMBDA {0}<{1}>",
                     GetLambdaName(lambda),
                     Formatter.Format(lambda.Type))
-                );
+            );
 
             var newParams = VisitDeclarations(lambda.Parameters).Cast<ParameterExpression>();
 

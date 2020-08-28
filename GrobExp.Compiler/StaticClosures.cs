@@ -1,6 +1,5 @@
 // ReSharper disable UnusedMember.Global
 
-
 #pragma warning disable 169
 #pragma warning disable 649
 

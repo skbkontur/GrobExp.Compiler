@@ -32,7 +32,7 @@ namespace GrobExp.Compiler.ExpressionEmitters
                         context.EmitLoadArguments(assignment.Expression);
                         context.EmitMemberAssign(node.Type, assignment.Member);
                     }
-                    // todo или il.Ldobj()?
+                    // todo пїЅпїЅпїЅ il.Ldobj()?
                     il.Pop();
                     il.Ldloc(temp);
                 }

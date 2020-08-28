@@ -19,8 +19,8 @@ namespace GrobExp.Compiler.Tests
             var otherParameterOfSameType = Expression.Parameter(typeof(int), "other_parameter");
 
             TestHashEquivalent(Expression.Parameter(typeof(int)), Expression.Parameter(typeof(int)));
-            TestHashEquivalent(parameter, otherParameterOfSameType, strictly: false);
-            TestHashNotEquivalent(parameter, otherParameterOfSameType, strictly: true);
+            TestHashEquivalent(parameter, otherParameterOfSameType, strictly : false);
+            TestHashNotEquivalent(parameter, otherParameterOfSameType, strictly : true);
         }
 
         [Test]
@@ -120,7 +120,7 @@ namespace GrobExp.Compiler.Tests
                                      Expression.SubtractAssign,
                                      Expression.SubtractAssignChecked,
                                      Expression.Assign
-                );
+            );
         }
 
         [Test]
@@ -138,7 +138,7 @@ namespace GrobExp.Compiler.Tests
                                      Expression.RightShift,
                                      Expression.RightShiftAssign,
                                      Expression.Assign
-                );
+            );
         }
 
         [Test]
@@ -151,16 +151,16 @@ namespace GrobExp.Compiler.Tests
                                      Expression.GreaterThanOrEqual,
                                      Expression.LessThan,
                                      Expression.LessThanOrEqual
-                );
+            );
         }
 
         [Test]
         public void TestHashBinaryConditional()
         {
             TestHashBinaryExpression(typeof(bool),
-                                 Expression.AndAlso,
-                                 Expression.OrElse
-                );
+                                     Expression.AndAlso,
+                                     Expression.OrElse
+            );
         }
 
         [Test]
@@ -172,8 +172,8 @@ namespace GrobExp.Compiler.Tests
 
             TestHashEquivalent(Expression.ArrayIndex(Expression.Parameter(typeof(string[])), index),
                                Expression.ArrayIndex(Expression.Parameter(typeof(string[])), index));
-            TestHashEquivalent(Expression.ArrayIndex(array, index), Expression.ArrayIndex(otherArray, index), strictly: false);
-            TestHashNotEquivalent(Expression.ArrayIndex(array, index), Expression.ArrayIndex(otherArray, index), strictly: true);
+            TestHashEquivalent(Expression.ArrayIndex(array, index), Expression.ArrayIndex(otherArray, index), strictly : false);
+            TestHashNotEquivalent(Expression.ArrayIndex(array, index), Expression.ArrayIndex(otherArray, index), strictly : true);
         }
 
         [Test]
@@ -184,8 +184,8 @@ namespace GrobExp.Compiler.Tests
             var firstIndexer = indexers[0];
             var secondIndexer = indexers[1];
 
-            TestHashNotEquivalent(Expression.MakeIndex(Expression.Parameter(typeof(TestObject)), firstIndexer, new[] { Expression.Constant(1) }),
-                                  Expression.MakeIndex(Expression.Parameter(typeof(TestObject)), secondIndexer, new[] { Expression.Constant(1L) }));
+            TestHashNotEquivalent(Expression.MakeIndex(Expression.Parameter(typeof(TestObject)), firstIndexer, new[] {Expression.Constant(1)}),
+                                  Expression.MakeIndex(Expression.Parameter(typeof(TestObject)), secondIndexer, new[] {Expression.Constant(1L)}));
         }
 
         [Test]
@@ -201,8 +201,8 @@ namespace GrobExp.Compiler.Tests
             TestHashEquivalent(Expression.Add(a, b, add), Expression.Add(a, b, add));
             TestHashNotEquivalent(Expression.Add(a, b, add), Expression.Add(a, b));
             TestHashNotEquivalent(Expression.Add(a, b, add), Expression.Add(a, b, otherAdd));
-            TestHashEquivalent(Expression.Add(a, b, add), Expression.Add(a, c, add), strictly: false);
-            TestHashNotEquivalent(Expression.Add(a, b, add), Expression.Add(a, c, add), strictly: true);
+            TestHashEquivalent(Expression.Add(a, b, add), Expression.Add(a, c, add), strictly : false);
+            TestHashNotEquivalent(Expression.Add(a, b, add), Expression.Add(a, c, add), strictly : true);
         }
 
         [Test]
@@ -213,8 +213,8 @@ namespace GrobExp.Compiler.Tests
             var second = Expression.Parameter(typeof(int));
 
             TestHashEquivalent(Expression.Coalesce(first, second), Expression.Coalesce(first, second));
-            TestHashEquivalent(Expression.Coalesce(first, second), Expression.Coalesce(otherFirst, second), strictly: false);
-            TestHashNotEquivalent(Expression.Coalesce(first, second), Expression.Coalesce(otherFirst, second), strictly: true);
+            TestHashEquivalent(Expression.Coalesce(first, second), Expression.Coalesce(otherFirst, second), strictly : false);
+            TestHashNotEquivalent(Expression.Coalesce(first, second), Expression.Coalesce(otherFirst, second), strictly : true);
         }
 
         [Test]
@@ -232,27 +232,27 @@ namespace GrobExp.Compiler.Tests
         public void TestHashUnaryArithmetic()
         {
             TestHashUnaryExpression(typeof(int),
-                                   Expression.Negate,
-                                   Expression.NegateChecked,
-                                   Expression.UnaryPlus,
-                                   Expression.Increment,
-                                   Expression.PreIncrementAssign,
-                                   Expression.PostIncrementAssign,
-                                   Expression.Decrement,
-                                   Expression.PreDecrementAssign,
-                                   Expression.PostDecrementAssign,
-                                   Expression.OnesComplement
-                );
+                                    Expression.Negate,
+                                    Expression.NegateChecked,
+                                    Expression.UnaryPlus,
+                                    Expression.Increment,
+                                    Expression.PreIncrementAssign,
+                                    Expression.PostIncrementAssign,
+                                    Expression.Decrement,
+                                    Expression.PreDecrementAssign,
+                                    Expression.PostDecrementAssign,
+                                    Expression.OnesComplement
+            );
         }
 
         [Test]
         public void TestHashUnaryLogical()
         {
             TestHashUnaryExpression(typeof(bool),
-                                   Expression.IsTrue,
-                                   Expression.IsFalse,
-                                   Expression.Not
-                );
+                                    Expression.IsTrue,
+                                    Expression.IsFalse,
+                                    Expression.Not
+            );
         }
 
         [Test]
@@ -263,8 +263,8 @@ namespace GrobExp.Compiler.Tests
 
             TestHashEquivalent(Expression.ArrayLength(array), Expression.ArrayLength(array));
             TestHashNotEquivalent(Expression.ArrayLength(array), Expression.ArrayLength(Expression.TypeAs(array, typeof(object[]))));
-            TestHashEquivalent(Expression.ArrayLength(array), Expression.ArrayLength(otherArray), strictly: false);
-            TestHashNotEquivalent(Expression.ArrayLength(array), Expression.ArrayLength(otherArray), strictly: true);
+            TestHashEquivalent(Expression.ArrayLength(array), Expression.ArrayLength(otherArray), strictly : false);
+            TestHashNotEquivalent(Expression.ArrayLength(array), Expression.ArrayLength(otherArray), strictly : true);
         }
 
         [Test]
@@ -275,7 +275,7 @@ namespace GrobExp.Compiler.Tests
                                     parameter => Expression.Convert(parameter, typeof(string)),
                                     parameter => Expression.TypeAs(parameter, typeof(string)),
                                     parameter => Expression.TypeAs(parameter, typeof(int[]))
-                );
+            );
 
             TestHashUnaryExpression(typeof(long), parameter => Expression.ConvertChecked(parameter, typeof(int)));
         }
@@ -286,7 +286,7 @@ namespace GrobExp.Compiler.Tests
             TestHashUnaryExpression(typeof(object),
                                     parameter => Expression.Unbox(parameter, typeof(int)),
                                     parameter => Expression.Unbox(parameter, typeof(long))
-                );
+            );
         }
 
         [Test]
@@ -311,16 +311,16 @@ namespace GrobExp.Compiler.Tests
         {
             var instance = Expression.Parameter(typeof(string), "instance");
             var otherInstance = Expression.Parameter(typeof(string), "other_instance");
-            var method = typeof(string).GetMethod(nameof(string.PadLeft), new[] { typeof(int) });
+            var method = typeof(string).GetMethod(nameof(string.PadLeft), new[] {typeof(int)});
             Assert.NotNull(method);
-            var otherMethod = typeof(string).GetMethod(nameof(string.PadRight), new[] { typeof(int) });
+            var otherMethod = typeof(string).GetMethod(nameof(string.PadRight), new[] {typeof(int)});
             Assert.NotNull(otherMethod);
             var parameter = Expression.Constant(1);
             var otherParameter = Expression.Constant(2);
 
             TestHashEquivalent(Expression.Call(instance, method, parameter), Expression.Call(instance, method, parameter));
-            TestHashEquivalent(Expression.Call(instance, method, parameter), Expression.Call(otherInstance, method, parameter), strictly: false);
-            TestHashNotEquivalent(Expression.Call(instance, method, parameter), Expression.Call(otherInstance, method, parameter), strictly: true);
+            TestHashEquivalent(Expression.Call(instance, method, parameter), Expression.Call(otherInstance, method, parameter), strictly : false);
+            TestHashNotEquivalent(Expression.Call(instance, method, parameter), Expression.Call(otherInstance, method, parameter), strictly : true);
             TestHashNotEquivalent(Expression.Call(instance, method, parameter), Expression.Call(instance, otherMethod, parameter));
             TestHashNotEquivalent(Expression.Call(instance, method, parameter), Expression.Call(instance, method, otherParameter));
         }
@@ -350,8 +350,8 @@ namespace GrobExp.Compiler.Tests
             var otherParameter = Expression.Parameter(typeof(int), "other_parameter");
 
             TestHashEquivalent(Expression.Invoke(lambda, parameter), Expression.Invoke(lambda, parameter));
-            TestHashEquivalent(Expression.Invoke(lambda, parameter), Expression.Invoke(lambda, otherParameter), strictly: false);
-            TestHashNotEquivalent(Expression.Invoke(lambda, parameter), Expression.Invoke(lambda, otherParameter), strictly: true);
+            TestHashEquivalent(Expression.Invoke(lambda, parameter), Expression.Invoke(lambda, otherParameter), strictly : false);
+            TestHashNotEquivalent(Expression.Invoke(lambda, parameter), Expression.Invoke(lambda, otherParameter), strictly : true);
             TestHashNotEquivalent(Expression.Invoke(lambda, parameter), Expression.Invoke(otherLambda, parameter));
         }
 
@@ -371,7 +371,7 @@ namespace GrobExp.Compiler.Tests
         {
             var constructor = typeof(List<int>).GetConstructor(Type.EmptyTypes);
             Assert.NotNull(constructor);
-            var otherConstructor = typeof(List<int>).GetConstructor(new[] { typeof(int) });
+            var otherConstructor = typeof(List<int>).GetConstructor(new[] {typeof(int)});
             Assert.NotNull(otherConstructor);
 
             TestHashNotEquivalent(Expression.New(constructor), Expression.New(otherConstructor, Expression.Constant(1)));
@@ -405,17 +405,16 @@ namespace GrobExp.Compiler.Tests
 
             TestHashNotEquivalent(Expression.Label(Expression.Label(typeof(long)), Expression.Constant(1L)),
                                   Expression.Label(Expression.Label(typeof(int)), Expression.Constant(1)));
-
         }
 
         [Test]
         public void TestHashLambda()
         {
             TestHashEquivalent((Expression<Func<int, int, int>>)((x, y) => x + y),
-                               (Expression<Func<int, int, int>>)((a, b) => a + b), strictly: false);
+                               (Expression<Func<int, int, int>>)((a, b) => a + b), strictly : false);
 
             TestHashNotEquivalent((Expression<Func<int, int, int>>)((x, y) => x + y),
-                                  (Expression<Func<int, int, int>>)((a, b) => a + b), strictly: true);
+                                  (Expression<Func<int, int, int>>)((a, b) => a + b), strictly : true);
 
             TestHashNotEquivalent((Expression<Func<int, int, int>>)((x, y) => x + y),
                                   (Expression<Func<int, int, int>>)((x, y) => y + x));
@@ -462,11 +461,11 @@ namespace GrobExp.Compiler.Tests
             var firstVariable = Expression.Variable(typeof(int));
             var secondVariable = Expression.Variable(typeof(object));
 
-            TestHashEquivalent(Expression.Block(typeof(void), new[] { firstVariable }, Expression.Constant(1)),
-                               Expression.Block(typeof(void), new[] { secondVariable }, Expression.Constant(1)), strictly: false);
+            TestHashEquivalent(Expression.Block(typeof(void), new[] {firstVariable}, Expression.Constant(1)),
+                               Expression.Block(typeof(void), new[] {secondVariable}, Expression.Constant(1)), strictly : false);
 
-            TestHashNotEquivalent(Expression.Block(typeof(void), new[] { firstVariable }, Expression.Constant(1)),
-                                  Expression.Block(typeof(void), new[] { secondVariable }, Expression.Constant(1)), strictly: true);
+            TestHashNotEquivalent(Expression.Block(typeof(void), new[] {firstVariable}, Expression.Constant(1)),
+                                  Expression.Block(typeof(void), new[] {secondVariable}, Expression.Constant(1)), strictly : true);
 
             TestHashNotEquivalent(Expression.Block(typeof(void), Expression.Constant(1), Expression.Constant(2)),
                                   Expression.Block(typeof(void), Expression.Constant(2), Expression.Constant(1)));
@@ -517,7 +516,6 @@ namespace GrobExp.Compiler.Tests
                     Expression.Break,
                 };
 
-
             foreach (var pair in AllPairs(gotoWithValueCreators))
                 TestHashNotEquivalent(pair.Item1(Expression.Label(typeof(int)), Expression.Parameter(typeof(int))),
                                       pair.Item2(Expression.Label(typeof(int)), Expression.Parameter(typeof(int))));
@@ -540,7 +538,6 @@ namespace GrobExp.Compiler.Tests
 
             TestHashNotEquivalent(Expression.Loop(Expression.Constant(1)),
                                   Expression.Loop(Expression.Constant(2), Expression.Label()));
-
 
             TestHashNotEquivalent(Expression.Loop(Expression.Constant(1), Expression.Label()),
                                   Expression.Loop(Expression.Constant(2), Expression.Label(), Expression.Label()));
@@ -595,43 +592,43 @@ namespace GrobExp.Compiler.Tests
             TestHashNotEquivalent(Expression.MakeTry(null, one, null, one, null),
                                   Expression.MakeTry(null, one, null, two, null));
 
-            TestHashNotEquivalent(Expression.MakeTry(null, one, null, null, new[] { Expression.Catch(Expression.Parameter(typeof(int)), one) }),
-                                  Expression.MakeTry(null, one, null, null, new[] { Expression.Catch(Expression.Parameter(typeof(int)), two) }));
+            TestHashNotEquivalent(Expression.MakeTry(null, one, null, null, new[] {Expression.Catch(Expression.Parameter(typeof(int)), one)}),
+                                  Expression.MakeTry(null, one, null, null, new[] {Expression.Catch(Expression.Parameter(typeof(int)), two)}));
 
-            TestHashNotEquivalent(Expression.MakeTry(null, one, null, null, new[] { Expression.Catch(Expression.Parameter(typeof(int)), one, filter) }),
-                                  Expression.MakeTry(null, one, null, null, new[] { Expression.Catch(Expression.Parameter(typeof(int)), two, otherFilter) }));
+            TestHashNotEquivalent(Expression.MakeTry(null, one, null, null, new[] {Expression.Catch(Expression.Parameter(typeof(int)), one, filter)}),
+                                  Expression.MakeTry(null, one, null, null, new[] {Expression.Catch(Expression.Parameter(typeof(int)), two, otherFilter)}));
 
-            TestHashNotEquivalent(Expression.MakeTry(null, one, null, null, new[] { Expression.Catch(Expression.Parameter(typeof(int)), one, filter) }),
-                                  Expression.MakeTry(null, one, null, null, new[] { Expression.Catch(Expression.Parameter(typeof(int)), two, otherFilter) }));
+            TestHashNotEquivalent(Expression.MakeTry(null, one, null, null, new[] {Expression.Catch(Expression.Parameter(typeof(int)), one, filter)}),
+                                  Expression.MakeTry(null, one, null, null, new[] {Expression.Catch(Expression.Parameter(typeof(int)), two, otherFilter)}));
 
-            TestHashNotEquivalent(Expression.MakeTry(null, one, null, null, new[] { catchExpression, catchExpression }),
-                                  Expression.MakeTry(null, one, null, null, new[] { catchExpression }));
+            TestHashNotEquivalent(Expression.MakeTry(null, one, null, null, new[] {catchExpression, catchExpression}),
+                                  Expression.MakeTry(null, one, null, null, new[] {catchExpression}));
         }
 
         [Test]
         public void TestHashMemberInit()
         {
             // ReSharper disable ObjectCreationAsStatement
-            TestMemberInitNotEquivalent(() => new TestObject { field = "1" },
-                                        () => new TestObject { });
+            TestMemberInitNotEquivalent(() => new TestObject {field = "1"},
+                                        () => new TestObject {});
 
-            TestMemberInitNotEquivalent(() => new TestObject { field = "1" },
-                                        () => new TestObject { otherField = "1" });
+            TestMemberInitNotEquivalent(() => new TestObject {field = "1"},
+                                        () => new TestObject {otherField = "1"});
 
-            TestMemberInitNotEquivalent(() => new TestObject { field = "1" },
-                                        () => new TestObject { field = "2" });
+            TestMemberInitNotEquivalent(() => new TestObject {field = "1"},
+                                        () => new TestObject {field = "2"});
 
-            TestMemberInitNotEquivalent(() => new TestObject { field = "1" },
-                                        () => new OtherTestObject { field = "1" });
+            TestMemberInitNotEquivalent(() => new TestObject {field = "1"},
+                                        () => new OtherTestObject {field = "1"});
 
-            TestMemberInitNotEquivalent(() => new TestObject { complexObjectField = new OtherTestObject { field = "1" } },
-                                        () => new TestObject { complexObjectField = new OtherTestObject { field = "2" } });
+            TestMemberInitNotEquivalent(() => new TestObject {complexObjectField = new OtherTestObject {field = "1"}},
+                                        () => new TestObject {complexObjectField = new OtherTestObject {field = "2"}});
 
-            TestMemberInitNotEquivalent(() => new TestObject { listField = { 1, 2 } },
-                                        () => new TestObject { listField = { 2, 1 } });
+            TestMemberInitNotEquivalent(() => new TestObject {listField = {1, 2}},
+                                        () => new TestObject {listField = {2, 1}});
 
-            TestMemberInitNotEquivalent(() => new TestObject { complexObjectField = { field = "1" } },
-                                        () => new TestObject { complexObjectField = { field = "2" } });
+            TestMemberInitNotEquivalent(() => new TestObject {complexObjectField = {field = "1"}},
+                                        () => new TestObject {complexObjectField = {field = "2"}});
             // ReSharper restore ObjectCreationAsStatement
         }
 
@@ -659,8 +656,8 @@ namespace GrobExp.Compiler.Tests
                 var otherParameter = Expression.Parameter(parameterType, "other_parameter");
 
                 TestHashEquivalent(operation(parameter), operation(parameter));
-                TestHashEquivalent(operation(parameter), operation(otherParameter), strictly: false);
-                TestHashNotEquivalent(operation(parameter), operation(otherParameter), strictly: true);
+                TestHashEquivalent(operation(parameter), operation(otherParameter), strictly : false);
+                TestHashNotEquivalent(operation(parameter), operation(otherParameter), strictly : true);
             }
 
             foreach (var pair in AllPairs(unaryOperations))
@@ -681,11 +678,11 @@ namespace GrobExp.Compiler.Tests
                 TestHashEquivalent(operation(Expression.Parameter(parameterType), Expression.Parameter(parameterType)),
                                    operation(Expression.Parameter(parameterType), Expression.Parameter(parameterType)));
 
-                TestHashEquivalent(operation(a, b), operation(a, c), strictly: false);
-                TestHashEquivalent(operation(a, b), operation(c, b), strictly: false);
+                TestHashEquivalent(operation(a, b), operation(a, c), strictly : false);
+                TestHashEquivalent(operation(a, b), operation(c, b), strictly : false);
 
-                TestHashNotEquivalent(operation(a, b), operation(a, c), strictly: true);
-                TestHashNotEquivalent(operation(a, b), operation(c, b), strictly: true);
+                TestHashNotEquivalent(operation(a, b), operation(a, c), strictly : true);
+                TestHashNotEquivalent(operation(a, b), operation(c, b), strictly : true);
             }
 
             foreach (var pair in AllPairs(binaryOperations))
@@ -702,8 +699,8 @@ namespace GrobExp.Compiler.Tests
 
         private static void TestHashEquivalent(Expression first, Expression second)
         {
-            TestHashEquivalent(first, second, strictly: true);
-            TestHashEquivalent(first, second, strictly: false);
+            TestHashEquivalent(first, second, strictly : true);
+            TestHashEquivalent(first, second, strictly : false);
         }
 
         private static void TestHashNotEquivalent(Expression first, Expression second, bool strictly)
@@ -713,14 +710,14 @@ namespace GrobExp.Compiler.Tests
 
         private static void TestHashNotEquivalent(Expression first, Expression second)
         {
-            TestHashNotEquivalent(first, second, strictly: true);
-            TestHashNotEquivalent(first, second, strictly: false);
+            TestHashNotEquivalent(first, second, strictly : true);
+            TestHashNotEquivalent(first, second, strictly : false);
         }
 
         private static void TestNotSupported(Expression expr)
         {
-            Assert.Throws<NotSupportedException>(() => CalcHashCode(expr, strictly: true));
-            Assert.Throws<NotSupportedException>(() => CalcHashCode(expr, strictly: false));
+            Assert.Throws<NotSupportedException>(() => CalcHashCode(expr, strictly : true));
+            Assert.Throws<NotSupportedException>(() => CalcHashCode(expr, strictly : false));
         }
 
         private static IEnumerable<Tuple<TValue, TValue>> AllPairs<TValue>(IEnumerable<TValue> values)
@@ -745,8 +742,8 @@ namespace GrobExp.Compiler.Tests
                 return a + b;
             }
 
-            public int this[int i] { get => 1; set { } }
-            public int this[long j] { get => 1; set { } }
+            public int this[int i] { get => 1; set {} }
+            public int this[long j] { get => 1; set {} }
 
             public string field;
             public string otherField;

@@ -11,7 +11,7 @@ namespace GrobExp.Compiler.ExpressionEmitters
         protected override bool EmitInternal(NewExpression node, EmittingContext context, GroboIL.Label returnDefaultValueLabel, ResultType whatReturn, bool extend, out Type resultType)
         {
             context.EmitLoadArguments(node.Arguments.ToArray());
-            // note ich: баг решарпера
+            // note ich: пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
             // ReSharper disable ConditionIsAlwaysTrueOrFalse
             // ReSharper disable HeuristicUnreachableCode
             GroboIL il = context.Il;

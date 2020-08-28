@@ -96,8 +96,8 @@ namespace GrobExp.Compiler.Closures
                 if (!IsNestedlyPublic(arg.Type))
                 {
                     throw new InvalidOperationException(string.Format(
-                        "Non-public method '{0}' with argument or return value of non-public type '{1}' is not allowed!",
-                        method.Name, Formatter.Format(arg.Type)));
+                                                            "Non-public method '{0}' with argument or return value of non-public type '{1}' is not allowed!",
+                                                            method.Name, Formatter.Format(arg.Type)));
                 }
 
             var methodDelegate = MethodInvokerBuilder.GetInvoker(method);

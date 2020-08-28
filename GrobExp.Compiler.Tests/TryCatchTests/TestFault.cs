@@ -18,9 +18,9 @@ namespace GrobExp.Compiler.Tests.TryCatchTests
                         Expression.MultiplyChecked(
                             Expression.Convert(Expression.MakeMemberAccess(a, typeof(TestClassA).GetProperty("X")), typeof(int)),
                             Expression.Convert(Expression.MakeMemberAccess(b, typeof(TestClassA).GetProperty("X")), typeof(int))
-                            ), typeof(object).GetMethod("ToString")),
+                        ), typeof(object).GetMethod("ToString")),
                     Expression.Assign(Expression.MakeMemberAccess(null, typeof(TestFault).GetField("B")), Expression.Constant(true))
-                    );
+                );
             var exp = Expression.Lambda<Func<TestClassA, TestClassA, string>>(tryExpr, a, b);
             var f = CompileToMethod(exp, CompilerOptions.None);
             B = false;

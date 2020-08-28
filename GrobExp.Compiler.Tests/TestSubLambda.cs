@@ -473,7 +473,7 @@ namespace GrobExp.Compiler.Tests
             //var exp = Expression.Divide(Expression.Constant(2), Expression.Subtract(Expression.Constant(4), Expression.Constant(4)));
             //var block = Expression.Block(di, exp);
 
-            using(var il = new GroboIL(meth))
+            using (var il = new GroboIL(meth))
             {
 //                var tst = Expression.Block(Expression.DebugInfo(sdi, 6, 20, 6, 27), Expression.Equal(variable, zero));
 //                var iftrue = Expression.Block(Expression.DebugInfo(sdi, 10, 20, 10, 26), Expression.Add(variable, two));
@@ -554,7 +554,7 @@ namespace GrobExp.Compiler.Tests
             //var exp = Expression.Divide(Expression.Constant(2), Expression.Subtract(Expression.Constant(4), Expression.Constant(4)));
             //var block = Expression.Block(di, exp);
 
-            using(var il = new GroboIL(meth))
+            using (var il = new GroboIL(meth))
             {
 //                        nop                      // []
 //        nop                      // []

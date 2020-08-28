@@ -150,11 +150,11 @@ namespace GrobExp.Compiler.Tests
         [Ignore("Is used for debugging")]
         public unsafe void TestWriteAssemblerCode3()
         {
-            var method = new DynamicMethod(Guid.NewGuid().ToString(), typeof(void), new[] { typeof(IntPtr), typeof(int) }, typeof(string), true);
+            var method = new DynamicMethod(Guid.NewGuid().ToString(), typeof(void), new[] {typeof(IntPtr), typeof(int)}, typeof(string), true);
             var il = method.GetILGenerator();
             il.Emit(OpCodes.Ldarg_0);
             il.Emit(OpCodes.Ldarg_1);
-            if(IntPtr.Size == 8)
+            if (IntPtr.Size == 8)
                 il.Emit(OpCodes.Ldc_I8, 0x123456789ABCDEF1);
             else
                 il.Emit(OpCodes.Ldc_I4, 0x12345678);
@@ -298,23 +298,6 @@ namespace GrobExp.Compiler.Tests
         [UnmanagedFunctionPointer(CallingConvention.StdCall)]
         private unsafe delegate int ZzzUnmanagedDelegate(int x, int y);
 
-        private static class NativeMethods
-        {
-            [DllImport("kernel32.dll", SetLastError = true)]
-            internal static extern IntPtr VirtualAlloc(
-                IntPtr lpAddress,
-                UIntPtr dwSize,
-                AllocationTypes flAllocationType,
-                MemoryProtections flProtect);
-
-            [DllImport("kernel32")]
-            [return : MarshalAs(UnmanagedType.Bool)]
-            internal static extern bool VirtualFree(
-                IntPtr lpAddress,
-                uint dwSize,
-                FreeTypes flFreeType);
-        }
-
         [Test]
         public unsafe void TestMarshal()
         {
@@ -322,47 +305,47 @@ namespace GrobExp.Compiler.Tests
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             {
 #endif
-                byte[] body;
-                if (IntPtr.Size == 4)
-                {
-                    // x86
-                    /*
-                 * xor eax, eax // 0x31, 0xC0
-                 * ret 8 // 0xC2, 0x08, 0x00
-                 */
-                    body = new byte[]
-                        {
-                            0x31, 0xC0, // xor eax, eax
-                            0xC2, 0x08, 0x00 // ret 8
-                        };
-                }
-                else
-                {
-                    body = new byte[]
-                        {
-                            0x48, 0x31, 0xC0, // xor rax, rax
-                            0xC3 // ret
-                        };
-                }
-                IntPtr p = NativeMethods.VirtualAlloc(
-                    IntPtr.Zero,
-                    new UIntPtr((uint)body.Length),
-                    AllocationTypes.Commit | AllocationTypes.Reserve,
-                    MemoryProtections.ExecuteReadWrite);
-                Marshal.Copy(body, 0, p, body.Length);
-                var func = (ZzzUnmanagedDelegate)Marshal.GetDelegateForFunctionPointer(p, typeof(ZzzUnmanagedDelegate));
-                var method = ((MulticastDelegate)func).Method;
-                var methodHandle = (RuntimeMethodHandle)method.GetType().GetProperty("MethodHandle", BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public).GetGetMethod().Invoke(method, new object[0]);
-                var pointer = methodHandle.GetFunctionPointer();
-                var b = (byte*)pointer;
-                for (int i = 0; i < 20; ++i)
-                {
-                    for (int j = 0; j < 10; ++j)
-                        Console.Write(string.Format("{0:X2} ", *b++));
-                    Console.WriteLine();
-                }
+            byte[] body;
+            if (IntPtr.Size == 4)
+            {
+                // x86
+                /*
+             * xor eax, eax // 0x31, 0xC0
+             * ret 8 // 0xC2, 0x08, 0x00
+             */
+                body = new byte[]
+                    {
+                        0x31, 0xC0, // xor eax, eax
+                        0xC2, 0x08, 0x00 // ret 8
+                    };
+            }
+            else
+            {
+                body = new byte[]
+                    {
+                        0x48, 0x31, 0xC0, // xor rax, rax
+                        0xC3 // ret
+                    };
+            }
+            IntPtr p = NativeMethods.VirtualAlloc(
+                IntPtr.Zero,
+                new UIntPtr((uint)body.Length),
+                AllocationTypes.Commit | AllocationTypes.Reserve,
+                MemoryProtections.ExecuteReadWrite);
+            Marshal.Copy(body, 0, p, body.Length);
+            var func = (ZzzUnmanagedDelegate)Marshal.GetDelegateForFunctionPointer(p, typeof(ZzzUnmanagedDelegate));
+            var method = ((MulticastDelegate)func).Method;
+            var methodHandle = (RuntimeMethodHandle)method.GetType().GetProperty("MethodHandle", BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public).GetGetMethod().Invoke(method, new object[0]);
+            var pointer = methodHandle.GetFunctionPointer();
+            var b = (byte*)pointer;
+            for (int i = 0; i < 20; ++i)
+            {
+                for (int j = 0; j < 10; ++j)
+                    Console.Write(string.Format("{0:X2} ", *b++));
+                Console.WriteLine();
+            }
 
-                func(0, 1);
+            func(0, 1);
 
 //            var stopwatch = Stopwatch.StartNew();
 //            for (int i = 0; i < 1000000001; ++i)
@@ -557,10 +540,10 @@ namespace GrobExp.Compiler.Tests
                         Expression.MultiplyAssign(result,
                                                   Expression.PostDecrementAssign(value)),
                         Expression.Break(label, result)
-                        ),
+                    ),
                     label
-                    )
-                );
+                )
+            );
 
             Expression<Func<int, int>> exp = Expression.Lambda<Func<int, int>>(block, value);
             Console.WriteLine("Sharp");
@@ -597,9 +580,9 @@ namespace GrobExp.Compiler.Tests
                     Expression.SwitchCase(Expression.Constant("zzz"), Expression.Constant(0), Expression.Constant(2)),
                     Expression.SwitchCase(Expression.Constant("qxx"), Expression.Constant(5), Expression.Constant(1000001)),
                     Expression.SwitchCase(Expression.Constant("qzz"), Expression.Constant(7), Expression.Constant(1000000))
-                    ),
+                ),
                 a
-                );
+            );
             Console.WriteLine("GroboCompile with checking");
             MeasureSpeed(LambdaCompiler.Compile(exp, CompilerOptions.All), 2, 1000000000, ethalon);
             Console.WriteLine("GroboCompile without checking");
@@ -627,9 +610,9 @@ namespace GrobExp.Compiler.Tests
                     Expression.SwitchCase(Expression.Constant("zzz"), Expression.Constant("0"), Expression.Constant("2")),
                     Expression.SwitchCase(Expression.Constant("qxx"), Expression.Constant("5"), Expression.Constant("1000001")),
                     Expression.SwitchCase(Expression.Constant("qzz"), Expression.Constant("7"), Expression.Constant("1000000"))
-                    ),
+                ),
                 a
-                );
+            );
             Console.WriteLine("GroboCompile with checking");
             MeasureSpeed(LambdaCompiler.Compile(exp, CompilerOptions.All), "1000000", 100000000, ethalon);
             Console.WriteLine("GroboCompile without checking");
@@ -674,91 +657,6 @@ namespace GrobExp.Compiler.Tests
             Console.WriteLine(x);
 
             stop = true;
-        }
-
-        public static int x;
-        public static readonly AssemblyBuilder Assembly = AssemblyBuilder.DefineDynamicAssembly(new AssemblyName(Guid.NewGuid().ToString()), AssemblyBuilderAccess.Run);
-        public static readonly ModuleBuilder Module = Assembly.DefineDynamicModule(Guid.NewGuid().ToString());
-
-        public class TestImpl : ITest
-        {
-            public void DoNothing()
-            {
-                DoNothingImpl();
-            }
-
-            private void DoNothingImpl()
-            {
-                ++x;
-            }
-        }
-
-        public class TestClassA
-        {
-            public int F(bool b)
-            {
-                return b ? 1 : 0;
-            }
-
-            public string S { get; set; }
-            public TestClassA A { get; set; }
-            public TestClassB B { get; set; }
-            public TestClassB[] ArrayB { get; set; }
-            public int[] IntArray { get; set; }
-            public int? X;
-            public Guid Guid = Guid.Empty;
-            public Guid? NullableGuid;
-            public bool? NullableBool;
-            public int Y;
-            public int Z;
-            public int P;
-            public int Q;
-            public bool Bool;
-        }
-
-        public class TestClassB
-        {
-            public int? F2(int? x)
-            {
-                return x;
-            }
-
-            public int? F( /*Qzz*/ int a, int b)
-            {
-                return b;
-            }
-
-            public string S { get; set; }
-
-            public TestClassC C { get; set; }
-            public int? X;
-            public int Y;
-        }
-
-        public class TestClassC
-        {
-            public string S { get; set; }
-
-            public TestClassD D { get; set; }
-
-            public TestClassD[] ArrayD { get; set; }
-        }
-
-        public class TestClassD
-        {
-            public TestClassE E { get; set; }
-            public TestClassE[] ArrayE { get; set; }
-            public string Z { get; set; }
-
-            public int? X { get; set; }
-
-            public string S;
-        }
-
-        public class TestClassE
-        {
-            public string S { get; set; }
-            public int X { get; set; }
         }
 
         public interface ITest
@@ -1034,9 +932,6 @@ namespace GrobExp.Compiler.Tests
             return (Func<int, string>)dynamicMethod.CreateDelegate(typeof(Func<int, string>));
         }
 
-        public static int[] testValues = new[] {0, -1, 2, -1, -1, 5, -1, 7, 1000000, 1000001, -1, -1, -1, -1};
-        public static int[] indexes = new[] {0, -1, 1, -1, -1, 2, -1, 3, 4, 5, -1, -1, -1, -1};
-
         private Func<int, string> BuildSwitch2()
         {
             var dynamicMethod = new DynamicMethod(Guid.NewGuid().ToString(), MethodAttributes.Public | MethodAttributes.Static, CallingConventions.Standard, typeof(string), new[] {typeof(int)}, Module, true);
@@ -1095,9 +990,6 @@ namespace GrobExp.Compiler.Tests
                 return "xxx";
             }
         }
-
-        public static string[] testValues2;
-        public static int[] indexes2;
 
         private static void Init(string[] values)
         {
@@ -1194,11 +1086,119 @@ namespace GrobExp.Compiler.Tests
             return elapsed.TotalSeconds / iter;
         }
 
+        public static int x;
+        public static readonly AssemblyBuilder Assembly = AssemblyBuilder.DefineDynamicAssembly(new AssemblyName(Guid.NewGuid().ToString()), AssemblyBuilderAccess.Run);
+        public static readonly ModuleBuilder Module = Assembly.DefineDynamicModule(Guid.NewGuid().ToString());
+
+        public static int[] testValues = new[] {0, -1, 2, -1, -1, 5, -1, 7, 1000000, 1000001, -1, -1, -1, -1};
+        public static int[] indexes = new[] {0, -1, 1, -1, -1, 2, -1, 3, 4, 5, -1, -1, -1, -1};
+
+        public static string[] testValues2;
+        public static int[] indexes2;
+
         private static readonly Func<int, int, int> func = (x, y) => x + y;
         private readonly Func<int, int, int> xfunc = (x, y) => x + y;
 
         private volatile bool stop;
 
         private static readonly FieldInfo xField = (FieldInfo)((MemberExpression)((Expression<Func<int>>)(() => x)).Body).Member;
+
+        private static class NativeMethods
+        {
+            [DllImport("kernel32.dll", SetLastError = true)]
+            internal static extern IntPtr VirtualAlloc(
+                IntPtr lpAddress,
+                UIntPtr dwSize,
+                AllocationTypes flAllocationType,
+                MemoryProtections flProtect);
+
+            [DllImport("kernel32")]
+            [return : MarshalAs(UnmanagedType.Bool)]
+            internal static extern bool VirtualFree(
+                IntPtr lpAddress,
+                uint dwSize,
+                FreeTypes flFreeType);
+        }
+
+        public class TestImpl : ITest
+        {
+            public void DoNothing()
+            {
+                DoNothingImpl();
+            }
+
+            private void DoNothingImpl()
+            {
+                ++x;
+            }
+        }
+
+        public class TestClassA
+        {
+            public int F(bool b)
+            {
+                return b ? 1 : 0;
+            }
+
+            public string S { get; set; }
+            public TestClassA A { get; set; }
+            public TestClassB B { get; set; }
+            public TestClassB[] ArrayB { get; set; }
+            public int[] IntArray { get; set; }
+            public int? X;
+            public Guid Guid = Guid.Empty;
+            public Guid? NullableGuid;
+            public bool? NullableBool;
+            public int Y;
+            public int Z;
+            public int P;
+            public int Q;
+            public bool Bool;
+        }
+
+        public class TestClassB
+        {
+            public int? F2(int? x)
+            {
+                return x;
+            }
+
+            public int? F( /*Qzz*/ int a, int b)
+            {
+                return b;
+            }
+
+            public string S { get; set; }
+
+            public TestClassC C { get; set; }
+            public int? X;
+            public int Y;
+        }
+
+        public class TestClassC
+        {
+            public string S { get; set; }
+
+            public TestClassD D { get; set; }
+
+            public TestClassD[] ArrayD { get; set; }
+        }
+
+        public class TestClassD
+        {
+            public TestClassE E { get; set; }
+            public TestClassE[] ArrayE { get; set; }
+            public string Z { get; set; }
+
+            public int? X { get; set; }
+
+            public string S;
+        }
+
+        public class TestClassE
+        {
+            public string S { get; set; }
+            public int X { get; set; }
+        }
     }
 }

@@ -24,7 +24,7 @@ namespace GrobExp.Compiler.Tests.ExtensionTests
                             Expression.GreaterThan(item, Expression.Constant(0)),
                             Expression.AddAssign(result, item)),
                         item)
-                    ),
+                ),
                 result);
             Expression<Func<int[], int>> exp = Expression.Lambda<Func<int[], int>>(block, array);
 

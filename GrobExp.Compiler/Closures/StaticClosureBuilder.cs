@@ -82,7 +82,7 @@ namespace GrobExp.Compiler.Closures
                                          from field in type.GetFields(BindingFlags.Instance | BindingFlags.Public)
                                          where field.FieldType.IsNested && field.FieldType.DeclaringType == typeof(StaticClosures)
                                          select Expression.Bind(field, Init(field.FieldType))
-                );
+            );
         }
 
         private static readonly Type[] tupleTypes = typeof(StaticClosures).GetNestedTypes()

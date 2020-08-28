@@ -26,9 +26,9 @@ namespace GrobExp.Compiler.Closures
 
             var properties = type.GetProperties();
             var newType = AnonymousTypeBuilder.CreateAnonymousType(properties
-                                                                       .Select(p => p.PropertyType)
-                                                                       .Select(CreateAnonymousType)
-                                                                       .ToArray(),
+                                                                   .Select(p => p.PropertyType)
+                                                                   .Select(CreateAnonymousType)
+                                                                   .ToArray(),
                                                                    properties.Select(p => p.Name).ToArray(),
                                                                    module);
             var newProperties = newType.GetProperties(BindingFlags.Public | BindingFlags.Instance)

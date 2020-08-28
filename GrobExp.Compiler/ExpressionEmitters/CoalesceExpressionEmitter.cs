@@ -11,7 +11,7 @@ namespace GrobExp.Compiler.ExpressionEmitters
         {
             if (node.Conversion != null)
                 throw new NotSupportedException("Coalesce with conversion is not supported");
-            // note ich: баг решарпера
+            // note ich: пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
             // ReSharper disable HeuristicUnreachableCode
             var left = node.Left;
             var right = node.Right;

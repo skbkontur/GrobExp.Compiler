@@ -23,10 +23,10 @@ namespace GrobExp.Compiler.Tests
                         Expression.MultiplyAssign(result,
                                                   Expression.PostDecrementAssign(value)),
                         Expression.Break(label, result)
-                        ),
+                    ),
                     label
-                    )
-                );
+                )
+            );
             Expression<Func<int, int>> exp = Expression.Lambda<Func<int, int>>(block, value);
 
             Func<int, int> f = LambdaCompiler.Compile(exp, CompilerOptions.All);
@@ -59,11 +59,11 @@ namespace GrobExp.Compiler.Tests
                                 Expression.MultiplyAssign(result,
                                                           Expression.PostDecrementAssign(value)),
                                 Expression.Break(label, result)
-                                                       )
+                            )
                         }),
                     label
-                    )
-                );
+                )
+            );
             Expression<Func<int, string>> exp = Expression.Lambda<Func<int, string>>(Expression.Call(block, "ToString", Type.EmptyTypes), value);
 
             Func<int, string> f = LambdaCompiler.Compile(exp, CompilerOptions.All);
@@ -102,12 +102,12 @@ namespace GrobExp.Compiler.Tests
                                 Expression.LessThanOrEqual(item, Expression.Constant(0)),
                                 Expression.Continue(continueLabel)),
                             Expression.AddAssign(result, item)
-                            ),
-                        Expression.Break(breakLabel, result)
                         ),
+                        Expression.Break(breakLabel, result)
+                    ),
                     breakLabel, continueLabel
-                    )
-                );
+                )
+            );
             Expression<Func<int[], int>> exp = Expression.Lambda<Func<int[], int>>(block, array);
 
             Func<int[], int> f = LambdaCompiler.Compile(exp, CompilerOptions.All);

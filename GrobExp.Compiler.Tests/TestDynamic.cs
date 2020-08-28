@@ -26,7 +26,7 @@ namespace GrobExp.Compiler.Tests
             var exp = Expression.Lambda<Func<object, object, object>>(
                 Expression.Dynamic(binder, typeof(object), x, y),
                 new[] {x, y}
-                );
+            );
 
             Func<dynamic, dynamic, dynamic> f = LambdaCompiler.Compile(exp, CompilerOptions.All);
             Assert.AreEqual(3, f(1, 2));

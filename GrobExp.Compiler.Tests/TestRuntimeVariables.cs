@@ -18,7 +18,7 @@ namespace GrobExp.Compiler.Tests
                     Expression.Block(
                         Expression.AddAssign(a, b),
                         Expression.RuntimeVariables(a, b)
-                        ), a, b);
+                    ), a, b);
             var f = Compile(exp, CompilerOptions.All);
             Assert.AreEqual(3, f(1, 2)[0]);
             Assert.AreEqual(2, f(1, 2)[1]);

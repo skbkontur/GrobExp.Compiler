@@ -158,7 +158,7 @@ namespace GrobExp.Compiler.ExpressionEmitters
 
             if (!isArray)
             {
-                // TODO: это злобно, лист при всех операциях меняет _version, а мы нет
+                // TODO: пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ _version, пїЅ пїЅпїЅ пїЅпїЅпїЅ
                 EmitLoadField(context, arrayType, arrayType.GetField("_items", BindingFlags.Instance | BindingFlags.NonPublic));
                 arrayType = itemType.MakeArrayType();
             }
@@ -226,7 +226,7 @@ namespace GrobExp.Compiler.ExpressionEmitters
             }
             else
             {
-                // todo убрать Reflection
+                // todo пїЅпїЅпїЅпїЅпїЅпїЅ Reflection
                 var extractor = (Tuple<Delegate, IntPtr>)extractFieldMethod.MakeGenericMethod(type, field.FieldType).Invoke(null, new[] {(object)field});
                 il.Ldc_IntPtr(extractor.Item2);
                 il.Calli(CallingConventions.Standard, field.FieldType, new[] {type});
@@ -251,7 +251,7 @@ namespace GrobExp.Compiler.ExpressionEmitters
             }
             else
             {
-                // todo убрать Reflection
+                // todo пїЅпїЅпїЅпїЅпїЅпїЅ Reflection
                 var resizer = (Tuple<Delegate, IntPtr>)resizeListMethod.MakeGenericMethod(type.GetGenericArguments()[0]).Invoke(null, new object[0]);
                 il.Ldloc(list);
                 il.Ldloc(index);

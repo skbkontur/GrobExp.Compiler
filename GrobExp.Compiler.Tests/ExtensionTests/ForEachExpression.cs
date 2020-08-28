@@ -32,10 +32,10 @@ namespace GrobExp.Compiler.Tests.ExtensionTests
                     Block(
                         IfThen(Not(Call(enumerator, moveNextMethod)), Break(breakLabel)),
                         Invoke(Body, Call(enumerator, currentProperty.GetGetMethod()))
-                        ),
+                    ),
                     breakLabel
-                    )
-                );
+                )
+            );
         }
 
         public override string ToString()

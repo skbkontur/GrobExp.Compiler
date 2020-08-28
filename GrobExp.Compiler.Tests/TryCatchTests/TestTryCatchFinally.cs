@@ -17,12 +17,12 @@ namespace GrobExp.Compiler.Tests.TryCatchTests
                     Expression.Block(
                         Expression.Throw(Expression.New(typeof(DivideByZeroException))),
                         Expression.Constant("Try block")
-                        ),
+                    ),
                     Expression.Catch(
                         typeof(DivideByZeroException),
                         Expression.Constant("Catch block")
-                        )
-                    );
+                    )
+                );
             var exp = Expression.Lambda<Func<string>>(tryCatchExpr);
             var f = CompileToMethod(exp, CompilerOptions.All);
             Assert.AreEqual("Catch block", f());
@@ -39,21 +39,21 @@ namespace GrobExp.Compiler.Tests.TryCatchTests
                         Expression.MultiplyChecked(
                             Expression.Convert(Expression.MakeMemberAccess(a, typeof(TestClassA).GetProperty("X")), typeof(int)),
                             Expression.Convert(Expression.MakeMemberAccess(b, typeof(TestClassA).GetProperty("X")), typeof(int))
-                            ), typeof(object).GetMethod("ToString")),
+                        ), typeof(object).GetMethod("ToString")),
                     Expression.Assign(Expression.MakeMemberAccess(null, typeof(TestTryCatchFinally).GetField("B")), Expression.Constant(true)),
                     Expression.Catch(
                         typeof(OverflowException),
                         Expression.Constant("Overflow")
-                        ),
+                    ),
                     Expression.Catch(
                         typeof(InvalidCastException),
                         Expression.Constant("Invalid cast")
-                        ),
+                    ),
                     Expression.Catch(
                         typeof(NullReferenceException),
                         Expression.Constant("Null reference")
-                        )
-                    );
+                    )
+                );
             var exp = Expression.Lambda<Func<TestClassA, TestClassA, string>>(tryExpr, a, b);
             var f = Compile(exp, CompilerOptions.None);
             B = false;
@@ -137,21 +137,21 @@ namespace GrobExp.Compiler.Tests.TryCatchTests
                         Expression.MultiplyChecked(
                             Expression.Convert(Expression.MakeMemberAccess(a, typeof(TestClassA).GetProperty("X")), typeof(int)),
                             Expression.Convert(Expression.MakeMemberAccess(b, typeof(TestClassA).GetProperty("X")), typeof(int))
-                            ), typeof(object).GetMethod("ToString")),
+                        ), typeof(object).GetMethod("ToString")),
                     Expression.Assign(Expression.MakeMemberAccess(null, typeof(TestTryCatchFinally).GetField("B")), Expression.Constant(true)),
                     Expression.Catch(
                         overflow,
                         Expression.MakeMemberAccess(overflow, typeof(Exception).GetProperty("Message"))
-                        ),
+                    ),
                     Expression.Catch(
                         invalidCast,
                         Expression.MakeMemberAccess(invalidCast, typeof(Exception).GetProperty("Message"))
-                        ),
+                    ),
                     Expression.Catch(
                         nullReference,
                         Expression.MakeMemberAccess(nullReference, typeof(Exception).GetProperty("Message"))
-                        )
-                    );
+                    )
+                );
             var exp = Expression.Lambda<Func<TestClassA, TestClassA, string>>(Expression.Block(new[] {overflow, invalidCast, nullReference}, tryExpr), a, b);
             var f = Compile(exp, CompilerOptions.None);
             B = false;
