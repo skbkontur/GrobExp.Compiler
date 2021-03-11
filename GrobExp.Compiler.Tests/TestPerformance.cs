@@ -305,47 +305,47 @@ namespace GrobExp.Compiler.Tests
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             {
 #endif
-            byte[] body;
-            if (IntPtr.Size == 4)
-            {
-                // x86
-                /*
-             * xor eax, eax // 0x31, 0xC0
-             * ret 8 // 0xC2, 0x08, 0x00
-             */
-                body = new byte[]
-                    {
-                        0x31, 0xC0, // xor eax, eax
-                        0xC2, 0x08, 0x00 // ret 8
-                    };
-            }
-            else
-            {
-                body = new byte[]
-                    {
-                        0x48, 0x31, 0xC0, // xor rax, rax
-                        0xC3 // ret
-                    };
-            }
-            IntPtr p = NativeMethods.VirtualAlloc(
-                IntPtr.Zero,
-                new UIntPtr((uint)body.Length),
-                AllocationTypes.Commit | AllocationTypes.Reserve,
-                MemoryProtections.ExecuteReadWrite);
-            Marshal.Copy(body, 0, p, body.Length);
-            var func = (ZzzUnmanagedDelegate)Marshal.GetDelegateForFunctionPointer(p, typeof(ZzzUnmanagedDelegate));
-            var method = ((MulticastDelegate)func).Method;
-            var methodHandle = (RuntimeMethodHandle)method.GetType().GetProperty("MethodHandle", BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public).GetGetMethod().Invoke(method, new object[0]);
-            var pointer = methodHandle.GetFunctionPointer();
-            var b = (byte*)pointer;
-            for (int i = 0; i < 20; ++i)
-            {
-                for (int j = 0; j < 10; ++j)
-                    Console.Write(string.Format("{0:X2} ", *b++));
-                Console.WriteLine();
-            }
+                byte[] body;
+                if (IntPtr.Size == 4)
+                {
+                    // x86
+                    /*
+                 * xor eax, eax // 0x31, 0xC0
+                 * ret 8 // 0xC2, 0x08, 0x00
+                 */
+                    body = new byte[]
+                        {
+                            0x31, 0xC0, // xor eax, eax
+                            0xC2, 0x08, 0x00 // ret 8
+                        };
+                }
+                else
+                {
+                    body = new byte[]
+                        {
+                            0x48, 0x31, 0xC0, // xor rax, rax
+                            0xC3 // ret
+                        };
+                }
+                IntPtr p = NativeMethods.VirtualAlloc(
+                    IntPtr.Zero,
+                    new UIntPtr((uint)body.Length),
+                    AllocationTypes.Commit | AllocationTypes.Reserve,
+                    MemoryProtections.ExecuteReadWrite);
+                Marshal.Copy(body, 0, p, body.Length);
+                var func = (ZzzUnmanagedDelegate)Marshal.GetDelegateForFunctionPointer(p, typeof(ZzzUnmanagedDelegate));
+                var method = ((MulticastDelegate)func).Method;
+                var methodHandle = (RuntimeMethodHandle)method.GetType().GetProperty("MethodHandle", BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public).GetGetMethod().Invoke(method, new object[0]);
+                var pointer = methodHandle.GetFunctionPointer();
+                var b = (byte*)pointer;
+                for (int i = 0; i < 20; ++i)
+                {
+                    for (int j = 0; j < 10; ++j)
+                        Console.Write(string.Format("{0:X2} ", *b++));
+                    Console.WriteLine();
+                }
 
-            func(0, 1);
+                func(0, 1);
 
 //            var stopwatch = Stopwatch.StartNew();
 //            for (int i = 0; i < 1000000001; ++i)

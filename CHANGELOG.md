@@ -1,14 +1,18 @@
 # Changelog
 
+## v1.3.20 - 2021.03.11
+- Update GrEmit dependency to v3.4.1.
+- Run tests against net5.0 tfm.
+
 ## v1.3.10 - 2019.11.21
-- Update GrEmit to v3.2.2 supporting SourceLink
+- Update GrEmit to v3.2.2 supporting SourceLink.
 
 ## v1.3.7 - 2019.11.21
 - Use [SourceLink](https://github.com/dotnet/sourcelink) to help ReSharper decompiler show actual code.
 
 ## v1.3.2 - 2019.09.25
-- Fix bug in `LambdaExpressionCreator`
-- Update dependencies
+- Fix bug in `LambdaExpressionCreator`.
+- Update dependencies.
 
 ## v1.2.1 - 2018.09.15
 - Use [Nerdbank.GitVersioning](https://github.com/AArnott/Nerdbank.GitVersioning) to automate generation of assembly 
