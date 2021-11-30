@@ -44,7 +44,7 @@ build_script:
 test_script:
   - cmd: dotnet jb cleanupcode GrobExp.Compiler.sln --profile=CatalogueCleanup --verbosity=WARN
   - cmd: git diff --exit-code
-  - cmd: dotnet test --no-build --configuration Release --filter TestCategory!=LongRunning^&TestCategory!=FailingOnNetCore ./GrobExp.Compiler.Tests/GrobExp.Compiler.Tests.csproj
+  - cmd: dotnet test --no-build --configuration Release --filter TestCategory!=LongRunning ./GrobExp.Compiler.Tests/GrobExp.Compiler.Tests.csproj
 
 artifacts:
   - path: './GrobExp.Compiler/bin/Release/*.nupkg'

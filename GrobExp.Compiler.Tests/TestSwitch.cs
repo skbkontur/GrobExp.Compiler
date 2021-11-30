@@ -145,6 +145,9 @@ namespace GrobExp.Compiler.Tests
         }
 
         [Test]
+#if NETCOREAPP
+        [Ignore("FailingOnNetCore")]
+#endif
         [Category("FailingOnNetCore")]
         public void TestString()
         {

@@ -1,6 +1,6 @@
 # Changelog
 
-## v1.3.22 - 2021.11.30
+## v1.3.23 - 2021.11.30
 - Add net6.0 support.
 - Update GrEmit dependency to v3.4.10.
 
