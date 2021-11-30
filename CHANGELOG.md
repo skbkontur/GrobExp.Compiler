@@ -1,5 +1,9 @@
 # Changelog
 
+## v1.3.22 - 2021.11.30
+- Add net6.0 support.
+- Update GrEmit dependency to v3.4.10.
+
 ## v1.3.20 - 2021.03.11
 - Update GrEmit dependency to v3.4.1.
 - Run tests against net5.0 tfm.

@@ -242,7 +242,15 @@ namespace GrobExp.Compiler.ExpressionEmitters
                 il.Ldloc(index); // stack: [list, arrayIndex]
                 il.Ldc_I4(1); // stack: [list, arrayIndex, 1]
                 il.Add(); // stack: [list, arrayIndex + 1]
-                il.Call(type.GetMethod("EnsureCapacity", BindingFlags.Instance | BindingFlags.NonPublic)); // list.EnsureCapacity(arrayIndex + 1); stack: []
+                if (PlatformHelpers.IsDotNet60OrGreater)
+                {
+                    il.Call(type.GetMethod("EnsureCapacity", BindingFlags.Instance | BindingFlags.Public)); // list.EnsureCapacity(arrayIndex + 1); stack: [newCapacity]
+                    il.Pop();
+                }
+                else
+                {
+                    il.Call(type.GetMethod("EnsureCapacity", BindingFlags.Instance | BindingFlags.NonPublic)); // list.EnsureCapacity(arrayIndex + 1); stack: []
+                }
                 il.Ldloc(list); // stack: [list]
                 il.Ldloc(index); // stack: [list, arrayIndex]
                 il.Ldc_I4(1); // stack: [list, arrayIndex, 1]
@@ -304,7 +312,15 @@ namespace GrobExp.Compiler.ExpressionEmitters
                 il.Ldarg(1); // stack: [list, arrayIndex]
                 il.Ldc_I4(1); // stack: [list, arrayIndex, 1]
                 il.Add(); // stack: [list, arrayIndex + 1]
-                il.Call(typeof(List<T>).GetMethod("EnsureCapacity", BindingFlags.Instance | BindingFlags.NonPublic)); // list.EnsureCapacity(arrayIndex + 1); stack: []
+                if (PlatformHelpers.IsDotNet60OrGreater)
+                {
+                    il.Call(typeof(List<T>).GetMethod("EnsureCapacity", BindingFlags.Instance | BindingFlags.Public)); // list.EnsureCapacity(arrayIndex + 1); stack: [newCapacity]
+                    il.Pop();
+                }
+                else
+                {
+                    il.Call(typeof(List<T>).GetMethod("EnsureCapacity", BindingFlags.Instance | BindingFlags.NonPublic)); // list.EnsureCapacity(arrayIndex + 1); stack: []
+                }
                 il.Ldarg(0); // stack: [list]
                 il.Ldarg(1); // stack: [list, arrayIndex]
                 il.Ldc_I4(1); // stack: [list, arrayIndex, 1]
