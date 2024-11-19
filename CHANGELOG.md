@@ -1,4 +1,7 @@
 # Changelog
+## v1.3.24 - 2024.11.19
+- Add net8.0 support
+- Update GrEmit dependency to v3.5.1
 
 ## v1.3.23 - 2021.11.30
 - Add net6.0 support.
