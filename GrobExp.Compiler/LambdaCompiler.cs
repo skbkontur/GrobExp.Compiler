@@ -64,34 +64,37 @@ namespace GrobExp.Compiler
             bool internalCall,
             List<CompiledLambda> compiledLambdas)
         {
-            if (debugInfoGenerator == null)
-                return CompileToDynamicMethod(lambda, parsedLambda, options, internalCall, compiledLambdas);
-
-            var parameters = lambda.Parameters.ToArray();
-            var parameterTypes = parameters.Select(parameter => parameter.Type).ToArray();
-            var returnType = lambda.ReturnType;
-
-            var typeBuilder = Module.DefineType(Guid.NewGuid().ToString(), TypeAttributes.Public | TypeAttributes.Class);
-            var method = typeBuilder.DefineMethod(lambda.Name ?? Guid.NewGuid().ToString(), MethodAttributes.Static | MethodAttributes.Public, returnType, parameterTypes);
-            for (var i = 0; i < parameters.Length; ++i)
-                method.DefineParameter(i + 1, ParameterAttributes.None, parameters[i].Name);
-            CompileToMethodInternal(lambda, debugInfoGenerator, parsedLambda, options, compiledLambdas, method);
-
-            var type = typeBuilder.CreateTypeInfo();
-            var dynamicMethod = new DynamicMethod(Guid.NewGuid().ToString(), returnType, parameterTypes, Module, true);
-            using (var il = new GroboIL(dynamicMethod))
+            lock (LockObject)
             {
-                for (var i = 0; i < parameterTypes.Length; ++i)
-                    il.Ldarg(i);
-                il.Call(type.GetMethod(method.Name));
-                il.Ret();
-            }
-            return new CompiledLambda
+                if (debugInfoGenerator == null)
+                    return CompileToDynamicMethod(lambda, parsedLambda, options, internalCall, compiledLambdas);
+
+                var parameters = lambda.Parameters.ToArray();
+                var parameterTypes = parameters.Select(parameter => parameter.Type).ToArray();
+                var returnType = lambda.ReturnType;
+
+                var typeBuilder = Module.DefineType(Guid.NewGuid().ToString(), TypeAttributes.Public | TypeAttributes.Class);
+                var method = typeBuilder.DefineMethod(lambda.Name ?? Guid.NewGuid().ToString(), MethodAttributes.Static | MethodAttributes.Public, returnType, parameterTypes);
+                for (var i = 0; i < parameters.Length; ++i)
+                    method.DefineParameter(i + 1, ParameterAttributes.None, parameters[i].Name);
+                CompileToMethodInternal(lambda, debugInfoGenerator, parsedLambda, options, compiledLambdas, method);
+
+                var type = typeBuilder.CreateTypeInfo();
+                var dynamicMethod = new DynamicMethod(Guid.NewGuid().ToString(), returnType, parameterTypes, Module, true);
+                using (var il = new GroboIL(dynamicMethod))
                 {
-                    Delegate = Extensions.IsMono && internalCall ? dynamicMethod.CreateDelegate(Extensions.GetDelegateType(parameterTypes, returnType))
-                                   : dynamicMethod.CreateDelegate(Extensions.GetDelegateType(parsedLambda.ConstantsParameter == null ? parameterTypes : parameterTypes.Skip(1).ToArray(), lambda.ReturnType), parsedLambda.Constants),
-                    Method = method
-                };
+                    for (var i = 0; i < parameterTypes.Length; ++i)
+                        il.Ldarg(i);
+                    il.Call(type.GetMethod(method.Name));
+                    il.Ret();
+                }
+                return new CompiledLambda
+                    {
+                        Delegate = Extensions.IsMono && internalCall ? dynamicMethod.CreateDelegate(Extensions.GetDelegateType(parameterTypes, returnType))
+                                       : dynamicMethod.CreateDelegate(Extensions.GetDelegateType(parsedLambda.ConstantsParameter == null ? parameterTypes : parameterTypes.Skip(1).ToArray(), lambda.ReturnType), parsedLambda.Constants),
+                        Method = method
+                    };
+            }
         }
 
         internal static void CompileToMethodInternal(
@@ -131,6 +134,8 @@ namespace GrobExp.Compiler
 #else
         internal static readonly ModuleBuilder Module = Assembly.DefineDynamicModule(Guid.NewGuid().ToString(), true);
 #endif
+
+        internal static readonly object LockObject = new object();
 
         private static string GenerateFileName(Expression expression)
         {
