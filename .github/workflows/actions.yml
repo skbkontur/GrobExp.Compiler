@@ -4,6 +4,9 @@ on:
       - "**/*.md"
     pull_request:
 env:
+  TEST_DOTNET_VERSION: |
+    3.1.x
+    6.0.x
   DOTNET_VERSION: 6.0.x
   SOLUTION_FILE: GrobExp.Compiler.sln
 jobs:
@@ -17,7 +20,7 @@ jobs:
       - name: Setup .NET Core
         uses: actions/setup-dotnet@v3
         with:
-          dotnet-version: ${{ env.DOTNET_VERSION }}
+          dotnet-version: ${{ env.TEST_DOTNET_VERSION }}
 
       - name: Install dependencies
         run: dotnet restore ${{ env.SOLUTION_FILE }} --verbosity minimal && dotnet tool restore
