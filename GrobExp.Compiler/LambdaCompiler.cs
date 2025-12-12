@@ -236,7 +236,13 @@ namespace GrobExp.Compiler
             var compiledLambdas = new List<CompiledLambda>();
             ParsedLambda parsedLambda;
             var emitToDynamicMethod = debugInfoGenerator == null;
-            var resolvedLambda = new ExpressionClosureResolver(lambda, Module, emitToDynamicMethod, options).Resolve(out parsedLambda);
+
+            LambdaExpression resolvedLambda;
+            lock (LockObject)
+            {
+                resolvedLambda = new ExpressionClosureResolver(lambda, Module, emitToDynamicMethod, options).Resolve(out parsedLambda);
+            }
+
             if (!string.IsNullOrEmpty(DebugOutputDirectory))
             {
                 resolvedLambda = AdvancedDebugViewWriter.WriteToModifying(resolvedLambda, parsedLambda.ConstantsType,
