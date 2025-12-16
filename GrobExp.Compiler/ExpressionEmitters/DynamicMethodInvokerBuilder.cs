@@ -22,7 +22,7 @@ namespace GrobExp.Compiler.ExpressionEmitters
                 type = MonoSucks.Get(constantTypes, resultType, parameterTypes);
             else
             {
-                module = module ?? LambdaCompiler.Module;
+                module = module ?? LambdaCompiler.Module.Value;
                 var key = GetKey(module, constantTypes, resultType, parameterTypes);
                 type = (Type)types[key];
                 if (type == null)
