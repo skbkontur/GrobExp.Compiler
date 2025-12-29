@@ -36,7 +36,10 @@ namespace GrobExp.Compiler.Closures
             var prefix = "MethodInvoker";
             if (method.IsStatic)
                 prefix += "$" + Formatter.Format(method.DeclaringType);
-            var dynamicMethod = new DynamicMethod(prefix + "$" + method.Name + "$" + Guid.NewGuid(), method.ReturnType, parameterTypes.ToArray(), typeof(MethodInvokerBuilder), true);
+            var dynamicMethod = new DynamicMethod(name : prefix + "$" + method.Name + "$" + Guid.NewGuid(),
+                                                  returnType : method.ReturnType,
+                                                  parameterTypes : parameterTypes.ToArray(),
+                                                  restrictedSkipVisibility : true);
             using (var il = new GroboIL(dynamicMethod))
             {
                 for (var i = 0; i < parameterTypes.Count; ++i)

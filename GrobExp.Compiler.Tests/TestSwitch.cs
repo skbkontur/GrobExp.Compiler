@@ -2,6 +2,7 @@
 using System.Linq.Expressions;
 
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 
 namespace GrobExp.Compiler.Tests
 {
@@ -23,16 +24,16 @@ namespace GrobExp.Compiler.Tests
                 a
             );
             var f = LambdaCompiler.Compile(exp, CompilerOptions.All);
-            Assert.AreEqual("zzz", f(0));
-            Assert.AreEqual("xxx", f(1));
-            Assert.AreEqual("zzz", f(2));
-            Assert.AreEqual("xxx", f(3));
-            Assert.AreEqual("qxx", f(5));
-            Assert.AreEqual("xxx", f(6));
-            Assert.AreEqual("qzz", f(7));
-            Assert.AreEqual("xxx", f(123456));
-            Assert.AreEqual("qzz", f(1000000));
-            Assert.AreEqual("qxx", f(1000001));
+            ClassicAssert.AreEqual("zzz", f(0));
+            ClassicAssert.AreEqual("xxx", f(1));
+            ClassicAssert.AreEqual("zzz", f(2));
+            ClassicAssert.AreEqual("xxx", f(3));
+            ClassicAssert.AreEqual("qxx", f(5));
+            ClassicAssert.AreEqual("xxx", f(6));
+            ClassicAssert.AreEqual("qzz", f(7));
+            ClassicAssert.AreEqual("xxx", f(123456));
+            ClassicAssert.AreEqual("qzz", f(1000000));
+            ClassicAssert.AreEqual("qxx", f(1000001));
         }
 
         [Test]
@@ -50,17 +51,17 @@ namespace GrobExp.Compiler.Tests
                 a
             );
             var f = LambdaCompiler.Compile(exp, CompilerOptions.All);
-            Assert.AreEqual("zzz", f(null));
-            Assert.AreEqual("zzz", f(0));
-            Assert.AreEqual("xxx", f(1));
-            Assert.AreEqual("zzz", f(2));
-            Assert.AreEqual("xxx", f(3));
-            Assert.AreEqual("qxx", f(5));
-            Assert.AreEqual("xxx", f(6));
-            Assert.AreEqual("qzz", f(7));
-            Assert.AreEqual("xxx", f(123456));
-            Assert.AreEqual("qzz", f(1000000));
-            Assert.AreEqual("qxx", f(1000001));
+            ClassicAssert.AreEqual("zzz", f(null));
+            ClassicAssert.AreEqual("zzz", f(0));
+            ClassicAssert.AreEqual("xxx", f(1));
+            ClassicAssert.AreEqual("zzz", f(2));
+            ClassicAssert.AreEqual("xxx", f(3));
+            ClassicAssert.AreEqual("qxx", f(5));
+            ClassicAssert.AreEqual("xxx", f(6));
+            ClassicAssert.AreEqual("qzz", f(7));
+            ClassicAssert.AreEqual("xxx", f(123456));
+            ClassicAssert.AreEqual("qzz", f(1000000));
+            ClassicAssert.AreEqual("qxx", f(1000001));
         }
 
         [Test]
@@ -78,16 +79,16 @@ namespace GrobExp.Compiler.Tests
                 a
             );
             var f = LambdaCompiler.Compile(exp, CompilerOptions.All);
-            Assert.AreEqual("zzz", f(0));
-            Assert.AreEqual("xxx", f(1));
-            Assert.AreEqual("zzz", f(2));
-            Assert.AreEqual("xxx", f(3));
-            Assert.AreEqual("qxx", f(5));
-            Assert.AreEqual("xxx", f(6));
-            Assert.AreEqual("qzz", f(7));
-            Assert.AreEqual("xxx", f(100));
-            Assert.AreEqual("qzz", f(-100));
-            Assert.AreEqual("qxx", f(-101));
+            ClassicAssert.AreEqual("zzz", f(0));
+            ClassicAssert.AreEqual("xxx", f(1));
+            ClassicAssert.AreEqual("zzz", f(2));
+            ClassicAssert.AreEqual("xxx", f(3));
+            ClassicAssert.AreEqual("qxx", f(5));
+            ClassicAssert.AreEqual("xxx", f(6));
+            ClassicAssert.AreEqual("qzz", f(7));
+            ClassicAssert.AreEqual("xxx", f(100));
+            ClassicAssert.AreEqual("qzz", f(-100));
+            ClassicAssert.AreEqual("qxx", f(-101));
         }
 
         [Test]
@@ -105,16 +106,16 @@ namespace GrobExp.Compiler.Tests
                 a
             );
             var f = LambdaCompiler.Compile(exp, CompilerOptions.All);
-            Assert.AreEqual("zzz", f(0));
-            Assert.AreEqual("xxx", f(1));
-            Assert.AreEqual("zzz", f(2));
-            Assert.AreEqual("xxx", f(3));
-            Assert.AreEqual("qxx", f(5));
-            Assert.AreEqual("xxx", f(6));
-            Assert.AreEqual("qzz", f(7));
-            Assert.AreEqual("xxx", f(200));
-            Assert.AreEqual("qzz", f(100));
-            Assert.AreEqual("qxx", f(101));
+            ClassicAssert.AreEqual("zzz", f(0));
+            ClassicAssert.AreEqual("xxx", f(1));
+            ClassicAssert.AreEqual("zzz", f(2));
+            ClassicAssert.AreEqual("xxx", f(3));
+            ClassicAssert.AreEqual("qxx", f(5));
+            ClassicAssert.AreEqual("xxx", f(6));
+            ClassicAssert.AreEqual("qzz", f(7));
+            ClassicAssert.AreEqual("xxx", f(200));
+            ClassicAssert.AreEqual("qzz", f(100));
+            ClassicAssert.AreEqual("qxx", f(101));
         }
 
         [Test]
@@ -132,22 +133,20 @@ namespace GrobExp.Compiler.Tests
                 a
             );
             var f = LambdaCompiler.Compile(exp, CompilerOptions.All);
-            Assert.AreEqual("zzz", f(0));
-            Assert.AreEqual("xxx", f(1));
-            Assert.AreEqual("zzz", f(2));
-            Assert.AreEqual("xxx", f(3));
-            Assert.AreEqual("qxx", f(5));
-            Assert.AreEqual("xxx", f(6));
-            Assert.AreEqual("qzz", f(7));
-            Assert.AreEqual("xxx", f(200000000000));
-            Assert.AreEqual("qzz", f(-100000000000));
-            Assert.AreEqual("qxx", f(-101000000000));
+            ClassicAssert.AreEqual("zzz", f(0));
+            ClassicAssert.AreEqual("xxx", f(1));
+            ClassicAssert.AreEqual("zzz", f(2));
+            ClassicAssert.AreEqual("xxx", f(3));
+            ClassicAssert.AreEqual("qxx", f(5));
+            ClassicAssert.AreEqual("xxx", f(6));
+            ClassicAssert.AreEqual("qzz", f(7));
+            ClassicAssert.AreEqual("xxx", f(200000000000));
+            ClassicAssert.AreEqual("qzz", f(-100000000000));
+            ClassicAssert.AreEqual("qxx", f(-101000000000));
         }
 
         [Test]
-#if NETCOREAPP
         [Ignore("FailingOnNetCore")]
-#endif
         [Category("FailingOnNetCore")]
         public void TestString()
         {
@@ -163,17 +162,17 @@ namespace GrobExp.Compiler.Tests
                 a
             );
             var f = LambdaCompiler.Compile(exp, CompilerOptions.All);
-            Assert.AreEqual("zzz", f(null));
-            Assert.AreEqual("zzz", f("0"));
-            Assert.AreEqual("xxx", f("1"));
-            Assert.AreEqual("zzz", f("2"));
-            Assert.AreEqual("xxx", f("3"));
-            Assert.AreEqual("qxx", f("5"));
-            Assert.AreEqual("xxx", f("6"));
-            Assert.AreEqual("qzz", f("7"));
-            Assert.AreEqual("xxx", f("123456"));
-            Assert.AreEqual("qzz", f("1000000"));
-            Assert.AreEqual("qxx", f("1000001"));
+            ClassicAssert.AreEqual("zzz", f(null));
+            ClassicAssert.AreEqual("zzz", f("0"));
+            ClassicAssert.AreEqual("xxx", f("1"));
+            ClassicAssert.AreEqual("zzz", f("2"));
+            ClassicAssert.AreEqual("xxx", f("3"));
+            ClassicAssert.AreEqual("qxx", f("5"));
+            ClassicAssert.AreEqual("xxx", f("6"));
+            ClassicAssert.AreEqual("qzz", f("7"));
+            ClassicAssert.AreEqual("xxx", f("123456"));
+            ClassicAssert.AreEqual("qzz", f("1000000"));
+            ClassicAssert.AreEqual("qxx", f("1000001"));
         }
 
         [Test]
@@ -191,16 +190,16 @@ namespace GrobExp.Compiler.Tests
                 a
             );
             var f = LambdaCompiler.Compile(exp, CompilerOptions.All);
-            Assert.AreEqual("zzz", f(0.0));
-            Assert.AreEqual("xxx", f(1.0));
-            Assert.AreEqual("zzz", f(2.0));
-            Assert.AreEqual("xxx", f(3.0));
-            Assert.AreEqual("qxx", f(5.0));
-            Assert.AreEqual("xxx", f(6.0));
-            Assert.AreEqual("qzz", f(7.0));
-            Assert.AreEqual("xxx", f(123456.0));
-            Assert.AreEqual("qzz", f(1000000.0));
-            Assert.AreEqual("qxx", f(1000001.0));
+            ClassicAssert.AreEqual("zzz", f(0.0));
+            ClassicAssert.AreEqual("xxx", f(1.0));
+            ClassicAssert.AreEqual("zzz", f(2.0));
+            ClassicAssert.AreEqual("xxx", f(3.0));
+            ClassicAssert.AreEqual("qxx", f(5.0));
+            ClassicAssert.AreEqual("xxx", f(6.0));
+            ClassicAssert.AreEqual("qzz", f(7.0));
+            ClassicAssert.AreEqual("xxx", f(123456.0));
+            ClassicAssert.AreEqual("qzz", f(1000000.0));
+            ClassicAssert.AreEqual("qxx", f(1000001.0));
         }
 
         [Test]
@@ -218,17 +217,17 @@ namespace GrobExp.Compiler.Tests
                 a
             );
             var f = LambdaCompiler.Compile(exp, CompilerOptions.All);
-            Assert.AreEqual("zzz", f(null));
-            Assert.AreEqual("zzz", f(0.0));
-            Assert.AreEqual("xxx", f(1.0));
-            Assert.AreEqual("zzz", f(2.0));
-            Assert.AreEqual("xxx", f(3.0));
-            Assert.AreEqual("qxx", f(5.0));
-            Assert.AreEqual("xxx", f(6.0));
-            Assert.AreEqual("qzz", f(7.0));
-            Assert.AreEqual("xxx", f(123456.0));
-            Assert.AreEqual("qzz", f(1000000.0));
-            Assert.AreEqual("qxx", f(1000001.0));
+            ClassicAssert.AreEqual("zzz", f(null));
+            ClassicAssert.AreEqual("zzz", f(0.0));
+            ClassicAssert.AreEqual("xxx", f(1.0));
+            ClassicAssert.AreEqual("zzz", f(2.0));
+            ClassicAssert.AreEqual("xxx", f(3.0));
+            ClassicAssert.AreEqual("qxx", f(5.0));
+            ClassicAssert.AreEqual("xxx", f(6.0));
+            ClassicAssert.AreEqual("qzz", f(7.0));
+            ClassicAssert.AreEqual("xxx", f(123456.0));
+            ClassicAssert.AreEqual("qzz", f(1000000.0));
+            ClassicAssert.AreEqual("qxx", f(1000001.0));
         }
     }
 }

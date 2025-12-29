@@ -305,7 +305,10 @@ namespace GrobExp.Compiler.ExpressionEmitters
 
         private static Tuple<Delegate, IntPtr> EmitListResizer<T>()
         {
-            var method = new DynamicMethod(Guid.NewGuid().ToString(), typeof(void), new[] {typeof(List<T>), typeof(int)}, typeof(string), true);
+            var method = new DynamicMethod(name : $"EmitListResizer_{typeof(T).Name}_{Guid.NewGuid()}",
+                                           returnType : typeof(void),
+                                           parameterTypes : new[] {typeof(List<T>), typeof(int)},
+                                           restrictedSkipVisibility : true);
             using (var il = new GroboIL(method))
             {
                 il.Ldarg(0); // stack: [list]
@@ -333,7 +336,10 @@ namespace GrobExp.Compiler.ExpressionEmitters
 
         private static Tuple<Delegate, IntPtr> EmitFieldExtractor<T, TValue>(FieldInfo field)
         {
-            var method = new DynamicMethod(Guid.NewGuid().ToString(), typeof(TValue), new[] {typeof(T)}, typeof(string), true);
+            var method = new DynamicMethod(name : $"EmitFieldExtractor_{typeof(T).Name}_{Guid.NewGuid()}",
+                                           returnType : typeof(TValue),
+                                           parameterTypes : new[] {typeof(T)},
+                                           restrictedSkipVisibility : true);
             using (var il = new GroboIL(method))
             {
                 il.Ldarg(0); // stack: [list]

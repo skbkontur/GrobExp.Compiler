@@ -3,17 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
-using System.Reflection.Emit;
 
 namespace GrobExp.Compiler.Closures
 {
     internal class ExpressionAnonymousTypeReplacer : ExpressionVisitor
     {
-        public ExpressionAnonymousTypeReplacer(ModuleBuilder module)
-        {
-            this.module = module;
-        }
-
         private bool IsAnonymousType(Type type)
         {
             return AnonymousTypeBuilder.IsAnonymousType(type);
@@ -30,7 +24,7 @@ namespace GrobExp.Compiler.Closures
                                                                    .Select(CreateAnonymousType)
                                                                    .ToArray(),
                                                                    properties.Select(p => p.Name).ToArray(),
-                                                                   module);
+                                                                   module : null);
             var newProperties = newType.GetProperties(BindingFlags.Public | BindingFlags.Instance)
                                        .ToDictionary(property => property.Name);
             typeCache[type] = newType;
@@ -154,8 +148,7 @@ namespace GrobExp.Compiler.Closures
             if (node.Constructor == null)
                 return Expression.New(node.Type);
 
-            var constructorTypes = node.Constructor.GetParameters().Select(
-                p => ReplaceGenericType(p.ParameterType)).ToArray();
+            var constructorTypes = node.Constructor.GetParameters().Select(p => ReplaceGenericType(p.ParameterType)).ToArray();
 
             MemberInfo[] members = null;
             if (node.Members != null)
@@ -192,8 +185,6 @@ namespace GrobExp.Compiler.Closures
             var obj = Visit(node.Object);
             return Expression.Call(obj, method, arguments);
         }
-
-        private readonly ModuleBuilder module;
 
         private readonly Dictionary<Type, Type> typeCache = new Dictionary<Type, Type>();
 

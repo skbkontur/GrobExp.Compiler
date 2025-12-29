@@ -11,7 +11,7 @@ namespace GrobExp.Compiler.Closures
         {
             lambda = (LambdaExpression)new LambdaPreparer().Visit(new RuntimeVariablesInliner().Visit(lambda));
             if (!dynamic)
-                lambda = (LambdaExpression)new ExpressionPrivateMembersAccessor().Visit(new ExpressionAnonymousTypeReplacer(module).Visit(lambda));
+                lambda = (LambdaExpression)new ExpressionPrivateMembersAccessor().Visit(new ExpressionAnonymousTypeReplacer().Visit(lambda));
             constantsBuilder = options.HasFlag(CompilerOptions.CreateDynamicClosure)
                                    ? new DynamicClosureBuilder(module)
                                    : (IClosureBuilder)new StaticClosureBuilder();

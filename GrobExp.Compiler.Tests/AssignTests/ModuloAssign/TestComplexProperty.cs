@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq.Expressions;
 
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 
 namespace GrobExp.Compiler.Tests.AssignTests.ModuloAssign
 {
@@ -18,27 +19,27 @@ namespace GrobExp.Compiler.Tests.AssignTests.ModuloAssign
             var f = LambdaCompiler.Compile(exp, CompilerOptions.CheckNullReferences);
             var o = new TestClassA {IntArray = new IntArray()};
             o.IntArray["zzz", 1] = 1;
-            Assert.AreEqual(1, f(o, 2));
-            Assert.AreEqual(1, o.IntArray["zzz", 1]);
+            ClassicAssert.AreEqual(1, f(o, 2));
+            ClassicAssert.AreEqual(1, o.IntArray["zzz", 1]);
             o.IntArray["zzz", 1] = 5;
-            Assert.AreEqual(2, f(o, 3));
-            Assert.AreEqual(2, o.IntArray["zzz", 1]);
+            ClassicAssert.AreEqual(2, f(o, 3));
+            ClassicAssert.AreEqual(2, o.IntArray["zzz", 1]);
             o.IntArray["zzz", 1] = -3;
-            Assert.AreEqual(-1, f(o, 2));
-            Assert.AreEqual(-1, o.IntArray["zzz", 1]);
-            Assert.AreEqual(0, f(null, 1));
+            ClassicAssert.AreEqual(-1, f(o, 2));
+            ClassicAssert.AreEqual(-1, o.IntArray["zzz", 1]);
+            ClassicAssert.AreEqual(0, f(null, 1));
 
             f = LambdaCompiler.Compile(exp, CompilerOptions.None);
             o = new TestClassA {IntArray = new IntArray()};
             o.IntArray["zzz", 1] = 1;
-            Assert.AreEqual(1, f(o, 2));
-            Assert.AreEqual(1, o.IntArray["zzz", 1]);
+            ClassicAssert.AreEqual(1, f(o, 2));
+            ClassicAssert.AreEqual(1, o.IntArray["zzz", 1]);
             o.IntArray["zzz", 1] = 5;
-            Assert.AreEqual(2, f(o, 3));
-            Assert.AreEqual(2, o.IntArray["zzz", 1]);
+            ClassicAssert.AreEqual(2, f(o, 3));
+            ClassicAssert.AreEqual(2, o.IntArray["zzz", 1]);
             o.IntArray["zzz", 1] = -3;
-            Assert.AreEqual(-1, f(o, 2));
-            Assert.AreEqual(-1, o.IntArray["zzz", 1]);
+            ClassicAssert.AreEqual(-1, f(o, 2));
+            ClassicAssert.AreEqual(-1, o.IntArray["zzz", 1]);
             Assert.Throws<NullReferenceException>(() => f(null, 1));
         }
 
@@ -51,44 +52,44 @@ namespace GrobExp.Compiler.Tests.AssignTests.ModuloAssign
             var f = LambdaCompiler.Compile(exp, CompilerOptions.CheckNullReferences);
             var o = new TestClassA {NullableIntArray = new NullableIntArray()};
             o.NullableIntArray["zzz", 1] = 1;
-            Assert.AreEqual(1, f(o, 2));
-            Assert.AreEqual(1, o.NullableIntArray["zzz", 1]);
+            ClassicAssert.AreEqual(1, f(o, 2));
+            ClassicAssert.AreEqual(1, o.NullableIntArray["zzz", 1]);
             o.NullableIntArray["zzz", 1] = 5;
-            Assert.AreEqual(2, f(o, 3));
-            Assert.AreEqual(2, o.NullableIntArray["zzz", 1]);
+            ClassicAssert.AreEqual(2, f(o, 3));
+            ClassicAssert.AreEqual(2, o.NullableIntArray["zzz", 1]);
             o.NullableIntArray["zzz", 1] = -3;
-            Assert.AreEqual(-1, f(o, 2));
-            Assert.AreEqual(-1, o.NullableIntArray["zzz", 1]);
-            Assert.IsNull(f(null, 1));
+            ClassicAssert.AreEqual(-1, f(o, 2));
+            ClassicAssert.AreEqual(-1, o.NullableIntArray["zzz", 1]);
+            ClassicAssert.IsNull(f(null, 1));
             o.NullableIntArray["zzz", 1] = null;
-            Assert.IsNull(f(o, 2));
-            Assert.IsNull(o.NullableIntArray["zzz", 1]);
+            ClassicAssert.IsNull(f(o, 2));
+            ClassicAssert.IsNull(o.NullableIntArray["zzz", 1]);
             o.NullableIntArray["zzz", 1] = 1;
-            Assert.IsNull(f(o, null));
-            Assert.IsNull(o.NullableIntArray["zzz", 1]);
-            Assert.IsNull(f(o, null));
-            Assert.IsNull(o.NullableIntArray["zzz", 1]);
+            ClassicAssert.IsNull(f(o, null));
+            ClassicAssert.IsNull(o.NullableIntArray["zzz", 1]);
+            ClassicAssert.IsNull(f(o, null));
+            ClassicAssert.IsNull(o.NullableIntArray["zzz", 1]);
 
             f = LambdaCompiler.Compile(exp, CompilerOptions.None);
             o = new TestClassA {NullableIntArray = new NullableIntArray()};
             o.NullableIntArray["zzz", 1] = 1;
-            Assert.AreEqual(1, f(o, 2));
-            Assert.AreEqual(1, o.NullableIntArray["zzz", 1]);
+            ClassicAssert.AreEqual(1, f(o, 2));
+            ClassicAssert.AreEqual(1, o.NullableIntArray["zzz", 1]);
             o.NullableIntArray["zzz", 1] = 5;
-            Assert.AreEqual(2, f(o, 3));
-            Assert.AreEqual(2, o.NullableIntArray["zzz", 1]);
+            ClassicAssert.AreEqual(2, f(o, 3));
+            ClassicAssert.AreEqual(2, o.NullableIntArray["zzz", 1]);
             o.NullableIntArray["zzz", 1] = -3;
-            Assert.AreEqual(-1, f(o, 2));
-            Assert.AreEqual(-1, o.NullableIntArray["zzz", 1]);
+            ClassicAssert.AreEqual(-1, f(o, 2));
+            ClassicAssert.AreEqual(-1, o.NullableIntArray["zzz", 1]);
             Assert.Throws<NullReferenceException>(() => f(null, 1));
             o.NullableIntArray["zzz", 1] = null;
-            Assert.IsNull(f(o, 2));
-            Assert.IsNull(o.NullableIntArray["zzz", 1]);
+            ClassicAssert.IsNull(f(o, 2));
+            ClassicAssert.IsNull(o.NullableIntArray["zzz", 1]);
             o.NullableIntArray["zzz", 1] = 1;
-            Assert.IsNull(f(o, null));
-            Assert.IsNull(o.NullableIntArray["zzz", 1]);
-            Assert.IsNull(f(o, null));
-            Assert.IsNull(o.NullableIntArray["zzz", 1]);
+            ClassicAssert.IsNull(f(o, null));
+            ClassicAssert.IsNull(o.NullableIntArray["zzz", 1]);
+            ClassicAssert.IsNull(f(o, null));
+            ClassicAssert.IsNull(o.NullableIntArray["zzz", 1]);
         }
 
         [Test]
@@ -100,27 +101,27 @@ namespace GrobExp.Compiler.Tests.AssignTests.ModuloAssign
             var f = LambdaCompiler.Compile(exp, CompilerOptions.CheckNullReferences);
             var o = new TestClassA {UIntArray = new UIntArray()};
             o.UIntArray["zzz", 1] = 1;
-            Assert.AreEqual(1, f(o, 2));
-            Assert.AreEqual(1, o.UIntArray["zzz", 1]);
+            ClassicAssert.AreEqual(1, f(o, 2));
+            ClassicAssert.AreEqual(1, o.UIntArray["zzz", 1]);
             o.UIntArray["zzz", 1] = 5;
-            Assert.AreEqual(2, f(o, 3));
-            Assert.AreEqual(2, o.UIntArray["zzz", 1]);
+            ClassicAssert.AreEqual(2, f(o, 3));
+            ClassicAssert.AreEqual(2, o.UIntArray["zzz", 1]);
             o.UIntArray["zzz", 1] = uint.MaxValue - 3 + 1;
-            Assert.AreEqual(1, f(o, 2));
-            Assert.AreEqual(1, o.UIntArray["zzz", 1]);
-            Assert.AreEqual(0, f(null, 1));
+            ClassicAssert.AreEqual(1, f(o, 2));
+            ClassicAssert.AreEqual(1, o.UIntArray["zzz", 1]);
+            ClassicAssert.AreEqual(0, f(null, 1));
 
             f = LambdaCompiler.Compile(exp, CompilerOptions.None);
             o = new TestClassA {UIntArray = new UIntArray()};
             o.UIntArray["zzz", 1] = 1;
-            Assert.AreEqual(1, f(o, 2));
-            Assert.AreEqual(1, o.UIntArray["zzz", 1]);
+            ClassicAssert.AreEqual(1, f(o, 2));
+            ClassicAssert.AreEqual(1, o.UIntArray["zzz", 1]);
             o.UIntArray["zzz", 1] = 5;
-            Assert.AreEqual(2, f(o, 3));
-            Assert.AreEqual(2, o.UIntArray["zzz", 1]);
+            ClassicAssert.AreEqual(2, f(o, 3));
+            ClassicAssert.AreEqual(2, o.UIntArray["zzz", 1]);
             o.UIntArray["zzz", 1] = uint.MaxValue - 3 + 1;
-            Assert.AreEqual(1, f(o, 2));
-            Assert.AreEqual(1, o.UIntArray["zzz", 1]);
+            ClassicAssert.AreEqual(1, f(o, 2));
+            ClassicAssert.AreEqual(1, o.UIntArray["zzz", 1]);
             Assert.Throws<NullReferenceException>(() => f(null, 1));
         }
 

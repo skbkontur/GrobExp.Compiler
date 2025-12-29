@@ -10,6 +10,7 @@ namespace GrobExp.Compiler.Closures
     {
         public static Type CreateAnonymousType(Type[] types, string[] names, ModuleBuilder module)
         {
+            module = module ?? defaultModule;
             var key = new HashtableKey(module, types, names);
             var type = (Type)anonymousTypes[key];
             if (type == null)
@@ -68,6 +69,9 @@ namespace GrobExp.Compiler.Closures
             constructorIl.Emit(OpCodes.Ret);
             return typeBuilder.CreateTypeInfo();
         }
+
+        private static readonly AssemblyBuilder defaultAssembly = AssemblyBuilder.DefineDynamicAssembly(new AssemblyName($"AnonymousTypeBuilder_Assembly_{Guid.NewGuid()}"), AssemblyBuilderAccess.Run);
+        private static readonly ModuleBuilder defaultModule = defaultAssembly.DefineDynamicModule($"AnonymousTypeBuilder_Module_{Guid.NewGuid()}");
 
         private static readonly Hashtable anonymousTypes = new Hashtable();
         private static readonly object anonymousTypesLock = new object();

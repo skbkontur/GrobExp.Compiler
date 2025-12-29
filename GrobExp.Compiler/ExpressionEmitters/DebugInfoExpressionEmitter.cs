@@ -33,7 +33,10 @@ namespace GrobExp.Compiler.ExpressionEmitters
         private static Action<DebugInfoGenerator, LambdaExpression, MethodBase, GroboIL, DebugInfoExpression> BuildSequencePointMarker()
         {
             var parameterTypes = new[] {typeof(DebugInfoGenerator), typeof(LambdaExpression), typeof(MethodBase), typeof(GroboIL), typeof(DebugInfoExpression)};
-            var dynamicMethod = new DynamicMethod(Guid.NewGuid().ToString(), typeof(void), parameterTypes, typeof(DebugInfoExpressionEmitter), true);
+            var dynamicMethod = new DynamicMethod(name : $"BuildSequencePointMarker_{Guid.NewGuid()}",
+                                                  returnType : typeof(void),
+                                                  parameterTypes : parameterTypes,
+                                                  restrictedSkipVisibility : true);
             using (var il = new GroboIL(dynamicMethod))
             {
                 il.Ldarg(0);

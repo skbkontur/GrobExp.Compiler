@@ -5,9 +5,10 @@ on:
     pull_request:
 env:
   TEST_DOTNET_VERSION: |
-    3.1.x
-    6.0.x
-  DOTNET_VERSION: 6.0.x
+    7.0.x
+    9.0.x
+    10.0.x
+  DOTNET_VERSION: 10.0.x
   SOLUTION_FILE: GrobExp.Compiler.sln
 jobs:
   test:

@@ -2,6 +2,7 @@
 using System.Linq.Expressions;
 
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 
 namespace GrobExp.Compiler.Tests
 {
@@ -12,11 +13,11 @@ namespace GrobExp.Compiler.Tests
         {
             Expression<Func<int, int, bool>> exp = (a, b) => a > b;
             var f = Compile(exp, CompilerOptions.All);
-            Assert.IsTrue(f(3, 1));
-            Assert.IsFalse(f(-3, -1));
+            ClassicAssert.IsTrue(f(3, 1));
+            ClassicAssert.IsFalse(f(-3, -1));
             f = Compile(exp, CompilerOptions.None);
-            Assert.IsTrue(f(3, 1));
-            Assert.IsFalse(f(-3, -1));
+            ClassicAssert.IsTrue(f(3, 1));
+            ClassicAssert.IsFalse(f(-3, -1));
         }
 
         [Test]
@@ -24,17 +25,17 @@ namespace GrobExp.Compiler.Tests
         {
             Expression<Func<int?, int?, bool>> exp = (a, b) => a > b;
             var f = Compile(exp, CompilerOptions.All);
-            Assert.IsTrue(f(3, 1));
-            Assert.IsFalse(f(-3, -1));
-            Assert.IsFalse(f(1, null));
-            Assert.IsFalse(f(null, 1));
-            Assert.IsFalse(f(null, null));
+            ClassicAssert.IsTrue(f(3, 1));
+            ClassicAssert.IsFalse(f(-3, -1));
+            ClassicAssert.IsFalse(f(1, null));
+            ClassicAssert.IsFalse(f(null, 1));
+            ClassicAssert.IsFalse(f(null, null));
             f = Compile(exp, CompilerOptions.None);
-            Assert.IsTrue(f(3, 1));
-            Assert.IsFalse(f(-3, -1));
-            Assert.IsFalse(f(1, null));
-            Assert.IsFalse(f(null, 1));
-            Assert.IsFalse(f(null, null));
+            ClassicAssert.IsTrue(f(3, 1));
+            ClassicAssert.IsFalse(f(-3, -1));
+            ClassicAssert.IsFalse(f(1, null));
+            ClassicAssert.IsFalse(f(null, 1));
+            ClassicAssert.IsFalse(f(null, null));
         }
 
         [Test]
@@ -42,17 +43,17 @@ namespace GrobExp.Compiler.Tests
         {
             Expression<Func<long?, int?, bool>> exp = (a, b) => a > b;
             var f = Compile(exp, CompilerOptions.All);
-            Assert.IsTrue(f(3, 1));
-            Assert.IsFalse(f(-3, -1));
-            Assert.IsFalse(f(1, null));
-            Assert.IsFalse(f(null, 1));
-            Assert.IsFalse(f(null, null));
+            ClassicAssert.IsTrue(f(3, 1));
+            ClassicAssert.IsFalse(f(-3, -1));
+            ClassicAssert.IsFalse(f(1, null));
+            ClassicAssert.IsFalse(f(null, 1));
+            ClassicAssert.IsFalse(f(null, null));
             f = Compile(exp, CompilerOptions.None);
-            Assert.IsTrue(f(3, 1));
-            Assert.IsFalse(f(-3, -1));
-            Assert.IsFalse(f(1, null));
-            Assert.IsFalse(f(null, 1));
-            Assert.IsFalse(f(null, null));
+            ClassicAssert.IsTrue(f(3, 1));
+            ClassicAssert.IsFalse(f(-3, -1));
+            ClassicAssert.IsFalse(f(1, null));
+            ClassicAssert.IsFalse(f(null, 1));
+            ClassicAssert.IsFalse(f(null, null));
         }
 
         [Test]
@@ -60,11 +61,11 @@ namespace GrobExp.Compiler.Tests
         {
             Expression<Func<uint, uint, bool>> exp = (a, b) => a > b;
             var f = Compile(exp, CompilerOptions.All);
-            Assert.IsTrue(f(3, 1));
-            Assert.IsFalse(f(1, uint.MaxValue));
+            ClassicAssert.IsTrue(f(3, 1));
+            ClassicAssert.IsFalse(f(1, uint.MaxValue));
             f = Compile(exp, CompilerOptions.None);
-            Assert.IsTrue(f(3, 1));
-            Assert.IsFalse(f(1, uint.MaxValue));
+            ClassicAssert.IsTrue(f(3, 1));
+            ClassicAssert.IsFalse(f(1, uint.MaxValue));
         }
 
         [Test]
@@ -72,17 +73,17 @@ namespace GrobExp.Compiler.Tests
         {
             Expression<Func<int?, int?, bool>> exp = (a, b) => !(a > b);
             var f = Compile(exp, CompilerOptions.All);
-            Assert.IsFalse(f(3, 1));
-            Assert.IsTrue(f(-3, -1));
-            Assert.IsFalse(f(1, null));
-            Assert.IsFalse(f(null, 1));
-            Assert.IsFalse(f(null, null));
+            ClassicAssert.IsFalse(f(3, 1));
+            ClassicAssert.IsTrue(f(-3, -1));
+            ClassicAssert.IsFalse(f(1, null));
+            ClassicAssert.IsFalse(f(null, 1));
+            ClassicAssert.IsFalse(f(null, null));
             f = Compile(exp, CompilerOptions.None);
-            Assert.IsFalse(f(3, 1));
-            Assert.IsTrue(f(-3, -1));
-            Assert.IsTrue(f(1, null));
-            Assert.IsTrue(f(null, 1));
-            Assert.IsTrue(f(null, null));
+            ClassicAssert.IsFalse(f(3, 1));
+            ClassicAssert.IsTrue(f(-3, -1));
+            ClassicAssert.IsTrue(f(1, null));
+            ClassicAssert.IsTrue(f(null, 1));
+            ClassicAssert.IsTrue(f(null, null));
         }
 
         [Test]
@@ -90,13 +91,13 @@ namespace GrobExp.Compiler.Tests
         {
             Expression<Func<int, int, bool>> exp = (a, b) => a >= b;
             var f = Compile(exp, CompilerOptions.All);
-            Assert.IsTrue(f(3, 1));
-            Assert.IsFalse(f(-3, -1));
-            Assert.IsTrue(f(-1, -1));
+            ClassicAssert.IsTrue(f(3, 1));
+            ClassicAssert.IsFalse(f(-3, -1));
+            ClassicAssert.IsTrue(f(-1, -1));
             f = Compile(exp, CompilerOptions.None);
-            Assert.IsTrue(f(3, 1));
-            Assert.IsFalse(f(-3, -1));
-            Assert.IsTrue(f(-1, -1));
+            ClassicAssert.IsTrue(f(3, 1));
+            ClassicAssert.IsFalse(f(-3, -1));
+            ClassicAssert.IsTrue(f(-1, -1));
         }
 
         [Test]
@@ -104,19 +105,19 @@ namespace GrobExp.Compiler.Tests
         {
             Expression<Func<int?, int?, bool>> exp = (a, b) => a >= b;
             var f = Compile(exp, CompilerOptions.All);
-            Assert.IsTrue(f(3, 1));
-            Assert.IsFalse(f(-3, -1));
-            Assert.IsTrue(f(-1, -1));
-            Assert.IsFalse(f(1, null));
-            Assert.IsFalse(f(null, 1));
-            Assert.IsFalse(f(null, null));
+            ClassicAssert.IsTrue(f(3, 1));
+            ClassicAssert.IsFalse(f(-3, -1));
+            ClassicAssert.IsTrue(f(-1, -1));
+            ClassicAssert.IsFalse(f(1, null));
+            ClassicAssert.IsFalse(f(null, 1));
+            ClassicAssert.IsFalse(f(null, null));
             f = Compile(exp, CompilerOptions.None);
-            Assert.IsTrue(f(3, 1));
-            Assert.IsFalse(f(-3, -1));
-            Assert.IsTrue(f(-1, -1));
-            Assert.IsFalse(f(1, null));
-            Assert.IsFalse(f(null, 1));
-            Assert.IsFalse(f(null, null));
+            ClassicAssert.IsTrue(f(3, 1));
+            ClassicAssert.IsFalse(f(-3, -1));
+            ClassicAssert.IsTrue(f(-1, -1));
+            ClassicAssert.IsFalse(f(1, null));
+            ClassicAssert.IsFalse(f(null, 1));
+            ClassicAssert.IsFalse(f(null, null));
         }
 
         [Test]
@@ -124,19 +125,19 @@ namespace GrobExp.Compiler.Tests
         {
             Expression<Func<long?, int?, bool>> exp = (a, b) => a >= b;
             var f = Compile(exp, CompilerOptions.All);
-            Assert.IsTrue(f(3, 1));
-            Assert.IsFalse(f(-3, -1));
-            Assert.IsTrue(f(-1, -1));
-            Assert.IsFalse(f(1, null));
-            Assert.IsFalse(f(null, 1));
-            Assert.IsFalse(f(null, null));
+            ClassicAssert.IsTrue(f(3, 1));
+            ClassicAssert.IsFalse(f(-3, -1));
+            ClassicAssert.IsTrue(f(-1, -1));
+            ClassicAssert.IsFalse(f(1, null));
+            ClassicAssert.IsFalse(f(null, 1));
+            ClassicAssert.IsFalse(f(null, null));
             f = Compile(exp, CompilerOptions.None);
-            Assert.IsTrue(f(3, 1));
-            Assert.IsFalse(f(-3, -1));
-            Assert.IsTrue(f(-1, -1));
-            Assert.IsFalse(f(1, null));
-            Assert.IsFalse(f(null, 1));
-            Assert.IsFalse(f(null, null));
+            ClassicAssert.IsTrue(f(3, 1));
+            ClassicAssert.IsFalse(f(-3, -1));
+            ClassicAssert.IsTrue(f(-1, -1));
+            ClassicAssert.IsFalse(f(1, null));
+            ClassicAssert.IsFalse(f(null, 1));
+            ClassicAssert.IsFalse(f(null, null));
         }
 
         [Test]
@@ -144,13 +145,13 @@ namespace GrobExp.Compiler.Tests
         {
             Expression<Func<uint, uint, bool>> exp = (a, b) => a >= b;
             var f = Compile(exp, CompilerOptions.All);
-            Assert.IsTrue(f(3, 1));
-            Assert.IsFalse(f(1, uint.MaxValue));
-            Assert.IsTrue(f(3000000000, 3000000000));
+            ClassicAssert.IsTrue(f(3, 1));
+            ClassicAssert.IsFalse(f(1, uint.MaxValue));
+            ClassicAssert.IsTrue(f(3000000000, 3000000000));
             f = Compile(exp, CompilerOptions.None);
-            Assert.IsTrue(f(3, 1));
-            Assert.IsFalse(f(1, uint.MaxValue));
-            Assert.IsTrue(f(3000000000, 3000000000));
+            ClassicAssert.IsTrue(f(3, 1));
+            ClassicAssert.IsFalse(f(1, uint.MaxValue));
+            ClassicAssert.IsTrue(f(3000000000, 3000000000));
         }
 
         [Test]
@@ -158,19 +159,19 @@ namespace GrobExp.Compiler.Tests
         {
             Expression<Func<int?, int?, bool>> exp = (a, b) => !(a >= b);
             var f = Compile(exp, CompilerOptions.All);
-            Assert.IsFalse(f(3, 1));
-            Assert.IsTrue(f(-3, -1));
-            Assert.IsFalse(f(-1, -1));
-            Assert.IsFalse(f(1, null));
-            Assert.IsFalse(f(null, 1));
-            Assert.IsFalse(f(null, null));
+            ClassicAssert.IsFalse(f(3, 1));
+            ClassicAssert.IsTrue(f(-3, -1));
+            ClassicAssert.IsFalse(f(-1, -1));
+            ClassicAssert.IsFalse(f(1, null));
+            ClassicAssert.IsFalse(f(null, 1));
+            ClassicAssert.IsFalse(f(null, null));
             f = Compile(exp, CompilerOptions.None);
-            Assert.IsFalse(f(3, 1));
-            Assert.IsTrue(f(-3, -1));
-            Assert.IsFalse(f(-1, -1));
-            Assert.IsTrue(f(1, null));
-            Assert.IsTrue(f(null, 1));
-            Assert.IsTrue(f(null, null));
+            ClassicAssert.IsFalse(f(3, 1));
+            ClassicAssert.IsTrue(f(-3, -1));
+            ClassicAssert.IsFalse(f(-1, -1));
+            ClassicAssert.IsTrue(f(1, null));
+            ClassicAssert.IsTrue(f(null, 1));
+            ClassicAssert.IsTrue(f(null, null));
         }
 
         [Test]
@@ -178,11 +179,11 @@ namespace GrobExp.Compiler.Tests
         {
             Expression<Func<int, int, bool>> exp = (a, b) => a < b;
             var f = Compile(exp, CompilerOptions.All);
-            Assert.IsFalse(f(3, 1));
-            Assert.IsTrue(f(-3, -1));
+            ClassicAssert.IsFalse(f(3, 1));
+            ClassicAssert.IsTrue(f(-3, -1));
             f = Compile(exp, CompilerOptions.None);
-            Assert.IsFalse(f(3, 1));
-            Assert.IsTrue(f(-3, -1));
+            ClassicAssert.IsFalse(f(3, 1));
+            ClassicAssert.IsTrue(f(-3, -1));
         }
 
         [Test]
@@ -190,17 +191,17 @@ namespace GrobExp.Compiler.Tests
         {
             Expression<Func<int?, int?, bool>> exp = (a, b) => a < b;
             var f = Compile(exp, CompilerOptions.All);
-            Assert.IsFalse(f(3, 1));
-            Assert.IsTrue(f(-3, -1));
-            Assert.IsFalse(f(1, null));
-            Assert.IsFalse(f(null, 1));
-            Assert.IsFalse(f(null, null));
+            ClassicAssert.IsFalse(f(3, 1));
+            ClassicAssert.IsTrue(f(-3, -1));
+            ClassicAssert.IsFalse(f(1, null));
+            ClassicAssert.IsFalse(f(null, 1));
+            ClassicAssert.IsFalse(f(null, null));
             f = Compile(exp, CompilerOptions.None);
-            Assert.IsFalse(f(3, 1));
-            Assert.IsTrue(f(-3, -1));
-            Assert.IsFalse(f(1, null));
-            Assert.IsFalse(f(null, 1));
-            Assert.IsFalse(f(null, null));
+            ClassicAssert.IsFalse(f(3, 1));
+            ClassicAssert.IsTrue(f(-3, -1));
+            ClassicAssert.IsFalse(f(1, null));
+            ClassicAssert.IsFalse(f(null, 1));
+            ClassicAssert.IsFalse(f(null, null));
         }
 
         [Test]
@@ -208,17 +209,17 @@ namespace GrobExp.Compiler.Tests
         {
             Expression<Func<long?, int?, bool>> exp = (a, b) => a < b;
             var f = Compile(exp, CompilerOptions.All);
-            Assert.IsFalse(f(3, 1));
-            Assert.IsTrue(f(-3, -1));
-            Assert.IsFalse(f(1, null));
-            Assert.IsFalse(f(null, 1));
-            Assert.IsFalse(f(null, null));
+            ClassicAssert.IsFalse(f(3, 1));
+            ClassicAssert.IsTrue(f(-3, -1));
+            ClassicAssert.IsFalse(f(1, null));
+            ClassicAssert.IsFalse(f(null, 1));
+            ClassicAssert.IsFalse(f(null, null));
             f = Compile(exp, CompilerOptions.None);
-            Assert.IsFalse(f(3, 1));
-            Assert.IsTrue(f(-3, -1));
-            Assert.IsFalse(f(1, null));
-            Assert.IsFalse(f(null, 1));
-            Assert.IsFalse(f(null, null));
+            ClassicAssert.IsFalse(f(3, 1));
+            ClassicAssert.IsTrue(f(-3, -1));
+            ClassicAssert.IsFalse(f(1, null));
+            ClassicAssert.IsFalse(f(null, 1));
+            ClassicAssert.IsFalse(f(null, null));
         }
 
         [Test]
@@ -226,11 +227,11 @@ namespace GrobExp.Compiler.Tests
         {
             Expression<Func<uint, uint, bool>> exp = (a, b) => a < b;
             var f = Compile(exp, CompilerOptions.All);
-            Assert.IsFalse(f(3, 1));
-            Assert.IsTrue(f(1, uint.MaxValue));
+            ClassicAssert.IsFalse(f(3, 1));
+            ClassicAssert.IsTrue(f(1, uint.MaxValue));
             f = Compile(exp, CompilerOptions.None);
-            Assert.IsFalse(f(3, 1));
-            Assert.IsTrue(f(1, uint.MaxValue));
+            ClassicAssert.IsFalse(f(3, 1));
+            ClassicAssert.IsTrue(f(1, uint.MaxValue));
         }
 
         [Test]
@@ -238,17 +239,17 @@ namespace GrobExp.Compiler.Tests
         {
             Expression<Func<int?, int?, bool>> exp = (a, b) => !(a < b);
             var f = Compile(exp, CompilerOptions.All);
-            Assert.IsTrue(f(3, 1));
-            Assert.IsFalse(f(-3, -1));
-            Assert.IsFalse(f(1, null));
-            Assert.IsFalse(f(null, 1));
-            Assert.IsFalse(f(null, null));
+            ClassicAssert.IsTrue(f(3, 1));
+            ClassicAssert.IsFalse(f(-3, -1));
+            ClassicAssert.IsFalse(f(1, null));
+            ClassicAssert.IsFalse(f(null, 1));
+            ClassicAssert.IsFalse(f(null, null));
             f = Compile(exp, CompilerOptions.None);
-            Assert.IsTrue(f(3, 1));
-            Assert.IsFalse(f(-3, -1));
-            Assert.IsTrue(f(1, null));
-            Assert.IsTrue(f(null, 1));
-            Assert.IsTrue(f(null, null));
+            ClassicAssert.IsTrue(f(3, 1));
+            ClassicAssert.IsFalse(f(-3, -1));
+            ClassicAssert.IsTrue(f(1, null));
+            ClassicAssert.IsTrue(f(null, 1));
+            ClassicAssert.IsTrue(f(null, null));
         }
 
         [Test]
@@ -256,13 +257,13 @@ namespace GrobExp.Compiler.Tests
         {
             Expression<Func<int, int, bool>> exp = (a, b) => a <= b;
             var f = Compile(exp, CompilerOptions.All);
-            Assert.IsFalse(f(3, 1));
-            Assert.IsTrue(f(-3, -1));
-            Assert.IsTrue(f(-1, -1));
+            ClassicAssert.IsFalse(f(3, 1));
+            ClassicAssert.IsTrue(f(-3, -1));
+            ClassicAssert.IsTrue(f(-1, -1));
             f = Compile(exp, CompilerOptions.None);
-            Assert.IsFalse(f(3, 1));
-            Assert.IsTrue(f(-3, -1));
-            Assert.IsTrue(f(-1, -1));
+            ClassicAssert.IsFalse(f(3, 1));
+            ClassicAssert.IsTrue(f(-3, -1));
+            ClassicAssert.IsTrue(f(-1, -1));
         }
 
         [Test]
@@ -270,19 +271,19 @@ namespace GrobExp.Compiler.Tests
         {
             Expression<Func<int?, int?, bool>> exp = (a, b) => a <= b;
             var f = Compile(exp, CompilerOptions.All);
-            Assert.IsFalse(f(3, 1));
-            Assert.IsTrue(f(-3, -1));
-            Assert.IsTrue(f(-1, -1));
-            Assert.IsFalse(f(1, null));
-            Assert.IsFalse(f(null, 1));
-            Assert.IsFalse(f(null, null));
+            ClassicAssert.IsFalse(f(3, 1));
+            ClassicAssert.IsTrue(f(-3, -1));
+            ClassicAssert.IsTrue(f(-1, -1));
+            ClassicAssert.IsFalse(f(1, null));
+            ClassicAssert.IsFalse(f(null, 1));
+            ClassicAssert.IsFalse(f(null, null));
             f = Compile(exp, CompilerOptions.None);
-            Assert.IsFalse(f(3, 1));
-            Assert.IsTrue(f(-3, -1));
-            Assert.IsTrue(f(-1, -1));
-            Assert.IsFalse(f(1, null));
-            Assert.IsFalse(f(null, 1));
-            Assert.IsFalse(f(null, null));
+            ClassicAssert.IsFalse(f(3, 1));
+            ClassicAssert.IsTrue(f(-3, -1));
+            ClassicAssert.IsTrue(f(-1, -1));
+            ClassicAssert.IsFalse(f(1, null));
+            ClassicAssert.IsFalse(f(null, 1));
+            ClassicAssert.IsFalse(f(null, null));
         }
 
         [Test]
@@ -290,19 +291,19 @@ namespace GrobExp.Compiler.Tests
         {
             Expression<Func<long?, int?, bool>> exp = (a, b) => a <= b;
             var f = Compile(exp, CompilerOptions.All);
-            Assert.IsFalse(f(3, 1));
-            Assert.IsTrue(f(-3, -1));
-            Assert.IsTrue(f(-1, -1));
-            Assert.IsFalse(f(1, null));
-            Assert.IsFalse(f(null, 1));
-            Assert.IsFalse(f(null, null));
+            ClassicAssert.IsFalse(f(3, 1));
+            ClassicAssert.IsTrue(f(-3, -1));
+            ClassicAssert.IsTrue(f(-1, -1));
+            ClassicAssert.IsFalse(f(1, null));
+            ClassicAssert.IsFalse(f(null, 1));
+            ClassicAssert.IsFalse(f(null, null));
             f = Compile(exp, CompilerOptions.None);
-            Assert.IsFalse(f(3, 1));
-            Assert.IsTrue(f(-3, -1));
-            Assert.IsTrue(f(-1, -1));
-            Assert.IsFalse(f(1, null));
-            Assert.IsFalse(f(null, 1));
-            Assert.IsFalse(f(null, null));
+            ClassicAssert.IsFalse(f(3, 1));
+            ClassicAssert.IsTrue(f(-3, -1));
+            ClassicAssert.IsTrue(f(-1, -1));
+            ClassicAssert.IsFalse(f(1, null));
+            ClassicAssert.IsFalse(f(null, 1));
+            ClassicAssert.IsFalse(f(null, null));
         }
 
         [Test]
@@ -310,13 +311,13 @@ namespace GrobExp.Compiler.Tests
         {
             Expression<Func<uint, uint, bool>> exp = (a, b) => a <= b;
             var f = Compile(exp, CompilerOptions.All);
-            Assert.IsFalse(f(3, 1));
-            Assert.IsTrue(f(1, uint.MaxValue));
-            Assert.IsTrue(f(3000000000, 3000000000));
+            ClassicAssert.IsFalse(f(3, 1));
+            ClassicAssert.IsTrue(f(1, uint.MaxValue));
+            ClassicAssert.IsTrue(f(3000000000, 3000000000));
             f = Compile(exp, CompilerOptions.None);
-            Assert.IsFalse(f(3, 1));
-            Assert.IsTrue(f(1, uint.MaxValue));
-            Assert.IsTrue(f(3000000000, 3000000000));
+            ClassicAssert.IsFalse(f(3, 1));
+            ClassicAssert.IsTrue(f(1, uint.MaxValue));
+            ClassicAssert.IsTrue(f(3000000000, 3000000000));
         }
 
         [Test]
@@ -324,19 +325,19 @@ namespace GrobExp.Compiler.Tests
         {
             Expression<Func<int?, int?, bool>> exp = (a, b) => !(a <= b);
             var f = Compile(exp, CompilerOptions.All);
-            Assert.IsTrue(f(3, 1));
-            Assert.IsFalse(f(-3, -1));
-            Assert.IsFalse(f(-1, -1));
-            Assert.IsFalse(f(1, null));
-            Assert.IsFalse(f(null, 1));
-            Assert.IsFalse(f(null, null));
+            ClassicAssert.IsTrue(f(3, 1));
+            ClassicAssert.IsFalse(f(-3, -1));
+            ClassicAssert.IsFalse(f(-1, -1));
+            ClassicAssert.IsFalse(f(1, null));
+            ClassicAssert.IsFalse(f(null, 1));
+            ClassicAssert.IsFalse(f(null, null));
             f = Compile(exp, CompilerOptions.None);
-            Assert.IsTrue(f(3, 1));
-            Assert.IsFalse(f(-3, -1));
-            Assert.IsFalse(f(-1, -1));
-            Assert.IsTrue(f(1, null));
-            Assert.IsTrue(f(null, 1));
-            Assert.IsTrue(f(null, null));
+            ClassicAssert.IsTrue(f(3, 1));
+            ClassicAssert.IsFalse(f(-3, -1));
+            ClassicAssert.IsFalse(f(-1, -1));
+            ClassicAssert.IsTrue(f(1, null));
+            ClassicAssert.IsTrue(f(null, 1));
+            ClassicAssert.IsTrue(f(null, null));
         }
     }
 }

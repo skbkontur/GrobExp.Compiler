@@ -32,14 +32,5 @@ namespace GrobExp.Compiler.Tests
 
             return ((Func<TDelegate>)dynamicMethod.CreateDelegate(typeof(Func<TDelegate>)))();
         }
-
-        protected static string SelectValue(string netcoreValue, string net45Value)
-        {
-#if NETCOREAPP
-            return netcoreValue;
-#else
-            return net45Value;
-#endif
-        }
     }
 }
