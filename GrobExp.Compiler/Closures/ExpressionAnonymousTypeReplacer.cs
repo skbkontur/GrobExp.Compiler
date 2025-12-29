@@ -154,8 +154,7 @@ namespace GrobExp.Compiler.Closures
             if (node.Constructor == null)
                 return Expression.New(node.Type);
 
-            var constructorTypes = node.Constructor.GetParameters().Select(
-                p => ReplaceGenericType(p.ParameterType)).ToArray();
+            var constructorTypes = node.Constructor.GetParameters().Select(p => ReplaceGenericType(p.ParameterType)).ToArray();
 
             MemberInfo[] members = null;
             if (node.Members != null)

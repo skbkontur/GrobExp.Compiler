@@ -2,6 +2,7 @@
 using System.Linq.Expressions;
 
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 
 namespace GrobExp.Compiler.Tests.AssignTests.RightShiftAssign
 {
@@ -15,23 +16,23 @@ namespace GrobExp.Compiler.Tests.AssignTests.RightShiftAssign
             Expression<Func<int, int>> exp = Expression.Lambda<Func<int, int>>(Expression.RightShiftAssign(Expression.MakeMemberAccess(null, typeof(TestClassA).GetProperty("IntProp")), b), b);
             var f = LambdaCompiler.Compile(exp, CompilerOptions.CheckNullReferences);
             TestClassA.IntProp = 0;
-            Assert.AreEqual(0, f(0));
-            Assert.AreEqual(0, TestClassA.IntProp);
+            ClassicAssert.AreEqual(0, f(0));
+            ClassicAssert.AreEqual(0, TestClassA.IntProp);
             TestClassA.IntProp = 0;
-            Assert.AreEqual(0, f(10));
-            Assert.AreEqual(0, TestClassA.IntProp);
+            ClassicAssert.AreEqual(0, f(10));
+            ClassicAssert.AreEqual(0, TestClassA.IntProp);
             TestClassA.IntProp = 1024;
-            Assert.AreEqual(1, f(10));
-            Assert.AreEqual(1, TestClassA.IntProp);
+            ClassicAssert.AreEqual(1, f(10));
+            ClassicAssert.AreEqual(1, TestClassA.IntProp);
             TestClassA.IntProp = 1023;
-            Assert.AreEqual(0, f(10));
-            Assert.AreEqual(0, TestClassA.IntProp);
+            ClassicAssert.AreEqual(0, f(10));
+            ClassicAssert.AreEqual(0, TestClassA.IntProp);
             TestClassA.IntProp = 3;
-            Assert.AreEqual(1, f(1));
-            Assert.AreEqual(1, TestClassA.IntProp);
+            ClassicAssert.AreEqual(1, f(1));
+            ClassicAssert.AreEqual(1, TestClassA.IntProp);
             TestClassA.IntProp = -3;
-            Assert.AreEqual(-2, f(1));
-            Assert.AreEqual(-2, TestClassA.IntProp);
+            ClassicAssert.AreEqual(-2, f(1));
+            ClassicAssert.AreEqual(-2, TestClassA.IntProp);
         }
 
         [Test]
@@ -41,31 +42,31 @@ namespace GrobExp.Compiler.Tests.AssignTests.RightShiftAssign
             Expression<Func<int?, int?>> exp = Expression.Lambda<Func<int?, int?>>(Expression.RightShiftAssign(Expression.MakeMemberAccess(null, typeof(TestClassA).GetField("NullableIntField")), b), b);
             var f = LambdaCompiler.Compile(exp, CompilerOptions.CheckNullReferences);
             TestClassA.NullableIntField = 0;
-            Assert.AreEqual(0, f(0));
-            Assert.AreEqual(0, TestClassA.NullableIntField);
+            ClassicAssert.AreEqual(0, f(0));
+            ClassicAssert.AreEqual(0, TestClassA.NullableIntField);
             TestClassA.NullableIntField = 0;
-            Assert.AreEqual(0, f(10));
-            Assert.AreEqual(0, TestClassA.NullableIntField);
+            ClassicAssert.AreEqual(0, f(10));
+            ClassicAssert.AreEqual(0, TestClassA.NullableIntField);
             TestClassA.NullableIntField = 1024;
-            Assert.AreEqual(1, f(10));
-            Assert.AreEqual(1, TestClassA.NullableIntField);
+            ClassicAssert.AreEqual(1, f(10));
+            ClassicAssert.AreEqual(1, TestClassA.NullableIntField);
             TestClassA.NullableIntField = 1023;
-            Assert.AreEqual(0, f(10));
-            Assert.AreEqual(0, TestClassA.NullableIntField);
+            ClassicAssert.AreEqual(0, f(10));
+            ClassicAssert.AreEqual(0, TestClassA.NullableIntField);
             TestClassA.NullableIntField = 3;
-            Assert.AreEqual(1, f(1));
-            Assert.AreEqual(1, TestClassA.NullableIntField);
+            ClassicAssert.AreEqual(1, f(1));
+            ClassicAssert.AreEqual(1, TestClassA.NullableIntField);
             TestClassA.NullableIntField = -3;
-            Assert.AreEqual(-2, f(1));
-            Assert.AreEqual(-2, TestClassA.NullableIntField);
+            ClassicAssert.AreEqual(-2, f(1));
+            ClassicAssert.AreEqual(-2, TestClassA.NullableIntField);
             TestClassA.NullableIntField = null;
-            Assert.IsNull(f(2));
-            Assert.IsNull(TestClassA.NullableIntField);
+            ClassicAssert.IsNull(f(2));
+            ClassicAssert.IsNull(TestClassA.NullableIntField);
             TestClassA.NullableIntField = 1;
-            Assert.IsNull(f(null));
-            Assert.IsNull(TestClassA.NullableIntField);
-            Assert.IsNull(f(null));
-            Assert.IsNull(TestClassA.NullableIntField);
+            ClassicAssert.IsNull(f(null));
+            ClassicAssert.IsNull(TestClassA.NullableIntField);
+            ClassicAssert.IsNull(f(null));
+            ClassicAssert.IsNull(TestClassA.NullableIntField);
         }
 
         [Test]
@@ -75,26 +76,26 @@ namespace GrobExp.Compiler.Tests.AssignTests.RightShiftAssign
             Expression<Func<int, int?>> exp = Expression.Lambda<Func<int, int?>>(Expression.RightShiftAssign(Expression.MakeMemberAccess(null, typeof(TestClassA).GetField("NullableIntField")), b), b);
             var f = LambdaCompiler.Compile(exp, CompilerOptions.CheckNullReferences);
             TestClassA.NullableIntField = 0;
-            Assert.AreEqual(0, f(0));
-            Assert.AreEqual(0, TestClassA.NullableIntField);
+            ClassicAssert.AreEqual(0, f(0));
+            ClassicAssert.AreEqual(0, TestClassA.NullableIntField);
             TestClassA.NullableIntField = 0;
-            Assert.AreEqual(0, f(10));
-            Assert.AreEqual(0, TestClassA.NullableIntField);
+            ClassicAssert.AreEqual(0, f(10));
+            ClassicAssert.AreEqual(0, TestClassA.NullableIntField);
             TestClassA.NullableIntField = 1024;
-            Assert.AreEqual(1, f(10));
-            Assert.AreEqual(1, TestClassA.NullableIntField);
+            ClassicAssert.AreEqual(1, f(10));
+            ClassicAssert.AreEqual(1, TestClassA.NullableIntField);
             TestClassA.NullableIntField = 1023;
-            Assert.AreEqual(0, f(10));
-            Assert.AreEqual(0, TestClassA.NullableIntField);
+            ClassicAssert.AreEqual(0, f(10));
+            ClassicAssert.AreEqual(0, TestClassA.NullableIntField);
             TestClassA.NullableIntField = 3;
-            Assert.AreEqual(1, f(1));
-            Assert.AreEqual(1, TestClassA.NullableIntField);
+            ClassicAssert.AreEqual(1, f(1));
+            ClassicAssert.AreEqual(1, TestClassA.NullableIntField);
             TestClassA.NullableIntField = -3;
-            Assert.AreEqual(-2, f(1));
-            Assert.AreEqual(-2, TestClassA.NullableIntField);
+            ClassicAssert.AreEqual(-2, f(1));
+            ClassicAssert.AreEqual(-2, TestClassA.NullableIntField);
             TestClassA.NullableIntField = null;
-            Assert.IsNull(f(2));
-            Assert.IsNull(TestClassA.NullableIntField);
+            ClassicAssert.IsNull(f(2));
+            ClassicAssert.IsNull(TestClassA.NullableIntField);
         }
 
         [Test]
@@ -104,23 +105,23 @@ namespace GrobExp.Compiler.Tests.AssignTests.RightShiftAssign
             Expression<Func<int, uint>> exp = Expression.Lambda<Func<int, uint>>(Expression.RightShiftAssign(Expression.MakeMemberAccess(null, typeof(TestClassA).GetProperty("UIntProp")), b), b);
             var f = LambdaCompiler.Compile(exp, CompilerOptions.CheckNullReferences);
             TestClassA.UIntProp = 0;
-            Assert.AreEqual(0, f(0));
-            Assert.AreEqual(0, TestClassA.UIntProp);
+            ClassicAssert.AreEqual(0, f(0));
+            ClassicAssert.AreEqual(0, TestClassA.UIntProp);
             TestClassA.UIntProp = 0;
-            Assert.AreEqual(0, f(10));
-            Assert.AreEqual(0, TestClassA.UIntProp);
+            ClassicAssert.AreEqual(0, f(10));
+            ClassicAssert.AreEqual(0, TestClassA.UIntProp);
             TestClassA.UIntProp = 1024;
-            Assert.AreEqual(1, f(10));
-            Assert.AreEqual(1, TestClassA.UIntProp);
+            ClassicAssert.AreEqual(1, f(10));
+            ClassicAssert.AreEqual(1, TestClassA.UIntProp);
             TestClassA.UIntProp = 1023;
-            Assert.AreEqual(0, f(10));
-            Assert.AreEqual(0, TestClassA.UIntProp);
+            ClassicAssert.AreEqual(0, f(10));
+            ClassicAssert.AreEqual(0, TestClassA.UIntProp);
             TestClassA.UIntProp = 3;
-            Assert.AreEqual(1, f(1));
-            Assert.AreEqual(1, TestClassA.UIntProp);
+            ClassicAssert.AreEqual(1, f(1));
+            ClassicAssert.AreEqual(1, TestClassA.UIntProp);
             TestClassA.UIntProp = 4000000000;
-            Assert.AreEqual(2000000000, f(1));
-            Assert.AreEqual(2000000000, TestClassA.UIntProp);
+            ClassicAssert.AreEqual(2000000000, f(1));
+            ClassicAssert.AreEqual(2000000000, TestClassA.UIntProp);
         }
 
         [Test]
@@ -130,26 +131,26 @@ namespace GrobExp.Compiler.Tests.AssignTests.RightShiftAssign
             Expression<Func<int, uint?>> exp = Expression.Lambda<Func<int, uint?>>(Expression.RightShiftAssign(Expression.MakeMemberAccess(null, typeof(TestClassA).GetField("NullableUIntField")), b), b);
             var f = LambdaCompiler.Compile(exp, CompilerOptions.CheckNullReferences);
             TestClassA.NullableUIntField = 0;
-            Assert.AreEqual(0, f(0));
-            Assert.AreEqual(0, TestClassA.NullableUIntField);
+            ClassicAssert.AreEqual(0, f(0));
+            ClassicAssert.AreEqual(0, TestClassA.NullableUIntField);
             TestClassA.NullableUIntField = 0;
-            Assert.AreEqual(0, f(10));
-            Assert.AreEqual(0, TestClassA.NullableUIntField);
+            ClassicAssert.AreEqual(0, f(10));
+            ClassicAssert.AreEqual(0, TestClassA.NullableUIntField);
             TestClassA.NullableUIntField = 1024;
-            Assert.AreEqual(1, f(10));
-            Assert.AreEqual(1, TestClassA.NullableUIntField);
+            ClassicAssert.AreEqual(1, f(10));
+            ClassicAssert.AreEqual(1, TestClassA.NullableUIntField);
             TestClassA.NullableUIntField = 1023;
-            Assert.AreEqual(0, f(10));
-            Assert.AreEqual(0, TestClassA.NullableUIntField);
+            ClassicAssert.AreEqual(0, f(10));
+            ClassicAssert.AreEqual(0, TestClassA.NullableUIntField);
             TestClassA.NullableUIntField = 3;
-            Assert.AreEqual(1, f(1));
-            Assert.AreEqual(1, TestClassA.NullableUIntField);
+            ClassicAssert.AreEqual(1, f(1));
+            ClassicAssert.AreEqual(1, TestClassA.NullableUIntField);
             TestClassA.NullableUIntField = 4000000000;
-            Assert.AreEqual(2000000000, f(1));
-            Assert.AreEqual(2000000000, TestClassA.NullableUIntField);
+            ClassicAssert.AreEqual(2000000000, f(1));
+            ClassicAssert.AreEqual(2000000000, TestClassA.NullableUIntField);
             TestClassA.NullableUIntField = null;
-            Assert.IsNull(f(2));
-            Assert.IsNull(TestClassA.NullableUIntField);
+            ClassicAssert.IsNull(f(2));
+            ClassicAssert.IsNull(TestClassA.NullableUIntField);
         }
 
         [Test]
@@ -159,31 +160,31 @@ namespace GrobExp.Compiler.Tests.AssignTests.RightShiftAssign
             Expression<Func<int?, uint?>> exp = Expression.Lambda<Func<int?, uint?>>(Expression.RightShiftAssign(Expression.MakeMemberAccess(null, typeof(TestClassA).GetField("NullableUIntField")), b), b);
             var f = LambdaCompiler.Compile(exp, CompilerOptions.CheckNullReferences);
             TestClassA.NullableUIntField = 0;
-            Assert.AreEqual(0, f(0));
-            Assert.AreEqual(0, TestClassA.NullableUIntField);
+            ClassicAssert.AreEqual(0, f(0));
+            ClassicAssert.AreEqual(0, TestClassA.NullableUIntField);
             TestClassA.NullableUIntField = 0;
-            Assert.AreEqual(0, f(10));
-            Assert.AreEqual(0, TestClassA.NullableUIntField);
+            ClassicAssert.AreEqual(0, f(10));
+            ClassicAssert.AreEqual(0, TestClassA.NullableUIntField);
             TestClassA.NullableUIntField = 1024;
-            Assert.AreEqual(1, f(10));
-            Assert.AreEqual(1, TestClassA.NullableUIntField);
+            ClassicAssert.AreEqual(1, f(10));
+            ClassicAssert.AreEqual(1, TestClassA.NullableUIntField);
             TestClassA.NullableUIntField = 1023;
-            Assert.AreEqual(0, f(10));
-            Assert.AreEqual(0, TestClassA.NullableUIntField);
+            ClassicAssert.AreEqual(0, f(10));
+            ClassicAssert.AreEqual(0, TestClassA.NullableUIntField);
             TestClassA.NullableUIntField = 3;
-            Assert.AreEqual(1, f(1));
-            Assert.AreEqual(1, TestClassA.NullableUIntField);
+            ClassicAssert.AreEqual(1, f(1));
+            ClassicAssert.AreEqual(1, TestClassA.NullableUIntField);
             TestClassA.NullableUIntField = 4000000000;
-            Assert.AreEqual(2000000000, f(1));
-            Assert.AreEqual(2000000000, TestClassA.NullableUIntField);
+            ClassicAssert.AreEqual(2000000000, f(1));
+            ClassicAssert.AreEqual(2000000000, TestClassA.NullableUIntField);
             TestClassA.NullableUIntField = null;
-            Assert.IsNull(f(2));
-            Assert.IsNull(TestClassA.NullableUIntField);
+            ClassicAssert.IsNull(f(2));
+            ClassicAssert.IsNull(TestClassA.NullableUIntField);
             TestClassA.NullableUIntField = 1;
-            Assert.IsNull(f(null));
-            Assert.IsNull(TestClassA.NullableUIntField);
-            Assert.IsNull(f(null));
-            Assert.IsNull(TestClassA.NullableUIntField);
+            ClassicAssert.IsNull(f(null));
+            ClassicAssert.IsNull(TestClassA.NullableUIntField);
+            ClassicAssert.IsNull(f(null));
+            ClassicAssert.IsNull(TestClassA.NullableUIntField);
         }
 
         public class TestClassA

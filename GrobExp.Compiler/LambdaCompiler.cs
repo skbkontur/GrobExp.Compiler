@@ -53,10 +53,6 @@ namespace GrobExp.Compiler
                     throw new InvalidOperationException($"Lambda contains parameter not presented in Lambda.Parameters: {parameter}");
         }
 
-        public static bool AnalyzeILStack = true;
-        public static string DebugOutputDirectory = null;
-        public static double TotalJITCompilationTime = 0;
-
         internal static CompiledLambda CompileInternal(
             LambdaExpression lambda,
             DebugInfoGenerator debugInfoGenerator,
@@ -79,7 +75,11 @@ namespace GrobExp.Compiler
             CompileToMethodInternal(lambda, debugInfoGenerator, parsedLambda, options, compiledLambdas, method);
 
             var type = typeBuilder.CreateTypeInfo();
-            var dynamicMethod = new DynamicMethod(Guid.NewGuid().ToString(), returnType, parameterTypes, Module.Value, true);
+            var dynamicMethod = new DynamicMethod(name : $"CompileInternal_{Guid.NewGuid()}",
+                                                  returnType : returnType,
+                                                  parameterTypes : parameterTypes,
+                                                  m : Module.Value,
+                                                  skipVisibility : true);
             using (var il = new GroboIL(dynamicMethod))
             {
                 for (var i = 0; i < parameterTypes.Length; ++i)
@@ -89,8 +89,13 @@ namespace GrobExp.Compiler
             }
             return new CompiledLambda
                 {
-                    Delegate = Extensions.IsMono && internalCall ? dynamicMethod.CreateDelegate(Extensions.GetDelegateType(parameterTypes, returnType))
-                                   : dynamicMethod.CreateDelegate(Extensions.GetDelegateType(parsedLambda.ConstantsParameter == null ? parameterTypes : parameterTypes.Skip(1).ToArray(), lambda.ReturnType), parsedLambda.Constants),
+                    Delegate = Extensions.IsMono && internalCall
+                                   ? dynamicMethod.CreateDelegate(Extensions.GetDelegateType(parameterTypes, returnType))
+                                   : dynamicMethod.CreateDelegate(Extensions.GetDelegateType(parsedLambda.ConstantsParameter == null
+                                                                                                 ? parameterTypes
+                                                                                                 : parameterTypes.Skip(1).ToArray(),
+                                                                                             lambda.ReturnType),
+                                                                  parsedLambda.Constants),
                     Method = method
                 };
         }
@@ -124,14 +129,6 @@ namespace GrobExp.Compiler
                 CompileInternal(lambda, context);
             }
         }
-
-        internal static readonly ThreadLocal<AssemblyBuilder> Assembly = new ThreadLocal<AssemblyBuilder>(CreateAssembly);
-
-#if NETSTANDARD2_0
-        internal static readonly ThreadLocal<ModuleBuilder> Module = new ThreadLocal<ModuleBuilder>(() => Assembly.Value.DefineDynamicModule(Guid.NewGuid().ToString()));
-#else
-        internal static readonly ThreadLocal<ModuleBuilder> Module = new ThreadLocal<ModuleBuilder>(() => Assembly.Value.DefineDynamicModule(Guid.NewGuid().ToString(), true));
-#endif
 
         private static string GenerateFileName(Expression expression)
         {
@@ -188,7 +185,13 @@ namespace GrobExp.Compiler
             var parameters = lambda.Parameters.ToArray();
             var parameterTypes = parameters.Select(parameter => parameter.Type).ToArray();
             var returnType = lambda.ReturnType;
-            var method = new DynamicMethod(lambda.Name ?? Guid.NewGuid().ToString(), MethodAttributes.Static | MethodAttributes.Public, CallingConventions.Standard, returnType, parameterTypes, Module.Value, true);
+            var method = new DynamicMethod(name : lambda.Name ?? $"CompileToDynamicMethod_{Guid.NewGuid()}",
+                                           attributes : MethodAttributes.Static | MethodAttributes.Public,
+                                           callingConvention : CallingConventions.Standard,
+                                           returnType : returnType,
+                                           parameterTypes : parameterTypes,
+                                           m : Module.Value,
+                                           skipVisibility : true);
             using (var il = new GroboIL(method, AnalyzeILStack))
             {
                 var context = new EmittingContext
@@ -276,5 +279,16 @@ namespace GrobExp.Compiler
             var lambda = Expression.Lambda<Action<object, Delegate[]>>(body, constants, delegates);
             return Compile(lambda, CompilerOptions.None);
         }
+
+        public static bool AnalyzeILStack = true;
+        public static string DebugOutputDirectory = null;
+        public static double TotalJITCompilationTime = 0;
+
+        internal static readonly ThreadLocal<AssemblyBuilder> Assembly = new ThreadLocal<AssemblyBuilder>(CreateAssembly);
+#if NETSTANDARD2_0
+        internal static readonly ThreadLocal<ModuleBuilder> Module = new ThreadLocal<ModuleBuilder>(() => Assembly.Value.DefineDynamicModule(Guid.NewGuid().ToString()));
+#else
+        internal static readonly ThreadLocal<ModuleBuilder> Module = new ThreadLocal<ModuleBuilder>(() => Assembly.Value.DefineDynamicModule(Guid.NewGuid().ToString(), true));
+#endif
     }
 }

@@ -2,6 +2,7 @@
 using System.Linq.Expressions;
 
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 
 namespace GrobExp.Compiler.Tests
 {
@@ -14,7 +15,7 @@ namespace GrobExp.Compiler.Tests
             var parameter = Expression.Parameter(typeof(int));
             var exp = Expression.Lambda<Func<int, bool>>(Expression.TypeIs(parameter, typeof(double)), parameter);
             var f = LambdaCompiler.Compile(exp, CompilerOptions.All);
-            Assert.IsFalse(f(5));
+            ClassicAssert.IsFalse(f(5));
         }
 
         [Test]
@@ -23,7 +24,7 @@ namespace GrobExp.Compiler.Tests
             var parameter = Expression.Parameter(typeof(int));
             var exp = Expression.Lambda<Func<int, bool>>(Expression.TypeIs(parameter, typeof(int)), parameter);
             var f = LambdaCompiler.Compile(exp, CompilerOptions.All);
-            Assert.IsTrue(f(5));
+            ClassicAssert.IsTrue(f(5));
         }
 
         [Test]
@@ -32,7 +33,7 @@ namespace GrobExp.Compiler.Tests
             var parameter = Expression.Parameter(typeof(int));
             var exp = Expression.Lambda<Func<int, bool>>(Expression.TypeIs(parameter, typeof(object)), parameter);
             var f = LambdaCompiler.Compile(exp, CompilerOptions.All);
-            Assert.IsTrue(f(5));
+            ClassicAssert.IsTrue(f(5));
         }
 
         [Test]
@@ -41,7 +42,7 @@ namespace GrobExp.Compiler.Tests
             var parameter = Expression.Parameter(typeof(TestClassB));
             var exp = Expression.Lambda<Func<TestClassB, bool>>(Expression.TypeIs(parameter, typeof(TestClassA)), parameter);
             var f = LambdaCompiler.Compile(exp, CompilerOptions.All);
-            Assert.IsTrue(f(new TestClassB()));
+            ClassicAssert.IsTrue(f(new TestClassB()));
         }
 
         [Test]
@@ -50,8 +51,8 @@ namespace GrobExp.Compiler.Tests
             var parameter = Expression.Parameter(typeof(TestClassA));
             var exp = Expression.Lambda<Func<TestClassA, bool>>(Expression.TypeIs(parameter, typeof(TestClassB)), parameter);
             var f = LambdaCompiler.Compile(exp, CompilerOptions.All);
-            Assert.IsFalse(f(new TestClassA()));
-            Assert.IsTrue(f(new TestClassB()));
+            ClassicAssert.IsFalse(f(new TestClassA()));
+            ClassicAssert.IsTrue(f(new TestClassB()));
         }
 
         [Test]
@@ -60,8 +61,8 @@ namespace GrobExp.Compiler.Tests
             var parameter = Expression.Parameter(typeof(object));
             var exp = Expression.Lambda<Func<object, bool>>(Expression.TypeIs(parameter, typeof(int)), parameter);
             var f = LambdaCompiler.Compile(exp, CompilerOptions.All);
-            Assert.IsTrue(f(5));
-            Assert.IsFalse(f(5.5));
+            ClassicAssert.IsTrue(f(5));
+            ClassicAssert.IsFalse(f(5.5));
         }
 
         [Test]
@@ -70,8 +71,8 @@ namespace GrobExp.Compiler.Tests
             var parameter = Expression.Parameter(typeof(object));
             var exp = Expression.Lambda<Func<object, bool>>(Expression.TypeIs(parameter, typeof(TestEnum)), parameter);
             var f = LambdaCompiler.Compile(exp, CompilerOptions.All);
-            Assert.IsTrue(f(TestEnum.One));
-            Assert.IsFalse(f(5.5));
+            ClassicAssert.IsTrue(f(TestEnum.One));
+            ClassicAssert.IsFalse(f(5.5));
         }
 
         [Test]
@@ -80,7 +81,7 @@ namespace GrobExp.Compiler.Tests
             var parameter = Expression.Parameter(typeof(TestEnum));
             var exp = Expression.Lambda<Func<TestEnum, bool>>(Expression.TypeIs(parameter, typeof(Enum)), parameter);
             var f = LambdaCompiler.Compile(exp, CompilerOptions.All);
-            Assert.IsTrue(f(TestEnum.One));
+            ClassicAssert.IsTrue(f(TestEnum.One));
         }
 
         public enum TestEnum

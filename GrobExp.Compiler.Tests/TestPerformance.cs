@@ -310,9 +310,9 @@ namespace GrobExp.Compiler.Tests
                 {
                     // x86
                     /*
-                 * xor eax, eax // 0x31, 0xC0
-                 * ret 8 // 0xC2, 0x08, 0x00
-                 */
+                     * xor eax, eax // 0x31, 0xC0
+                     * ret 8 // 0xC2, 0x08, 0x00
+                     */
                     body = new byte[]
                         {
                             0x31, 0xC0, // xor eax, eax

@@ -2,6 +2,7 @@
 using System.Linq.Expressions;
 
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 
 namespace GrobExp.Compiler.Tests.AssignTests.RightShiftAssign
 {
@@ -15,21 +16,21 @@ namespace GrobExp.Compiler.Tests.AssignTests.RightShiftAssign
             ParameterExpression b = Expression.Parameter(typeof(int), "b");
             Expression<Func<int, int, int>> exp = Expression.Lambda<Func<int, int, int>>(Expression.RightShiftAssign(a, b), a, b);
             var f = LambdaCompiler.Compile(exp, CompilerOptions.All);
-            Assert.AreEqual(0, f(0, 0));
-            Assert.AreEqual(0, f(0, 10));
-            Assert.AreEqual(1, f(1024, 10));
-            Assert.AreEqual(0, f(1023, 10));
-            Assert.AreEqual(1, f(3, 1));
-            Assert.AreEqual(-2, f(-3, 1));
+            ClassicAssert.AreEqual(0, f(0, 0));
+            ClassicAssert.AreEqual(0, f(0, 10));
+            ClassicAssert.AreEqual(1, f(1024, 10));
+            ClassicAssert.AreEqual(0, f(1023, 10));
+            ClassicAssert.AreEqual(1, f(3, 1));
+            ClassicAssert.AreEqual(-2, f(-3, 1));
 
             exp = Expression.Lambda<Func<int, int, int>>(Expression.Block(typeof(int), Expression.RightShiftAssign(a, b), a), a, b);
             f = LambdaCompiler.Compile(exp, CompilerOptions.All);
-            Assert.AreEqual(0, f(0, 0));
-            Assert.AreEqual(0, f(0, 10));
-            Assert.AreEqual(1, f(1024, 10));
-            Assert.AreEqual(0, f(1023, 10));
-            Assert.AreEqual(1, f(3, 1));
-            Assert.AreEqual(-2, f(-3, 1));
+            ClassicAssert.AreEqual(0, f(0, 0));
+            ClassicAssert.AreEqual(0, f(0, 10));
+            ClassicAssert.AreEqual(1, f(1024, 10));
+            ClassicAssert.AreEqual(0, f(1023, 10));
+            ClassicAssert.AreEqual(1, f(3, 1));
+            ClassicAssert.AreEqual(-2, f(-3, 1));
         }
 
         [Test]
@@ -39,27 +40,27 @@ namespace GrobExp.Compiler.Tests.AssignTests.RightShiftAssign
             ParameterExpression b = Expression.Parameter(typeof(int?), "b");
             Expression<Func<int?, int?, int?>> exp = Expression.Lambda<Func<int?, int?, int?>>(Expression.RightShiftAssign(a, b), a, b);
             var f = LambdaCompiler.Compile(exp, CompilerOptions.All);
-            Assert.AreEqual(0, f(0, 0));
-            Assert.AreEqual(0, f(0, 10));
-            Assert.AreEqual(1, f(1024, 10));
-            Assert.AreEqual(0, f(1023, 10));
-            Assert.AreEqual(1, f(3, 1));
-            Assert.AreEqual(-2, f(-3, 1));
-            Assert.IsNull(f(null, 1));
-            Assert.IsNull(f(123, null));
-            Assert.IsNull(f(null, null));
+            ClassicAssert.AreEqual(0, f(0, 0));
+            ClassicAssert.AreEqual(0, f(0, 10));
+            ClassicAssert.AreEqual(1, f(1024, 10));
+            ClassicAssert.AreEqual(0, f(1023, 10));
+            ClassicAssert.AreEqual(1, f(3, 1));
+            ClassicAssert.AreEqual(-2, f(-3, 1));
+            ClassicAssert.IsNull(f(null, 1));
+            ClassicAssert.IsNull(f(123, null));
+            ClassicAssert.IsNull(f(null, null));
 
             exp = Expression.Lambda<Func<int?, int?, int?>>(Expression.Block(typeof(int?), Expression.RightShiftAssign(a, b), a), a, b);
             f = LambdaCompiler.Compile(exp, CompilerOptions.All);
-            Assert.AreEqual(0, f(0, 0));
-            Assert.AreEqual(0, f(0, 10));
-            Assert.AreEqual(1, f(1024, 10));
-            Assert.AreEqual(0, f(1023, 10));
-            Assert.AreEqual(1, f(3, 1));
-            Assert.AreEqual(-2, f(-3, 1));
-            Assert.IsNull(f(null, 1));
-            Assert.IsNull(f(123, null));
-            Assert.IsNull(f(null, null));
+            ClassicAssert.AreEqual(0, f(0, 0));
+            ClassicAssert.AreEqual(0, f(0, 10));
+            ClassicAssert.AreEqual(1, f(1024, 10));
+            ClassicAssert.AreEqual(0, f(1023, 10));
+            ClassicAssert.AreEqual(1, f(3, 1));
+            ClassicAssert.AreEqual(-2, f(-3, 1));
+            ClassicAssert.IsNull(f(null, 1));
+            ClassicAssert.IsNull(f(123, null));
+            ClassicAssert.IsNull(f(null, null));
         }
 
         [Test]
@@ -69,23 +70,23 @@ namespace GrobExp.Compiler.Tests.AssignTests.RightShiftAssign
             ParameterExpression b = Expression.Parameter(typeof(int), "b");
             Expression<Func<int?, int, int?>> exp = Expression.Lambda<Func<int?, int, int?>>(Expression.RightShiftAssign(a, b), a, b);
             var f = LambdaCompiler.Compile(exp, CompilerOptions.All);
-            Assert.AreEqual(0, f(0, 0));
-            Assert.AreEqual(0, f(0, 10));
-            Assert.AreEqual(1, f(1024, 10));
-            Assert.AreEqual(0, f(1023, 10));
-            Assert.AreEqual(1, f(3, 1));
-            Assert.AreEqual(-2, f(-3, 1));
-            Assert.IsNull(f(null, 1));
+            ClassicAssert.AreEqual(0, f(0, 0));
+            ClassicAssert.AreEqual(0, f(0, 10));
+            ClassicAssert.AreEqual(1, f(1024, 10));
+            ClassicAssert.AreEqual(0, f(1023, 10));
+            ClassicAssert.AreEqual(1, f(3, 1));
+            ClassicAssert.AreEqual(-2, f(-3, 1));
+            ClassicAssert.IsNull(f(null, 1));
 
             exp = Expression.Lambda<Func<int?, int, int?>>(Expression.Block(typeof(int?), Expression.RightShiftAssign(a, b), a), a, b);
             f = LambdaCompiler.Compile(exp, CompilerOptions.All);
-            Assert.AreEqual(0, f(0, 0));
-            Assert.AreEqual(0, f(0, 10));
-            Assert.AreEqual(1, f(1024, 10));
-            Assert.AreEqual(0, f(1023, 10));
-            Assert.AreEqual(1, f(3, 1));
-            Assert.AreEqual(-2, f(-3, 1));
-            Assert.IsNull(f(null, 1));
+            ClassicAssert.AreEqual(0, f(0, 0));
+            ClassicAssert.AreEqual(0, f(0, 10));
+            ClassicAssert.AreEqual(1, f(1024, 10));
+            ClassicAssert.AreEqual(0, f(1023, 10));
+            ClassicAssert.AreEqual(1, f(3, 1));
+            ClassicAssert.AreEqual(-2, f(-3, 1));
+            ClassicAssert.IsNull(f(null, 1));
         }
 
         [Test]
@@ -95,21 +96,21 @@ namespace GrobExp.Compiler.Tests.AssignTests.RightShiftAssign
             ParameterExpression b = Expression.Parameter(typeof(int), "b");
             Expression<Func<uint, int, uint>> exp = Expression.Lambda<Func<uint, int, uint>>(Expression.RightShiftAssign(a, b), a, b);
             var f = LambdaCompiler.Compile(exp, CompilerOptions.All);
-            Assert.AreEqual(0, f(0, 0));
-            Assert.AreEqual(0, f(0, 10));
-            Assert.AreEqual(1, f(1024, 10));
-            Assert.AreEqual(0, f(1023, 10));
-            Assert.AreEqual(1, f(3, 1));
-            Assert.AreEqual(2000000000, f(4000000000, 1));
+            ClassicAssert.AreEqual(0, f(0, 0));
+            ClassicAssert.AreEqual(0, f(0, 10));
+            ClassicAssert.AreEqual(1, f(1024, 10));
+            ClassicAssert.AreEqual(0, f(1023, 10));
+            ClassicAssert.AreEqual(1, f(3, 1));
+            ClassicAssert.AreEqual(2000000000, f(4000000000, 1));
 
             exp = Expression.Lambda<Func<uint, int, uint>>(Expression.Block(typeof(uint), Expression.RightShiftAssign(a, b), a), a, b);
             f = LambdaCompiler.Compile(exp, CompilerOptions.All);
-            Assert.AreEqual(0, f(0, 0));
-            Assert.AreEqual(0, f(0, 10));
-            Assert.AreEqual(1, f(1024, 10));
-            Assert.AreEqual(0, f(1023, 10));
-            Assert.AreEqual(1, f(3, 1));
-            Assert.AreEqual(2000000000, f(4000000000, 1));
+            ClassicAssert.AreEqual(0, f(0, 0));
+            ClassicAssert.AreEqual(0, f(0, 10));
+            ClassicAssert.AreEqual(1, f(1024, 10));
+            ClassicAssert.AreEqual(0, f(1023, 10));
+            ClassicAssert.AreEqual(1, f(3, 1));
+            ClassicAssert.AreEqual(2000000000, f(4000000000, 1));
         }
 
         [Test]
@@ -119,23 +120,23 @@ namespace GrobExp.Compiler.Tests.AssignTests.RightShiftAssign
             ParameterExpression b = Expression.Parameter(typeof(int), "b");
             Expression<Func<uint?, int, uint?>> exp = Expression.Lambda<Func<uint?, int, uint?>>(Expression.RightShiftAssign(a, b), a, b);
             var f = LambdaCompiler.Compile(exp, CompilerOptions.All);
-            Assert.AreEqual(0, f(0, 0));
-            Assert.AreEqual(0, f(0, 10));
-            Assert.AreEqual(1, f(1024, 10));
-            Assert.AreEqual(0, f(1023, 10));
-            Assert.AreEqual(1, f(3, 1));
-            Assert.AreEqual(2000000000, f(4000000000, 1));
-            Assert.IsNull(f(null, 1));
+            ClassicAssert.AreEqual(0, f(0, 0));
+            ClassicAssert.AreEqual(0, f(0, 10));
+            ClassicAssert.AreEqual(1, f(1024, 10));
+            ClassicAssert.AreEqual(0, f(1023, 10));
+            ClassicAssert.AreEqual(1, f(3, 1));
+            ClassicAssert.AreEqual(2000000000, f(4000000000, 1));
+            ClassicAssert.IsNull(f(null, 1));
 
             exp = Expression.Lambda<Func<uint?, int, uint?>>(Expression.Block(typeof(uint?), Expression.RightShiftAssign(a, b), a), a, b);
             f = LambdaCompiler.Compile(exp, CompilerOptions.All);
-            Assert.AreEqual(0, f(0, 0));
-            Assert.AreEqual(0, f(0, 10));
-            Assert.AreEqual(1, f(1024, 10));
-            Assert.AreEqual(0, f(1023, 10));
-            Assert.AreEqual(1, f(3, 1));
-            Assert.AreEqual(2000000000, f(4000000000, 1));
-            Assert.IsNull(f(null, 1));
+            ClassicAssert.AreEqual(0, f(0, 0));
+            ClassicAssert.AreEqual(0, f(0, 10));
+            ClassicAssert.AreEqual(1, f(1024, 10));
+            ClassicAssert.AreEqual(0, f(1023, 10));
+            ClassicAssert.AreEqual(1, f(3, 1));
+            ClassicAssert.AreEqual(2000000000, f(4000000000, 1));
+            ClassicAssert.IsNull(f(null, 1));
         }
 
         [Test]
@@ -145,27 +146,27 @@ namespace GrobExp.Compiler.Tests.AssignTests.RightShiftAssign
             ParameterExpression b = Expression.Parameter(typeof(int?), "b");
             Expression<Func<uint?, int?, uint?>> exp = Expression.Lambda<Func<uint?, int?, uint?>>(Expression.RightShiftAssign(a, b), a, b);
             var f = LambdaCompiler.Compile(exp, CompilerOptions.All);
-            Assert.AreEqual(0, f(0, 0));
-            Assert.AreEqual(0, f(0, 10));
-            Assert.AreEqual(1, f(1024, 10));
-            Assert.AreEqual(0, f(1023, 10));
-            Assert.AreEqual(1, f(3, 1));
-            Assert.AreEqual(2000000000, f(4000000000, 1));
-            Assert.IsNull(f(null, 1));
-            Assert.IsNull(f(123, null));
-            Assert.IsNull(f(null, null));
+            ClassicAssert.AreEqual(0, f(0, 0));
+            ClassicAssert.AreEqual(0, f(0, 10));
+            ClassicAssert.AreEqual(1, f(1024, 10));
+            ClassicAssert.AreEqual(0, f(1023, 10));
+            ClassicAssert.AreEqual(1, f(3, 1));
+            ClassicAssert.AreEqual(2000000000, f(4000000000, 1));
+            ClassicAssert.IsNull(f(null, 1));
+            ClassicAssert.IsNull(f(123, null));
+            ClassicAssert.IsNull(f(null, null));
 
             exp = Expression.Lambda<Func<uint?, int?, uint?>>(Expression.Block(typeof(uint?), Expression.RightShiftAssign(a, b), a), a, b);
             f = LambdaCompiler.Compile(exp, CompilerOptions.All);
-            Assert.AreEqual(0, f(0, 0));
-            Assert.AreEqual(0, f(0, 10));
-            Assert.AreEqual(1, f(1024, 10));
-            Assert.AreEqual(0, f(1023, 10));
-            Assert.AreEqual(1, f(3, 1));
-            Assert.AreEqual(2000000000, f(4000000000, 1));
-            Assert.IsNull(f(null, 1));
-            Assert.IsNull(f(123, null));
-            Assert.IsNull(f(null, null));
+            ClassicAssert.AreEqual(0, f(0, 0));
+            ClassicAssert.AreEqual(0, f(0, 10));
+            ClassicAssert.AreEqual(1, f(1024, 10));
+            ClassicAssert.AreEqual(0, f(1023, 10));
+            ClassicAssert.AreEqual(1, f(3, 1));
+            ClassicAssert.AreEqual(2000000000, f(4000000000, 1));
+            ClassicAssert.IsNull(f(null, 1));
+            ClassicAssert.IsNull(f(123, null));
+            ClassicAssert.IsNull(f(null, null));
         }
     }
 }

@@ -62,7 +62,11 @@ namespace GrobExp.Compiler
         {
             var resultType = typeof(Expression<>).MakeGenericType(delegateType);
             var parameterTypes = new[] {typeof(Expression), typeof(string), typeof(bool), typeof(ReadOnlyCollection<ParameterExpression>)};
-            var method = new DynamicMethod(Guid.NewGuid().ToString(), typeof(LambdaExpression), parameterTypes, typeof(LambdaExpressionCreator), true);
+            var method = new DynamicMethod(name : $"BuildLambdaFactory_{Guid.NewGuid()}",
+                                           returnType : typeof(LambdaExpression),
+                                           parameterTypes : parameterTypes,
+                                           owner : typeof(LambdaExpressionCreator),
+                                           skipVisibility : true);
             using (var il = new GroboIL(method))
             {
                 il.Ldarg(0);

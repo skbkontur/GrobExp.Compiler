@@ -143,7 +143,11 @@ namespace GrobExp.Compiler.ExpressionEmitters
                         return handle.GetFunctionPointer();
                     };
             }
-            var method = new DynamicMethod("DynamicMethodPointerExtractor", typeof(IntPtr), new[] {typeof(DynamicMethod)}, typeof(LambdaExpressionEmitter).Module, true);
+            var method = new DynamicMethod(name : "DynamicMethodPointerExtractor",
+                                           returnType : typeof(IntPtr),
+                                           parameterTypes : new[] {typeof(DynamicMethod)},
+                                           m : typeof(LambdaExpressionEmitter).Module,
+                                           skipVisibility : true);
             using (var il = new GroboIL(method))
             {
                 il.Ldarg(0); // stack: [dynamicMethod]

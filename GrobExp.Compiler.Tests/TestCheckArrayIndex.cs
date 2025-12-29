@@ -2,6 +2,7 @@
 using System.Linq.Expressions;
 
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 
 namespace GrobExp.Compiler.Tests
 {
@@ -56,7 +57,7 @@ namespace GrobExp.Compiler.Tests
         {
             Expression<Func<TestClassA, int>> exp = a => a.IntArray[314159265];
             var compiledExp = LambdaCompiler.Compile(exp, CompilerOptions.All);
-            Assert.AreEqual(0, compiledExp(new TestClassA {IntArray = new[] {1, 2, 3}}));
+            ClassicAssert.AreEqual(0, compiledExp(new TestClassA {IntArray = new[] {1, 2, 3}}));
         }
 
         [Test]
@@ -66,7 +67,7 @@ namespace GrobExp.Compiler.Tests
             Expression<Func<TestClassA, int>> exp = a => a.IntArray[-1];
 #pragma warning restore 251
             var compiledExp = LambdaCompiler.Compile(exp, CompilerOptions.All);
-            Assert.AreEqual(0, compiledExp(new TestClassA {IntArray = new[] {1, 2, 3}}));
+            ClassicAssert.AreEqual(0, compiledExp(new TestClassA {IntArray = new[] {1, 2, 3}}));
         }
 
         [Test]
@@ -74,7 +75,7 @@ namespace GrobExp.Compiler.Tests
         {
             Expression<Func<TestClassA, string>> exp = a => a.ArrayB[271828183].C.D.E.S;
             var compiledExp = LambdaCompiler.Compile(exp, CompilerOptions.All);
-            Assert.AreEqual(null, compiledExp(new TestClassA {ArrayB = new[] {new TestClassB()}}));
+            ClassicAssert.AreEqual(null, compiledExp(new TestClassA {ArrayB = new[] {new TestClassB()}}));
         }
 
         public class TestClassA
