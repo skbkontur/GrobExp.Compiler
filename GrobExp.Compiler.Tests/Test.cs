@@ -13,6 +13,12 @@ namespace GrobExp.Compiler.Tests
     [TestFixture]
     public class Test // todo растащить на куски
     {
+        [OneTimeTearDown]
+        public void OneTimeTearDown()
+        {
+            fixtureCts.Cancel();
+        }
+
         [Test]
         public void TestNullable()
         {
@@ -464,10 +470,9 @@ namespace GrobExp.Compiler.Tests
 
         private void Collect()
         {
-            for (;;)
+            while (!fixtureCts.Token.WaitHandle.WaitOne(TimeSpan.FromMilliseconds(100)))
             {
                 GC.Collect();
-                Thread.Sleep(100);
             }
         }
 
@@ -540,6 +545,8 @@ namespace GrobExp.Compiler.Tests
         private volatile bool wasBug;
 
         private static readonly MethodInfo forEachMethod = ((MethodCallExpression)((Expression<Action<int[]>>)(ints => Array.ForEach(ints, null))).Body).Method.GetGenericMethodDefinition();
+
+        private readonly CancellationTokenSource fixtureCts = new CancellationTokenSource();
 
         public class Qzz
         {
