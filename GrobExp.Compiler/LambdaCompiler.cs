@@ -78,7 +78,8 @@ namespace GrobExp.Compiler
             var dynamicMethod = new DynamicMethod(name : $"CompileInternal_{Guid.NewGuid()}",
                                                   returnType : returnType,
                                                   parameterTypes : parameterTypes,
-                                                  restrictedSkipVisibility : true);
+                                                  m : Module.Value,
+                                                  skipVisibility : true);
             using (var il = new GroboIL(dynamicMethod))
             {
                 for (var i = 0; i < parameterTypes.Length; ++i)
@@ -185,9 +186,12 @@ namespace GrobExp.Compiler
             var parameterTypes = parameters.Select(parameter => parameter.Type).ToArray();
             var returnType = lambda.ReturnType;
             var method = new DynamicMethod(name : lambda.Name ?? $"CompileToDynamicMethod_{Guid.NewGuid()}",
+                                           attributes : MethodAttributes.Static | MethodAttributes.Public,
+                                           callingConvention : CallingConventions.Standard,
                                            returnType : returnType,
                                            parameterTypes : parameterTypes,
-                                           restrictedSkipVisibility : true);
+                                           m : Module.Value,
+                                           skipVisibility : true);
             using (var il = new GroboIL(method, AnalyzeILStack))
             {
                 var context = new EmittingContext
@@ -281,6 +285,10 @@ namespace GrobExp.Compiler
         public static double TotalJITCompilationTime = 0;
 
         internal static readonly ThreadLocal<AssemblyBuilder> Assembly = new ThreadLocal<AssemblyBuilder>(CreateAssembly);
+#if NETSTANDARD2_0
         internal static readonly ThreadLocal<ModuleBuilder> Module = new ThreadLocal<ModuleBuilder>(() => Assembly.Value.DefineDynamicModule(Guid.NewGuid().ToString()));
+#else
+        internal static readonly ThreadLocal<ModuleBuilder> Module = new ThreadLocal<ModuleBuilder>(() => Assembly.Value.DefineDynamicModule(Guid.NewGuid().ToString(), true));
+#endif
     }
 }

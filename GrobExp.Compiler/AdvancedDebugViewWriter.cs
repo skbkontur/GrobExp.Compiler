@@ -29,6 +29,10 @@ using System.Text;
 
 using GrEmit.Utils;
 
+#if CLR2
+namespace Microsoft.Scripting.Ast {
+#else
+
 namespace GrobExp.Compiler
 {
     public sealed class LambdaTraverser : ExpressionVisitor
@@ -71,6 +75,8 @@ namespace GrobExp.Compiler
         Body,
         Return
     }
+
+#endif
 
     [SuppressMessage("Microsoft.Maintainability", "CA1506:AvoidExcessiveClassCoupling")]
     public sealed class AdvancedDebugViewWriter : ExpressionVisitor

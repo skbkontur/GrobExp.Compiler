@@ -65,7 +65,8 @@ namespace GrobExp.Compiler
             var method = new DynamicMethod(name : $"BuildLambdaFactory_{Guid.NewGuid()}",
                                            returnType : typeof(LambdaExpression),
                                            parameterTypes : parameterTypes,
-                                           restrictedSkipVisibility : true);
+                                           owner : typeof(LambdaExpressionCreator),
+                                           skipVisibility : true);
             using (var il = new GroboIL(method))
             {
                 il.Ldarg(0);

@@ -39,7 +39,8 @@ namespace GrobExp.Compiler.Closures
             var dynamicMethod = new DynamicMethod(name : prefix + "$" + method.Name + "$" + Guid.NewGuid(),
                                                   returnType : method.ReturnType,
                                                   parameterTypes : parameterTypes.ToArray(),
-                                                  restrictedSkipVisibility : true);
+                                                  owner : typeof(MethodInvokerBuilder),
+                                                  skipVisibility : true);
             using (var il = new GroboIL(dynamicMethod))
             {
                 for (var i = 0; i < parameterTypes.Count; ++i)

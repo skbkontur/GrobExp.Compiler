@@ -145,6 +145,34 @@ namespace GrobExp.Compiler.Tests
             }
         }
 
+#if NET45
+        [Test]
+        [Ignore("Is used for debugging")]
+        public unsafe void TestWriteAssemblerCode3()
+        {
+            var method = new DynamicMethod(Guid.NewGuid().ToString(), typeof(void), new[] {typeof(IntPtr), typeof(int)}, typeof(string), true);
+            var il = method.GetILGenerator();
+            il.Emit(OpCodes.Ldarg_0);
+            il.Emit(OpCodes.Ldarg_1);
+            if (IntPtr.Size == 8)
+                il.Emit(OpCodes.Ldc_I8, 0x123456789ABCDEF1);
+            else
+                il.Emit(OpCodes.Ldc_I4, 0x12345678);
+            il.EmitCalli(OpCodes.Calli, CallingConvention.StdCall, typeof(void), new[] {typeof(IntPtr), typeof(int)});
+            il.Emit(OpCodes.Ret);
+            method.CreateDelegate(typeof(Action<IntPtr, int>));
+            var pointer = DynamicMethodInvokerBuilder.DynamicMethodPointerExtractor(method);
+            var b = (byte*)pointer;
+            for (int i = 0; i < 20; ++i)
+            {
+                for (int j = 0; j < 10; ++j)
+                    Console.Write(string.Format("{0:X2} ", *b++));
+                Console.WriteLine();
+            }
+            Console.WriteLine(TestStind_i4(123456678)[1]);
+        }
+#endif
+
         [Test]
         [Ignore("Is used for debugging")]
         public unsafe void TestWriteAssemblerCode4()
@@ -273,8 +301,10 @@ namespace GrobExp.Compiler.Tests
         [Test]
         public unsafe void TestMarshal()
         {
+#if NETCOREAPP
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             {
+#endif
                 byte[] body;
                 if (IntPtr.Size == 4)
                 {
@@ -324,7 +354,9 @@ namespace GrobExp.Compiler.Tests
 //            }
 //            var elapsed = stopwatch.Elapsed;
 //            Console.WriteLine(elapsed.TotalMilliseconds);
+#if NETCOREAPP
             }
+#endif
         }
 
         public unsafe byte[] TestStind_i4(int x)

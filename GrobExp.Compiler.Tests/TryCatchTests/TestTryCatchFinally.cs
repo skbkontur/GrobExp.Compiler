@@ -174,10 +174,10 @@ namespace GrobExp.Compiler.Tests.TryCatchTests
             ClassicAssert.AreEqual("Object reference not set to an instance of an object.", f(new TestClassA(), new TestClassA {X = 1}));
             ClassicAssert.IsTrue(B);
             B = false;
-            ClassicAssert.AreEqual("Unable to cast object of type 'System.String' to type 'System.Int32'.", f(new TestClassA {X = "zzz"}, new TestClassA {X = 1}));
+            ClassicAssert.AreEqual(SelectValue("Unable to cast object of type 'System.String' to type 'System.Int32'.", "Specified cast is not valid."), f(new TestClassA {X = "zzz"}, new TestClassA {X = 1}));
             ClassicAssert.IsTrue(B);
             B = false;
-            ClassicAssert.AreEqual("Unable to cast object of type 'System.String' to type 'System.Int32'.", f(new TestClassA {X = 1}, new TestClassA {X = "zzz"}));
+            ClassicAssert.AreEqual(SelectValue("Unable to cast object of type 'System.String' to type 'System.Int32'.", "Specified cast is not valid."), f(new TestClassA {X = 1}, new TestClassA {X = "zzz"}));
             ClassicAssert.IsTrue(B);
             B = false;
             ClassicAssert.AreEqual("Arithmetic operation resulted in an overflow.", f(new TestClassA {X = 1000000}, new TestClassA {X = 1000000}));
@@ -207,10 +207,10 @@ namespace GrobExp.Compiler.Tests.TryCatchTests
             ClassicAssert.AreEqual("Object reference not set to an instance of an object.", f(new TestClassA(), new TestClassA {X = 1}));
             ClassicAssert.IsTrue(B);
             B = false;
-            ClassicAssert.AreEqual("Unable to cast object of type 'System.String' to type 'System.Int32'.", f(new TestClassA {X = "zzz"}, new TestClassA {X = 1}));
+            ClassicAssert.AreEqual(SelectValue("Unable to cast object of type 'System.String' to type 'System.Int32'.", "Specified cast is not valid."), f(new TestClassA {X = "zzz"}, new TestClassA {X = 1}));
             ClassicAssert.IsTrue(B);
             B = false;
-            ClassicAssert.AreEqual("Unable to cast object of type 'System.String' to type 'System.Int32'.", f(new TestClassA {X = 1}, new TestClassA {X = "zzz"}));
+            ClassicAssert.AreEqual(SelectValue("Unable to cast object of type 'System.String' to type 'System.Int32'.", "Specified cast is not valid."), f(new TestClassA {X = 1}, new TestClassA {X = "zzz"}));
             ClassicAssert.IsTrue(B);
             B = false;
             ClassicAssert.AreEqual("Arithmetic operation resulted in an overflow.", f(new TestClassA {X = 1000000}, new TestClassA {X = 1000000}));

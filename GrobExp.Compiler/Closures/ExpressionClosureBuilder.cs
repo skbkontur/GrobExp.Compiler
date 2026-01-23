@@ -325,7 +325,8 @@ namespace GrobExp.Compiler.Closures
             var method = new DynamicMethod(name : $"BuildConstants_{Guid.NewGuid()}",
                                            returnType : typeof(object),
                                            parameterTypes : new[] {typeof(object[])},
-                                           restrictedSkipVisibility : true);
+                                           owner : typeof(ExpressionClosureBuilder),
+                                           skipVisibility : true);
             var root = Expression.Parameter(type);
             var consts = new object[hashtable.Count];
             using (var il = new GroboIL(method))

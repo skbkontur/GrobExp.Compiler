@@ -36,7 +36,8 @@ namespace GrobExp.Compiler.ExpressionEmitters
             var dynamicMethod = new DynamicMethod(name : $"BuildSequencePointMarker_{Guid.NewGuid()}",
                                                   returnType : typeof(void),
                                                   parameterTypes : parameterTypes,
-                                                  restrictedSkipVisibility : true);
+                                                  owner : typeof(DebugInfoExpressionEmitter),
+                                                  skipVisibility : true);
             using (var il = new GroboIL(dynamicMethod))
             {
                 il.Ldarg(0);
