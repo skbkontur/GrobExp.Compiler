@@ -2,6 +2,7 @@
 using System.Linq.Expressions;
 
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 
 namespace GrobExp.Compiler.Tests
 {
@@ -13,8 +14,8 @@ namespace GrobExp.Compiler.Tests
         {
             Expression<Func<int, int, bool>> exp = (a, b) => a != b;
             var f = LambdaCompiler.Compile(exp, CompilerOptions.All);
-            Assert.AreEqual(true, f(0, 1));
-            Assert.AreEqual(false, f(1, 1));
+            ClassicAssert.AreEqual(true, f(0, 1));
+            ClassicAssert.AreEqual(false, f(1, 1));
         }
 
         [Test]
@@ -22,8 +23,8 @@ namespace GrobExp.Compiler.Tests
         {
             Expression<Func<int, long, bool>> exp = (a, b) => a != b;
             var f = LambdaCompiler.Compile(exp, CompilerOptions.All);
-            Assert.AreEqual(true, f(0, 1));
-            Assert.AreEqual(false, f(1, 1));
+            ClassicAssert.AreEqual(true, f(0, 1));
+            ClassicAssert.AreEqual(false, f(1, 1));
         }
 
         [Test]
@@ -31,8 +32,8 @@ namespace GrobExp.Compiler.Tests
         {
             Expression<Func<long, long, bool>> exp = (a, b) => a != b;
             var f = LambdaCompiler.Compile(exp, CompilerOptions.All);
-            Assert.AreEqual(true, f(0, 1));
-            Assert.AreEqual(false, f(1, 1));
+            ClassicAssert.AreEqual(true, f(0, 1));
+            ClassicAssert.AreEqual(false, f(1, 1));
         }
 
         [Test]
@@ -40,8 +41,8 @@ namespace GrobExp.Compiler.Tests
         {
             Expression<Func<string, string, bool>> exp = (a, b) => a != b;
             var f = LambdaCompiler.Compile(exp, CompilerOptions.All);
-            Assert.AreEqual(true, f("zzz", "qxx"));
-            Assert.AreEqual(false, f("zzz", "zzz"));
+            ClassicAssert.AreEqual(true, f("zzz", "qxx"));
+            ClassicAssert.AreEqual(false, f("zzz", "zzz"));
         }
 
         [Test]
@@ -49,8 +50,8 @@ namespace GrobExp.Compiler.Tests
         {
             Expression<Func<int, decimal, bool>> exp = (a, b) => a != b;
             var f = LambdaCompiler.Compile(exp, CompilerOptions.All);
-            Assert.AreEqual(true, f(0, 1m));
-            Assert.AreEqual(false, f(1, 1m));
+            ClassicAssert.AreEqual(true, f(0, 1m));
+            ClassicAssert.AreEqual(false, f(1, 1m));
         }
 
         [Test]
@@ -60,8 +61,8 @@ namespace GrobExp.Compiler.Tests
             Expression body = Expression.NotEqual(a, Expression.Constant(null));
             Expression<Func<int?, bool>> exp = Expression.Lambda<Func<int?, bool>>(body, a);
             var f = LambdaCompiler.Compile(exp, CompilerOptions.All);
-            Assert.AreEqual(true, f(1));
-            Assert.AreEqual(false, f(null));
+            ClassicAssert.AreEqual(true, f(1));
+            ClassicAssert.AreEqual(false, f(null));
         }
     }
 }

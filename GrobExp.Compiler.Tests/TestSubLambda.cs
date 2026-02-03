@@ -11,6 +11,7 @@ using System.Threading;
 using GrEmit;
 
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 
 namespace GrobExp.Compiler.Tests
 {
@@ -21,8 +22,8 @@ namespace GrobExp.Compiler.Tests
         {
             Expression<Func<TestClassA, bool>> exp = a => a.ArrayB.Any(b => b.S == a.S);
             var f = Compile(exp, CompilerOptions.All);
-            Assert.IsTrue(f(new TestClassA {S = "zzz", ArrayB = new[] {new TestClassB {S = "zzz"},}}));
-            Assert.IsFalse(f(new TestClassA {S = "zzz", ArrayB = new[] {new TestClassB(),}}));
+            ClassicAssert.IsTrue(f(new TestClassA {S = "zzz", ArrayB = new[] {new TestClassB {S = "zzz"},}}));
+            ClassicAssert.IsFalse(f(new TestClassA {S = "zzz", ArrayB = new[] {new TestClassB(),}}));
         }
 
         [Test]
@@ -30,8 +31,8 @@ namespace GrobExp.Compiler.Tests
         {
             Expression<Func<TestClassA, bool>> exp = a => a.ArrayB.Any(b => b.S == "zzz");
             var f = Compile(exp, CompilerOptions.All);
-            Assert.IsTrue(f(new TestClassA {S = "zzz", ArrayB = new[] {new TestClassB {S = "zzz"},}}));
-            Assert.IsFalse(f(new TestClassA {S = "zzz", ArrayB = new[] {new TestClassB(),}}));
+            ClassicAssert.IsTrue(f(new TestClassA {S = "zzz", ArrayB = new[] {new TestClassB {S = "zzz"},}}));
+            ClassicAssert.IsFalse(f(new TestClassA {S = "zzz", ArrayB = new[] {new TestClassB(),}}));
         }
 
         [Test]
@@ -64,7 +65,7 @@ namespace GrobExp.Compiler.Tests
             var exp2 = Expression.Lambda<Func<TestClassA, bool>>(Expression.Block(typeof(bool), new[] {temp}, assignTemp, assignS, any), exp.Parameters);
 
             var f = Compile(exp2, CompilerOptions.All);
-            Assert.IsTrue(f(new TestClassA {S = "qzz", ArrayB = new[] {new TestClassB {S = "zzz"},}}));
+            ClassicAssert.IsTrue(f(new TestClassA {S = "qzz", ArrayB = new[] {new TestClassB {S = "zzz"},}}));
         }
 
         [Test]
@@ -79,7 +80,7 @@ namespace GrobExp.Compiler.Tests
             var exp2 = Expression.Lambda<Func<TestStructA, bool>>(Expression.Block(typeof(bool), new[] {temp}, assignTemp, assignS, any), exp.Parameters);
 
             var f = Compile(exp2, CompilerOptions.All);
-            Assert.IsTrue(f(new TestStructA {S = "qzz", ArrayB = new[] {new TestStructB {S = "zzz"},}}));
+            ClassicAssert.IsTrue(f(new TestStructA {S = "qzz", ArrayB = new[] {new TestStructB {S = "zzz"},}}));
         }
 
         [Test]
@@ -94,7 +95,7 @@ namespace GrobExp.Compiler.Tests
             Expression<Func<TestStructA, bool>> exp = Expression.Lambda<Func<TestStructA, bool>>(any, parameterA);
             var f = Compile(exp, CompilerOptions.All);
             aaa.Y = 1;
-            Assert.IsFalse(f(new TestStructA {ArrayB = new[] {new TestStructB {Y = 1},}}));
+            ClassicAssert.IsFalse(f(new TestStructA {ArrayB = new[] {new TestStructB {Y = 1},}}));
         }
 
         [Test]
@@ -142,8 +143,8 @@ namespace GrobExp.Compiler.Tests
                                 },
                         }
                 };
-            Assert.AreEqual(1, f(a));
-            Assert.AreEqual(0, f(null));
+            ClassicAssert.AreEqual(1, f(a));
+            ClassicAssert.AreEqual(0, f(null));
         }
 
         [Test]
@@ -160,7 +161,7 @@ namespace GrobExp.Compiler.Tests
             var exp2 = Expression.Lambda<Func<TestClassA, bool>>(Expression.Block(typeof(bool), new[] {temp}, assignTemp, assignS, any), exp.Parameters);
 
             var f = Compile(exp2, CompilerOptions.All);
-            Assert.IsTrue(f(new TestClassA {ArrayB = new[] {new TestClassB {S = "zzz"},}}));
+            ClassicAssert.IsTrue(f(new TestClassA {ArrayB = new[] {new TestClassB {S = "zzz"},}}));
         }
 
         [Test]
@@ -168,7 +169,7 @@ namespace GrobExp.Compiler.Tests
         {
             Expression<Func<TestClassA, bool>> exp = a => a.ArrayB.Any(b => b.S == a.S && b.C.ArrayD.All(d => d.S == b.S && d.ArrayE.Any(e => e.S == a.S && e.S == b.S && e.S == d.S)));
             var f = Compile(exp, CompilerOptions.All);
-            Assert.IsTrue(f(new TestClassA
+            ClassicAssert.IsTrue(f(new TestClassA
                 {
                     S = "zzz",
                     ArrayB = new[]
@@ -187,7 +188,7 @@ namespace GrobExp.Compiler.Tests
                                 },
                         }
                 }));
-            Assert.IsFalse(f(new TestClassA
+            ClassicAssert.IsFalse(f(new TestClassA
                 {
                     S = "zzz",
                     ArrayB = new[]

@@ -4,6 +4,7 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 
 namespace GrobExp.Compiler.Tests
 {
@@ -15,7 +16,7 @@ namespace GrobExp.Compiler.Tests
         {
             Expression<Func<int, int>> exp = i => F(j => j * j);
             var f = LambdaCompiler.Compile(exp, CompilerOptions.All);
-            Assert.AreEqual(25, f(2));
+            ClassicAssert.AreEqual(25, f(2));
         }
 
         [Test]
@@ -23,7 +24,7 @@ namespace GrobExp.Compiler.Tests
         {
             Expression<Func<int, int>> exp = i => F(j => j * i);
             var f = LambdaCompiler.Compile(exp, CompilerOptions.All);
-            Assert.AreEqual(10, f(2));
+            ClassicAssert.AreEqual(10, f(2));
         }
 
         [Test]
@@ -34,7 +35,7 @@ namespace GrobExp.Compiler.Tests
             Expression body = Expression.Call(typeof(TestQuote).GetMethod("F2", BindingFlags.Public | BindingFlags.Static), Expression.Quote(Expression.Lambda<Func<int, IRuntimeVariables>>(Expression.RuntimeVariables(x, y), y)));
             Expression<Func<int, int>> exp = Expression.Lambda<Func<int, int>>(body, x);
             var f = LambdaCompiler.Compile(exp, CompilerOptions.All);
-            Assert.AreEqual(10, f(10));
+            ClassicAssert.AreEqual(10, f(10));
         }
 
         public static int F(Expression<Func<int, int>> exp)

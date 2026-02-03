@@ -2,6 +2,7 @@
 using System.Linq.Expressions;
 
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 
 namespace GrobExp.Compiler.Tests
 {
@@ -14,7 +15,7 @@ namespace GrobExp.Compiler.Tests
             Expression<Func<long, DateTime>> exp = ticks => new DateTime(ticks);
             Expression<Func<long, long>> exp2 = Expression.Lambda<Func<long, long>>(Expression.Block(typeof(long), exp.Body, exp.Parameters[0]), exp.Parameters);
             var f = LambdaCompiler.Compile(exp2, CompilerOptions.All);
-            Assert.AreEqual(1234566789123456789, f(1234566789123456789));
+            ClassicAssert.AreEqual(1234566789123456789, f(1234566789123456789));
         }
 
         [Test]
@@ -41,10 +42,10 @@ namespace GrobExp.Compiler.Tests
             Expression<Func<TestClassA, bool>> exp = a => a.X > 0;
             Expression<Func<TestClassA, bool>> exp2 = Expression.Lambda<Func<TestClassA, bool>>(Expression.Block(typeof(bool), exp.Body), exp.Parameters);
             var f = LambdaCompiler.Compile(exp2, CompilerOptions.All);
-            Assert.AreEqual(false, f(null));
-            Assert.AreEqual(false, f(new TestClassA()));
-            Assert.AreEqual(false, f(new TestClassA {X = -1}));
-            Assert.AreEqual(true, f(new TestClassA {X = 1}));
+            ClassicAssert.AreEqual(false, f(null));
+            ClassicAssert.AreEqual(false, f(new TestClassA()));
+            ClassicAssert.AreEqual(false, f(new TestClassA {X = -1}));
+            ClassicAssert.AreEqual(true, f(new TestClassA {X = 1}));
         }
 
         public struct TestStructA

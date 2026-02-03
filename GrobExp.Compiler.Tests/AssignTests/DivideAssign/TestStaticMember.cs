@@ -2,6 +2,7 @@
 using System.Linq.Expressions;
 
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 
 namespace GrobExp.Compiler.Tests.AssignTests.DivideAssign
 {
@@ -15,14 +16,14 @@ namespace GrobExp.Compiler.Tests.AssignTests.DivideAssign
             Expression<Func<int, int>> exp = Expression.Lambda<Func<int, int>>(Expression.DivideAssign(Expression.MakeMemberAccess(null, typeof(TestClassA).GetProperty("IntProp")), b), b);
             var f = LambdaCompiler.Compile(exp, CompilerOptions.CheckNullReferences);
             TestClassA.IntProp = 1;
-            Assert.AreEqual(0, f(2));
-            Assert.AreEqual(0, TestClassA.IntProp);
+            ClassicAssert.AreEqual(0, f(2));
+            ClassicAssert.AreEqual(0, TestClassA.IntProp);
             TestClassA.IntProp = 5;
-            Assert.AreEqual(2, f(2));
-            Assert.AreEqual(2, TestClassA.IntProp);
+            ClassicAssert.AreEqual(2, f(2));
+            ClassicAssert.AreEqual(2, TestClassA.IntProp);
             TestClassA.IntProp = -3;
-            Assert.AreEqual(-1, f(2));
-            Assert.AreEqual(-1, TestClassA.IntProp);
+            ClassicAssert.AreEqual(-1, f(2));
+            ClassicAssert.AreEqual(-1, TestClassA.IntProp);
         }
 
         [Test]
@@ -32,14 +33,14 @@ namespace GrobExp.Compiler.Tests.AssignTests.DivideAssign
             Expression<Func<double, double>> exp = Expression.Lambda<Func<double, double>>(Expression.DivideAssign(Expression.MakeMemberAccess(null, typeof(TestClassA).GetField("DoubleField")), b), b);
             var f = LambdaCompiler.Compile(exp, CompilerOptions.CheckNullReferences);
             TestClassA.DoubleField = 1;
-            Assert.AreEqual(0.5, f(2));
-            Assert.AreEqual(0.5, TestClassA.DoubleField);
+            ClassicAssert.AreEqual(0.5, f(2));
+            ClassicAssert.AreEqual(0.5, TestClassA.DoubleField);
             TestClassA.DoubleField = 5;
-            Assert.AreEqual(2.5, f(2));
-            Assert.AreEqual(2.5, TestClassA.DoubleField);
+            ClassicAssert.AreEqual(2.5, f(2));
+            ClassicAssert.AreEqual(2.5, TestClassA.DoubleField);
             TestClassA.DoubleField = -3;
-            Assert.AreEqual(-1.5, f(2));
-            Assert.AreEqual(-1.5, TestClassA.DoubleField);
+            ClassicAssert.AreEqual(-1.5, f(2));
+            ClassicAssert.AreEqual(-1.5, TestClassA.DoubleField);
         }
 
         [Test]
@@ -49,22 +50,22 @@ namespace GrobExp.Compiler.Tests.AssignTests.DivideAssign
             Expression<Func<int?, int?>> exp = Expression.Lambda<Func<int?, int?>>(Expression.DivideAssign(Expression.MakeMemberAccess(null, typeof(TestClassA).GetProperty("NullableIntProp")), b), b);
             var f = LambdaCompiler.Compile(exp, CompilerOptions.All);
             TestClassA.NullableIntProp = 1;
-            Assert.AreEqual(0, f(2));
-            Assert.AreEqual(0, TestClassA.NullableIntProp);
+            ClassicAssert.AreEqual(0, f(2));
+            ClassicAssert.AreEqual(0, TestClassA.NullableIntProp);
             TestClassA.NullableIntProp = 5;
-            Assert.AreEqual(2, f(2));
-            Assert.AreEqual(2, TestClassA.NullableIntProp);
+            ClassicAssert.AreEqual(2, f(2));
+            ClassicAssert.AreEqual(2, TestClassA.NullableIntProp);
             TestClassA.NullableIntProp = -3;
-            Assert.AreEqual(-1, f(2));
-            Assert.AreEqual(-1, TestClassA.NullableIntProp);
+            ClassicAssert.AreEqual(-1, f(2));
+            ClassicAssert.AreEqual(-1, TestClassA.NullableIntProp);
             TestClassA.NullableIntProp = null;
-            Assert.IsNull(f(2));
-            Assert.IsNull(TestClassA.NullableIntProp);
+            ClassicAssert.IsNull(f(2));
+            ClassicAssert.IsNull(TestClassA.NullableIntProp);
             TestClassA.NullableIntProp = 1;
-            Assert.IsNull(f(null));
-            Assert.IsNull(TestClassA.NullableIntProp);
-            Assert.IsNull(f(null));
-            Assert.IsNull(TestClassA.NullableIntProp);
+            ClassicAssert.IsNull(f(null));
+            ClassicAssert.IsNull(TestClassA.NullableIntProp);
+            ClassicAssert.IsNull(f(null));
+            ClassicAssert.IsNull(TestClassA.NullableIntProp);
         }
 
         [Test]
@@ -74,14 +75,14 @@ namespace GrobExp.Compiler.Tests.AssignTests.DivideAssign
             Expression<Func<uint, uint>> exp = Expression.Lambda<Func<uint, uint>>(Expression.DivideAssign(Expression.MakeMemberAccess(null, typeof(TestClassA).GetField("UIntField")), b), b);
             var f = LambdaCompiler.Compile(exp, CompilerOptions.CheckNullReferences);
             TestClassA.UIntField = 1;
-            Assert.AreEqual(0, f(2));
-            Assert.AreEqual(0, TestClassA.UIntField);
+            ClassicAssert.AreEqual(0, f(2));
+            ClassicAssert.AreEqual(0, TestClassA.UIntField);
             TestClassA.UIntField = 5;
-            Assert.AreEqual(2, f(2));
-            Assert.AreEqual(2, TestClassA.UIntField);
+            ClassicAssert.AreEqual(2, f(2));
+            ClassicAssert.AreEqual(2, TestClassA.UIntField);
             TestClassA.UIntField = uint.MaxValue - 3 + 1;
-            Assert.AreEqual(2147483646, f(2));
-            Assert.AreEqual(2147483646, TestClassA.UIntField);
+            ClassicAssert.AreEqual(2147483646, f(2));
+            ClassicAssert.AreEqual(2147483646, TestClassA.UIntField);
         }
 
         public class TestClassA

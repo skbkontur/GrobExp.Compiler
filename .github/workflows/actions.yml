@@ -4,7 +4,11 @@ on:
       - "**/*.md"
     pull_request:
 env:
-  DOTNET_VERSION: 6.0.x
+  TEST_DOTNET_VERSION: |
+    7.0.x
+    9.0.x
+    10.0.x
+  DOTNET_VERSION: 10.0.x
   SOLUTION_FILE: GrobExp.Compiler.sln
 jobs:
   test:
@@ -17,7 +21,7 @@ jobs:
       - name: Setup .NET Core
         uses: actions/setup-dotnet@v3
         with:
-          dotnet-version: ${{ env.DOTNET_VERSION }}
+          dotnet-version: ${{ env.TEST_DOTNET_VERSION }}
 
       - name: Install dependencies
         run: dotnet restore ${{ env.SOLUTION_FILE }} --verbosity minimal && dotnet tool restore
@@ -68,7 +72,7 @@ jobs:
         run: dotnet pack --no-build --configuration Release ${{ env.SOLUTION_FILE }}
 
       - name: Upload artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           path: "**/*.nupkg"
           if-no-files-found: error

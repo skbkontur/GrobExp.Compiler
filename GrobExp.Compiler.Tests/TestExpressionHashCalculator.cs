@@ -4,6 +4,7 @@ using System.Linq;
 using System.Linq.Expressions;
 
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 
 using static GrobExp.Compiler.ExpressionHashCalculator;
 
@@ -312,9 +313,9 @@ namespace GrobExp.Compiler.Tests
             var instance = Expression.Parameter(typeof(string), "instance");
             var otherInstance = Expression.Parameter(typeof(string), "other_instance");
             var method = typeof(string).GetMethod(nameof(string.PadLeft), new[] {typeof(int)});
-            Assert.NotNull(method);
+            ClassicAssert.NotNull(method);
             var otherMethod = typeof(string).GetMethod(nameof(string.PadRight), new[] {typeof(int)});
-            Assert.NotNull(otherMethod);
+            ClassicAssert.NotNull(otherMethod);
             var parameter = Expression.Constant(1);
             var otherParameter = Expression.Constant(2);
 
@@ -359,7 +360,7 @@ namespace GrobExp.Compiler.Tests
         public void TestHashListInit()
         {
             var constructor = typeof(List<int>).GetConstructor(Type.EmptyTypes);
-            Assert.NotNull(constructor);
+            ClassicAssert.NotNull(constructor);
             var listAddMethod = typeof(List<int>).GetMethod("Add");
 
             TestHashNotEquivalent(Expression.ListInit(Expression.New(constructor), listAddMethod, Expression.Constant(1), Expression.Constant(2)),
@@ -370,9 +371,9 @@ namespace GrobExp.Compiler.Tests
         public void TestHashNew()
         {
             var constructor = typeof(List<int>).GetConstructor(Type.EmptyTypes);
-            Assert.NotNull(constructor);
+            ClassicAssert.NotNull(constructor);
             var otherConstructor = typeof(List<int>).GetConstructor(new[] {typeof(int)});
-            Assert.NotNull(otherConstructor);
+            ClassicAssert.NotNull(otherConstructor);
 
             TestHashNotEquivalent(Expression.New(constructor), Expression.New(otherConstructor, Expression.Constant(1)));
         }
@@ -427,9 +428,9 @@ namespace GrobExp.Compiler.Tests
         public void TestHashMemberAccess()
         {
             var arrayLength = typeof(int[]).GetProperty(nameof(Array.Length));
-            Assert.NotNull(arrayLength);
+            ClassicAssert.NotNull(arrayLength);
             var strLength = typeof(string).GetProperty(nameof(string.Length));
-            Assert.NotNull(strLength);
+            ClassicAssert.NotNull(strLength);
 
             TestHashNotEquivalent(Expression.MakeMemberAccess(Expression.Constant(new int[0]), arrayLength),
                                   Expression.MakeMemberAccess(Expression.Constant("str"), strLength));
@@ -694,7 +695,7 @@ namespace GrobExp.Compiler.Tests
 
         private static void TestHashEquivalent(Expression first, Expression second, bool strictly)
         {
-            Assert.AreEqual(CalcHashCode(first, strictly), CalcHashCode(second, strictly));
+            ClassicAssert.AreEqual(CalcHashCode(first, strictly), CalcHashCode(second, strictly));
         }
 
         private static void TestHashEquivalent(Expression first, Expression second)
@@ -705,7 +706,7 @@ namespace GrobExp.Compiler.Tests
 
         private static void TestHashNotEquivalent(Expression first, Expression second, bool strictly)
         {
-            Assert.AreNotEqual(CalcHashCode(first, strictly), CalcHashCode(second, strictly));
+            ClassicAssert.AreNotEqual(CalcHashCode(first, strictly), CalcHashCode(second, strictly));
         }
 
         private static void TestHashNotEquivalent(Expression first, Expression second)

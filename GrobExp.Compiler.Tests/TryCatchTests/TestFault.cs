@@ -2,6 +2,7 @@
 using System.Linq.Expressions;
 
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 
 namespace GrobExp.Compiler.Tests.TryCatchTests
 {
@@ -25,67 +26,67 @@ namespace GrobExp.Compiler.Tests.TryCatchTests
             var f = CompileToMethod(exp, CompilerOptions.None);
             B = false;
             Assert.Throws<NullReferenceException>(() => f(null, null));
-            Assert.IsTrue(B);
+            ClassicAssert.IsTrue(B);
             B = false;
             Assert.Throws<NullReferenceException>(() => f(null, new TestClassA()));
-            Assert.IsTrue(B);
+            ClassicAssert.IsTrue(B);
             B = false;
             Assert.Throws<NullReferenceException>(() => f(new TestClassA(), null));
-            Assert.IsTrue(B);
+            ClassicAssert.IsTrue(B);
             B = false;
             Assert.Throws<NullReferenceException>(() => f(new TestClassA(), new TestClassA()));
-            Assert.IsTrue(B);
+            ClassicAssert.IsTrue(B);
             B = false;
             Assert.Throws<NullReferenceException>(() => f(new TestClassA {X = 1}, new TestClassA()));
-            Assert.IsTrue(B);
+            ClassicAssert.IsTrue(B);
             B = false;
             Assert.Throws<NullReferenceException>(() => f(new TestClassA(), new TestClassA {X = 1}));
-            Assert.IsTrue(B);
+            ClassicAssert.IsTrue(B);
             B = false;
             Assert.Throws<InvalidCastException>(() => f(new TestClassA {X = "zzz"}, new TestClassA {X = 1}));
-            Assert.IsTrue(B);
+            ClassicAssert.IsTrue(B);
             B = false;
             Assert.Throws<InvalidCastException>(() => f(new TestClassA {X = 1}, new TestClassA {X = "zzz"}));
-            Assert.IsTrue(B);
+            ClassicAssert.IsTrue(B);
             B = false;
             Assert.Throws<OverflowException>(() => f(new TestClassA {X = 1000000}, new TestClassA {X = 1000000}));
-            Assert.IsTrue(B);
+            ClassicAssert.IsTrue(B);
             B = false;
-            Assert.AreEqual("1000000", f(new TestClassA {X = 1000}, new TestClassA {X = 1000}));
-            Assert.IsFalse(B);
+            ClassicAssert.AreEqual("1000000", f(new TestClassA {X = 1000}, new TestClassA {X = 1000}));
+            ClassicAssert.IsFalse(B);
             B = false;
 
             f = CompileToMethod(exp, CompilerOptions.All);
             B = false;
             Assert.Throws<NullReferenceException>(() => f(null, null));
-            Assert.IsTrue(B);
+            ClassicAssert.IsTrue(B);
             B = false;
             Assert.Throws<NullReferenceException>(() => f(null, new TestClassA()));
-            Assert.IsTrue(B);
+            ClassicAssert.IsTrue(B);
             B = false;
             Assert.Throws<NullReferenceException>(() => f(new TestClassA(), null));
-            Assert.IsTrue(B);
+            ClassicAssert.IsTrue(B);
             B = false;
             Assert.Throws<NullReferenceException>(() => f(new TestClassA(), new TestClassA()));
-            Assert.IsTrue(B);
+            ClassicAssert.IsTrue(B);
             B = false;
             Assert.Throws<NullReferenceException>(() => f(new TestClassA {X = 1}, new TestClassA()));
-            Assert.IsTrue(B);
+            ClassicAssert.IsTrue(B);
             B = false;
             Assert.Throws<NullReferenceException>(() => f(new TestClassA(), new TestClassA {X = 1}));
-            Assert.IsTrue(B);
+            ClassicAssert.IsTrue(B);
             B = false;
             Assert.Throws<InvalidCastException>(() => f(new TestClassA {X = "zzz"}, new TestClassA {X = 1}));
-            Assert.IsTrue(B);
+            ClassicAssert.IsTrue(B);
             B = false;
             Assert.Throws<InvalidCastException>(() => f(new TestClassA {X = 1}, new TestClassA {X = "zzz"}));
-            Assert.IsTrue(B);
+            ClassicAssert.IsTrue(B);
             B = false;
             Assert.Throws<OverflowException>(() => f(new TestClassA {X = 1000000}, new TestClassA {X = 1000000}));
-            Assert.IsTrue(B);
+            ClassicAssert.IsTrue(B);
             B = false;
-            Assert.AreEqual("1000000", f(new TestClassA {X = 1000}, new TestClassA {X = 1000}));
-            Assert.IsFalse(B);
+            ClassicAssert.AreEqual("1000000", f(new TestClassA {X = 1000}, new TestClassA {X = 1000}));
+            ClassicAssert.IsFalse(B);
             B = false;
         }
 
