@@ -2,6 +2,7 @@
 using System.Linq.Expressions;
 
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 
 namespace GrobExp.Compiler.Tests.AssignTests.Assign
 {
@@ -16,11 +17,11 @@ namespace GrobExp.Compiler.Tests.AssignTests.Assign
             Expression<Func<TestClassA, string>> exp = Expression.Lambda<Func<TestClassA, string>>(body, path1.Parameters);
             var f = LambdaCompiler.Compile(exp, CompilerOptions.All);
             var o = new TestClassA {ArrayB = new[] {new TestClassB {S = "qxx"},}};
-            Assert.AreEqual("zzz", f(o));
-            Assert.IsNotNull(o.ArrayB);
-            Assert.AreEqual(2, o.ArrayB.Length);
-            Assert.AreEqual("zzz", o.ArrayB[1].S);
-            Assert.AreEqual("qxx", o.ArrayB[0].S);
+            ClassicAssert.AreEqual("zzz", f(o));
+            ClassicAssert.IsNotNull(o.ArrayB);
+            ClassicAssert.AreEqual(2, o.ArrayB.Length);
+            ClassicAssert.AreEqual("zzz", o.ArrayB[1].S);
+            ClassicAssert.AreEqual("qxx", o.ArrayB[0].S);
         }
 
         [Test]
@@ -31,15 +32,15 @@ namespace GrobExp.Compiler.Tests.AssignTests.Assign
             Expression<Func<TestClassA, string>> exp = Expression.Lambda<Func<TestClassA, string>>(body, path1.Parameters);
             var f = LambdaCompiler.Compile(exp, CompilerOptions.All);
             var o = new TestClassA();
-            Assert.AreEqual("zzz", f(o));
-            Assert.IsNotNull(o.ArrayB);
-            Assert.AreEqual(2, o.ArrayB.Length);
-            Assert.IsNotNull(o.ArrayB[1].C);
-            Assert.IsNotNull(o.ArrayB[1].C.ArrayD);
-            Assert.AreEqual(3, o.ArrayB[1].C.ArrayD.Length);
-            Assert.IsNotNull(o.ArrayB[1].C.ArrayD[2].ArrayE);
-            Assert.AreEqual(4, o.ArrayB[1].C.ArrayD[2].ArrayE.Length);
-            Assert.AreEqual("zzz", o.ArrayB[1].C.ArrayD[2].ArrayE[3].S);
+            ClassicAssert.AreEqual("zzz", f(o));
+            ClassicAssert.IsNotNull(o.ArrayB);
+            ClassicAssert.AreEqual(2, o.ArrayB.Length);
+            ClassicAssert.IsNotNull(o.ArrayB[1].C);
+            ClassicAssert.IsNotNull(o.ArrayB[1].C.ArrayD);
+            ClassicAssert.AreEqual(3, o.ArrayB[1].C.ArrayD.Length);
+            ClassicAssert.IsNotNull(o.ArrayB[1].C.ArrayD[2].ArrayE);
+            ClassicAssert.AreEqual(4, o.ArrayB[1].C.ArrayD[2].ArrayE.Length);
+            ClassicAssert.AreEqual("zzz", o.ArrayB[1].C.ArrayD[2].ArrayE[3].S);
         }
 
         [Test]
@@ -50,11 +51,11 @@ namespace GrobExp.Compiler.Tests.AssignTests.Assign
             Expression<Func<TestClassA, int>> exp = Expression.Lambda<Func<TestClassA, int>>(body, path1.Parameters);
             var f = LambdaCompiler.Compile(exp, CompilerOptions.All);
             var o = new TestClassA {IntArray = new[] {12}};
-            Assert.AreEqual(-123, f(o));
-            Assert.IsNotNull(o.IntArray);
-            Assert.AreEqual(2, o.IntArray.Length);
-            Assert.AreEqual(12, o.IntArray[0]);
-            Assert.AreEqual(-123, o.IntArray[1]);
+            ClassicAssert.AreEqual(-123, f(o));
+            ClassicAssert.IsNotNull(o.IntArray);
+            ClassicAssert.AreEqual(2, o.IntArray.Length);
+            ClassicAssert.AreEqual(12, o.IntArray[0]);
+            ClassicAssert.AreEqual(-123, o.IntArray[1]);
         }
 
         [Test]
@@ -63,7 +64,7 @@ namespace GrobExp.Compiler.Tests.AssignTests.Assign
             var parameter = Expression.Parameter(typeof(int[]));
             var exp = Expression.Lambda<Func<int[], int>>(Expression.Block(typeof(int), Expression.Assign(Expression.ArrayAccess(parameter, Expression.Constant(1)), Expression.Constant(-123)), Expression.ArrayIndex(parameter, Expression.Constant(1))), parameter);
             var f = LambdaCompiler.Compile(exp, CompilerOptions.All);
-            Assert.AreEqual(-123, f(new int[0]));
+            ClassicAssert.AreEqual(-123, f(new int[0]));
         }
 
         [Test]
@@ -72,7 +73,7 @@ namespace GrobExp.Compiler.Tests.AssignTests.Assign
             Expression<Func<int[]>> path = () => intArray;
             var exp = Expression.Lambda<Func<int>>(Expression.Block(typeof(int), Expression.Assign(Expression.ArrayAccess(path.Body, Expression.Constant(1)), Expression.Constant(-123)), Expression.ArrayIndex(path.Body, Expression.Constant(1))));
             var f = LambdaCompiler.Compile(exp, CompilerOptions.All);
-            Assert.AreEqual(-123, f());
+            ClassicAssert.AreEqual(-123, f());
         }
 
         [Test]
@@ -83,15 +84,15 @@ namespace GrobExp.Compiler.Tests.AssignTests.Assign
             Expression<Func<TestClassA, int>> exp = Expression.Lambda<Func<TestClassA, int>>(body, path1.Parameters);
             var f = LambdaCompiler.Compile(exp, CompilerOptions.All);
             var o = new TestClassA {DoubleIntArray = new[] {new[] {12}}};
-            Assert.AreEqual(-123, f(o));
-            Assert.IsNotNull(o.DoubleIntArray);
-            Assert.AreEqual(2, o.DoubleIntArray.Length);
-            Assert.IsNotNull(o.DoubleIntArray[0]);
-            Assert.AreEqual(1, o.DoubleIntArray[0].Length);
-            Assert.AreEqual(12, o.DoubleIntArray[0][0]);
-            Assert.IsNotNull(o.DoubleIntArray[1]);
-            Assert.AreEqual(2, o.DoubleIntArray[1].Length);
-            Assert.AreEqual(-123, o.DoubleIntArray[1][1]);
+            ClassicAssert.AreEqual(-123, f(o));
+            ClassicAssert.IsNotNull(o.DoubleIntArray);
+            ClassicAssert.AreEqual(2, o.DoubleIntArray.Length);
+            ClassicAssert.IsNotNull(o.DoubleIntArray[0]);
+            ClassicAssert.AreEqual(1, o.DoubleIntArray[0].Length);
+            ClassicAssert.AreEqual(12, o.DoubleIntArray[0][0]);
+            ClassicAssert.IsNotNull(o.DoubleIntArray[1]);
+            ClassicAssert.AreEqual(2, o.DoubleIntArray[1].Length);
+            ClassicAssert.AreEqual(-123, o.DoubleIntArray[1][1]);
         }
 
         [Test]
@@ -102,15 +103,15 @@ namespace GrobExp.Compiler.Tests.AssignTests.Assign
             Expression<Func<TestClassA, int>> exp = Expression.Lambda<Func<TestClassA, int>>(body, path1.Parameters);
             var f = LambdaCompiler.Compile(exp, CompilerOptions.All);
             var o = new TestClassA {DoubleIntArray = new[] {new[] {12}}};
-            Assert.AreEqual(-123, f(o));
-            Assert.IsNotNull(o.DoubleIntArray);
-            Assert.AreEqual(2, o.DoubleIntArray.Length);
-            Assert.IsNotNull(o.DoubleIntArray[0]);
-            Assert.AreEqual(1, o.DoubleIntArray[0].Length);
-            Assert.AreEqual(12, o.DoubleIntArray[0][0]);
-            Assert.IsNotNull(o.DoubleIntArray[1]);
-            Assert.AreEqual(2, o.DoubleIntArray[1].Length);
-            Assert.AreEqual(-123, o.DoubleIntArray[1][1]);
+            ClassicAssert.AreEqual(-123, f(o));
+            ClassicAssert.IsNotNull(o.DoubleIntArray);
+            ClassicAssert.AreEqual(2, o.DoubleIntArray.Length);
+            ClassicAssert.IsNotNull(o.DoubleIntArray[0]);
+            ClassicAssert.AreEqual(1, o.DoubleIntArray[0].Length);
+            ClassicAssert.AreEqual(12, o.DoubleIntArray[0][0]);
+            ClassicAssert.IsNotNull(o.DoubleIntArray[1]);
+            ClassicAssert.AreEqual(2, o.DoubleIntArray[1].Length);
+            ClassicAssert.AreEqual(-123, o.DoubleIntArray[1][1]);
         }
 
         [Test]
@@ -121,16 +122,16 @@ namespace GrobExp.Compiler.Tests.AssignTests.Assign
             Expression<Func<TestClassA, string>> exp = Expression.Lambda<Func<TestClassA, string>>(body, path.Parameters);
             var f = LambdaCompiler.Compile(exp, CompilerOptions.All);
             var o = new TestClassA();
-            Assert.AreEqual("zzz", f(o));
-            Assert.IsNotNull(o.ArrayB);
-            Assert.AreEqual(1, o.ArrayB.Length);
-            Assert.IsNotNull(o.ArrayB[0].C);
-            Assert.IsNotNull(o.ArrayB[0].C.ArrayD);
-            Assert.AreEqual(1, o.ArrayB[0].C.ArrayD.Length);
-            Assert.IsNotNull(o.ArrayB[0].C.ArrayD[0].StringArray);
-            Assert.AreEqual(2, o.ArrayB[0].C.ArrayD[0].StringArray.Length);
-            Assert.IsNull(o.ArrayB[0].C.ArrayD[0].StringArray[0]);
-            Assert.AreEqual("zzz", o.ArrayB[0].C.ArrayD[0].StringArray[1]);
+            ClassicAssert.AreEqual("zzz", f(o));
+            ClassicAssert.IsNotNull(o.ArrayB);
+            ClassicAssert.AreEqual(1, o.ArrayB.Length);
+            ClassicAssert.IsNotNull(o.ArrayB[0].C);
+            ClassicAssert.IsNotNull(o.ArrayB[0].C.ArrayD);
+            ClassicAssert.AreEqual(1, o.ArrayB[0].C.ArrayD.Length);
+            ClassicAssert.IsNotNull(o.ArrayB[0].C.ArrayD[0].StringArray);
+            ClassicAssert.AreEqual(2, o.ArrayB[0].C.ArrayD[0].StringArray.Length);
+            ClassicAssert.IsNull(o.ArrayB[0].C.ArrayD[0].StringArray[0]);
+            ClassicAssert.AreEqual("zzz", o.ArrayB[0].C.ArrayD[0].StringArray[1]);
         }
 
         [Test]
@@ -142,9 +143,9 @@ namespace GrobExp.Compiler.Tests.AssignTests.Assign
             var f = LambdaCompiler.Compile(exp, CompilerOptions.CheckNullReferences | CompilerOptions.ExtendOnAssign);
             var o = new TestClassA {TwoDimensionalArray = new TestClassB[1, 1][]};
             o.TwoDimensionalArray[0, 0] = new TestClassB[1];
-            Assert.AreEqual(-123, f(o));
-            Assert.IsNotNull(o.TwoDimensionalArray[0, 0][0]);
-            Assert.AreEqual(-123, o.TwoDimensionalArray[0, 0][0].Y);
+            ClassicAssert.AreEqual(-123, f(o));
+            ClassicAssert.IsNotNull(o.TwoDimensionalArray[0, 0][0]);
+            ClassicAssert.AreEqual(-123, o.TwoDimensionalArray[0, 0][0].Y);
         }
 
         [Test]
@@ -155,7 +156,7 @@ namespace GrobExp.Compiler.Tests.AssignTests.Assign
             Expression body = Expression.Block(typeof(int), new[] {variable}, Expression.Assign(variable, parameter), Expression.Assign(Expression.ArrayAccess(variable, Expression.Constant(1)), Expression.Constant(-123)));
             var exp = Expression.Lambda<Func<int[], int>>(body, parameter);
             var f = LambdaCompiler.Compile(exp, CompilerOptions.All);
-            Assert.AreEqual(-123, f(new int[0]));
+            ClassicAssert.AreEqual(-123, f(new int[0]));
         }
 
         [Test]
@@ -168,12 +169,12 @@ namespace GrobExp.Compiler.Tests.AssignTests.Assign
             var f = LambdaCompiler.Compile(exp, CompilerOptions.All);
             var o = new TestClassA();
             f(o);
-            Assert.IsNotNull(o.BoolArray);
-            Assert.AreEqual(2, o.BoolArray.Length);
-            Assert.AreEqual(false, o.BoolArray[1]);
+            ClassicAssert.IsNotNull(o.BoolArray);
+            ClassicAssert.AreEqual(2, o.BoolArray.Length);
+            ClassicAssert.AreEqual(false, o.BoolArray[1]);
             o.X = 1;
             f(o);
-            Assert.AreEqual(true, o.BoolArray[1]);
+            ClassicAssert.AreEqual(true, o.BoolArray[1]);
         }
 
         [Test]
@@ -186,16 +187,16 @@ namespace GrobExp.Compiler.Tests.AssignTests.Assign
             var f = LambdaCompiler.Compile(exp, CompilerOptions.All);
             var o = new TestClassA();
             f(o);
-            Assert.IsNotNull(o.IntArray);
-            Assert.AreEqual(2, o.IntArray.Length);
-            Assert.AreEqual(0, o.IntArray[1]);
+            ClassicAssert.IsNotNull(o.IntArray);
+            ClassicAssert.AreEqual(2, o.IntArray.Length);
+            ClassicAssert.AreEqual(0, o.IntArray[1]);
             o.Y = 1;
             f(o);
-            Assert.AreEqual(1, o.IntArray[1]);
+            ClassicAssert.AreEqual(1, o.IntArray[1]);
             f = LambdaCompiler.Compile(exp, CompilerOptions.None);
             o.Y = 123;
             f(o);
-            Assert.AreEqual(123, o.IntArray[1]);
+            ClassicAssert.AreEqual(123, o.IntArray[1]);
         }
 
         [Test]
@@ -208,12 +209,12 @@ namespace GrobExp.Compiler.Tests.AssignTests.Assign
             var f = LambdaCompiler.Compile(exp, CompilerOptions.All);
             var o = new TestClassA();
             f(o);
-            Assert.IsNotNull(o.DateTimeArray);
-            Assert.AreEqual(2, o.DateTimeArray.Length);
-            Assert.AreEqual(MyBirthDate, o.DateTimeArray[1]);
+            ClassicAssert.IsNotNull(o.DateTimeArray);
+            ClassicAssert.AreEqual(2, o.DateTimeArray.Length);
+            ClassicAssert.AreEqual(MyBirthDate, o.DateTimeArray[1]);
             f = LambdaCompiler.Compile(exp, CompilerOptions.None);
             f(o);
-            Assert.AreEqual(MyBirthDate, o.DateTimeArray[1]);
+            ClassicAssert.AreEqual(MyBirthDate, o.DateTimeArray[1]);
         }
 
         [Test]
@@ -225,8 +226,8 @@ namespace GrobExp.Compiler.Tests.AssignTests.Assign
             var f = LambdaCompiler.Compile(exp, CompilerOptions.All);
             var o = new TestClassA {StringArray = new string[1, 1]};
             o.StringArray[0, 0] = "qxx";
-            Assert.AreEqual("zzz", f(o));
-            Assert.AreEqual("zzz", o.StringArray[0, 0]);
+            ClassicAssert.AreEqual("zzz", f(o));
+            ClassicAssert.AreEqual("zzz", o.StringArray[0, 0]);
         }
 
         [Test]
@@ -239,11 +240,11 @@ namespace GrobExp.Compiler.Tests.AssignTests.Assign
             var f = LambdaCompiler.Compile(exp, CompilerOptions.All);
             var o = new TestClassA {B = new TestClassB {BoolArray = new bool[1, 1]}};
             o.B.BoolArray[0, 0] = true;
-            Assert.AreEqual(false, f(o));
-            Assert.AreEqual(false, o.B.BoolArray[0, 0]);
+            ClassicAssert.AreEqual(false, f(o));
+            ClassicAssert.AreEqual(false, o.B.BoolArray[0, 0]);
             o.X = 1;
-            Assert.AreEqual(true, f(o));
-            Assert.AreEqual(true, o.B.BoolArray[0, 0]);
+            ClassicAssert.AreEqual(true, f(o));
+            ClassicAssert.AreEqual(true, o.B.BoolArray[0, 0]);
         }
 
         [Test]
@@ -256,21 +257,21 @@ namespace GrobExp.Compiler.Tests.AssignTests.Assign
             var f = LambdaCompiler.Compile(exp, CompilerOptions.All);
             var o = new TestClassA {B = new TestClassB {IntArray = new int[1, 1]}};
             o.B.IntArray[0, 0] = 123;
-            Assert.AreEqual(0, f(o));
-            Assert.AreEqual(0, o.B.IntArray[0, 0]);
+            ClassicAssert.AreEqual(0, f(o));
+            ClassicAssert.AreEqual(0, o.B.IntArray[0, 0]);
             o.B.C = new TestClassC();
-            Assert.AreEqual(0, f(o));
-            Assert.AreEqual(0, o.B.IntArray[0, 0]);
+            ClassicAssert.AreEqual(0, f(o));
+            ClassicAssert.AreEqual(0, o.B.IntArray[0, 0]);
             o.B.C.D = new TestClassD();
-            Assert.AreEqual(0, f(o));
-            Assert.AreEqual(0, o.B.IntArray[0, 0]);
+            ClassicAssert.AreEqual(0, f(o));
+            ClassicAssert.AreEqual(0, o.B.IntArray[0, 0]);
             o.B.C.D.Y = -123;
-            Assert.AreEqual(-123, f(o));
-            Assert.AreEqual(-123, o.B.IntArray[0, 0]);
+            ClassicAssert.AreEqual(-123, f(o));
+            ClassicAssert.AreEqual(-123, o.B.IntArray[0, 0]);
             f = LambdaCompiler.Compile(exp, CompilerOptions.None);
             o.B.C.D.Y = 123;
-            Assert.AreEqual(123, f(o));
-            Assert.AreEqual(123, o.B.IntArray[0, 0]);
+            ClassicAssert.AreEqual(123, f(o));
+            ClassicAssert.AreEqual(123, o.B.IntArray[0, 0]);
         }
 
         [Test]
@@ -282,8 +283,8 @@ namespace GrobExp.Compiler.Tests.AssignTests.Assign
             var f = LambdaCompiler.Compile(exp, CompilerOptions.All);
             TwoDimensionalIntArray = new int[3, 3];
             TwoDimensionalIntArray[1, 2] = 82736;
-            Assert.AreEqual(-123, f());
-            Assert.AreEqual(-123, TwoDimensionalIntArray[1, 2]);
+            ClassicAssert.AreEqual(-123, f());
+            ClassicAssert.AreEqual(-123, TwoDimensionalIntArray[1, 2]);
         }
 
         public static int[,] TwoDimensionalIntArray { get; set; }

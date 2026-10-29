@@ -2,6 +2,7 @@
 using System.Linq.Expressions;
 
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 
 namespace GrobExp.Compiler.Tests.ArithmeticTests
 {
@@ -14,10 +15,10 @@ namespace GrobExp.Compiler.Tests.ArithmeticTests
             ParameterExpression b = Expression.Parameter(typeof(double));
             var exp = Expression.Lambda<Func<double, double, double>>(Expression.Power(a, b), a, b);
             var f = Compile(exp, CompilerOptions.All);
-            Assert.AreEqual(1, f(0, 0));
-            Assert.AreEqual(1, f(1, 2));
-            Assert.AreEqual(16, f(2, 4));
-            Assert.AreEqual(1, f(-1, 2));
+            ClassicAssert.AreEqual(1, f(0, 0));
+            ClassicAssert.AreEqual(1, f(1, 2));
+            ClassicAssert.AreEqual(16, f(2, 4));
+            ClassicAssert.AreEqual(1, f(-1, 2));
         }
 
         [Test]
@@ -27,13 +28,13 @@ namespace GrobExp.Compiler.Tests.ArithmeticTests
             ParameterExpression b = Expression.Parameter(typeof(double?));
             var exp = Expression.Lambda<Func<double?, double?, double?>>(Expression.Power(a, b), a, b);
             var f = Compile(exp, CompilerOptions.All);
-            Assert.AreEqual(1, f(0, 0));
-            Assert.AreEqual(1, f(1, 2));
-            Assert.AreEqual(16, f(2, 4));
-            Assert.AreEqual(1, f(-1, 2));
-            Assert.IsNull(f(null, 2));
-            Assert.IsNull(f(1, null));
-            Assert.IsNull(f(null, null));
+            ClassicAssert.AreEqual(1, f(0, 0));
+            ClassicAssert.AreEqual(1, f(1, 2));
+            ClassicAssert.AreEqual(16, f(2, 4));
+            ClassicAssert.AreEqual(1, f(-1, 2));
+            ClassicAssert.IsNull(f(null, 2));
+            ClassicAssert.IsNull(f(1, null));
+            ClassicAssert.IsNull(f(null, null));
         }
     }
 }

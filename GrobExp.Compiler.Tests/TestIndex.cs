@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq.Expressions;
 
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 
 namespace GrobExp.Compiler.Tests
 {
@@ -16,7 +17,7 @@ namespace GrobExp.Compiler.Tests
             var f = LambdaCompiler.Compile(exp, CompilerOptions.All);
             var a = new TestClassA {StringArray = new string[2, 3]};
             a.StringArray[1, 2] = "zzz";
-            Assert.AreEqual("zzz", f(a));
+            ClassicAssert.AreEqual("zzz", f(a));
         }
 
         [Test]
@@ -27,7 +28,7 @@ namespace GrobExp.Compiler.Tests
             var f = LambdaCompiler.Compile(exp, CompilerOptions.All);
             var a = new TestClassA {StringArray = new string[2, 3]};
             a.StringArray[1, 2] = "zzz";
-            Assert.AreEqual("zzz", f(a));
+            ClassicAssert.AreEqual("zzz", f(a));
         }
 
         [Test]
@@ -37,7 +38,7 @@ namespace GrobExp.Compiler.Tests
             var f = LambdaCompiler.Compile(exp, CompilerOptions.All);
             var a = new TestClassA {BoolArray = new bool[2, 3]};
             a.BoolArray[1, 2] = true;
-            Assert.AreEqual(true, f(a));
+            ClassicAssert.AreEqual(true, f(a));
         }
 
         [Test]
@@ -48,7 +49,7 @@ namespace GrobExp.Compiler.Tests
             var f = LambdaCompiler.Compile(exp, CompilerOptions.All);
             var a = new TestClassA {BoolArray = new bool[2, 3]};
             a.BoolArray[1, 2] = true;
-            Assert.AreEqual(true, f(a));
+            ClassicAssert.AreEqual(true, f(a));
         }
 
         [Test]
@@ -58,7 +59,7 @@ namespace GrobExp.Compiler.Tests
             var f = LambdaCompiler.Compile(exp, CompilerOptions.All);
             var a = new TestClassA();
             a["zzz", 1] = "qxx";
-            Assert.AreEqual("qxx", f(a));
+            ClassicAssert.AreEqual("qxx", f(a));
         }
 
         [Test]
@@ -68,7 +69,7 @@ namespace GrobExp.Compiler.Tests
             var f = LambdaCompiler.Compile(exp, CompilerOptions.All);
             var a = new TestClassA {B = new TestClassB()};
             a.B["zzz", 1] = "qxx";
-            Assert.AreEqual("qxx", f(a));
+            ClassicAssert.AreEqual("qxx", f(a));
         }
 
         [Test]
@@ -79,7 +80,7 @@ namespace GrobExp.Compiler.Tests
             var f = LambdaCompiler.Compile(exp, CompilerOptions.All);
             var a = new TestClassA();
             a["zzz", 1] = "qxx";
-            Assert.AreEqual("qxx", f(a));
+            ClassicAssert.AreEqual("qxx", f(a));
         }
 
         [Test]
@@ -87,10 +88,10 @@ namespace GrobExp.Compiler.Tests
         {
             Expression<Func<TestClassA, string>> exp = o => o.IntArray[0].ToString();
             var f = LambdaCompiler.Compile(exp, CompilerOptions.All);
-            Assert.AreEqual(null, f(null));
-            Assert.AreEqual(null, f(new TestClassA()));
-            Assert.AreEqual(null, f(new TestClassA {IntArray = new int[0]}));
-            Assert.AreEqual("123", f(new TestClassA {IntArray = new[] {123}}));
+            ClassicAssert.AreEqual(null, f(null));
+            ClassicAssert.AreEqual(null, f(new TestClassA()));
+            ClassicAssert.AreEqual(null, f(new TestClassA {IntArray = new int[0]}));
+            ClassicAssert.AreEqual("123", f(new TestClassA {IntArray = new[] {123}}));
         }
 
         [Test]
@@ -101,10 +102,10 @@ namespace GrobExp.Compiler.Tests
             var body = Expression.Block(typeof(string), new[] {variable}, Expression.Assign(variable, path.Body), Expression.Call(Expression.ArrayIndex(variable, Expression.Constant(0)), typeof(object).GetMethod("ToString")));
             var exp = Expression.Lambda<Func<TestClassA, string>>(body, path.Parameters);
             var f = LambdaCompiler.Compile(exp, CompilerOptions.All);
-            Assert.AreEqual(null, f(null));
-            Assert.AreEqual(null, f(new TestClassA()));
-            Assert.AreEqual(null, f(new TestClassA {IntArray = new int[0]}));
-            Assert.AreEqual("123", f(new TestClassA {IntArray = new[] {123}}));
+            ClassicAssert.AreEqual(null, f(null));
+            ClassicAssert.AreEqual(null, f(new TestClassA()));
+            ClassicAssert.AreEqual(null, f(new TestClassA {IntArray = new int[0]}));
+            ClassicAssert.AreEqual("123", f(new TestClassA {IntArray = new[] {123}}));
         }
 
         [Test]
@@ -115,10 +116,10 @@ namespace GrobExp.Compiler.Tests
             var body = Expression.Block(typeof(string), new[] {variable}, Expression.Assign(variable, path.Body), Expression.Call(variable, typeof(object).GetMethod("ToString")));
             var exp = Expression.Lambda<Func<TestClassA, string>>(body, path.Parameters);
             var f = LambdaCompiler.Compile(exp, CompilerOptions.All);
-            Assert.AreEqual("0", f(null));
-            Assert.AreEqual("0", f(new TestClassA()));
-            Assert.AreEqual("0", f(new TestClassA {IntArray = new int[0]}));
-            Assert.AreEqual("123", f(new TestClassA {IntArray = new[] {123}}));
+            ClassicAssert.AreEqual("0", f(null));
+            ClassicAssert.AreEqual("0", f(new TestClassA()));
+            ClassicAssert.AreEqual("0", f(new TestClassA {IntArray = new int[0]}));
+            ClassicAssert.AreEqual("123", f(new TestClassA {IntArray = new[] {123}}));
         }
 
         public struct TestStructA

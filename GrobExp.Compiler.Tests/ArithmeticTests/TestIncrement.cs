@@ -2,6 +2,7 @@
 using System.Linq.Expressions;
 
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 
 namespace GrobExp.Compiler.Tests.ArithmeticTests
 {
@@ -13,10 +14,10 @@ namespace GrobExp.Compiler.Tests.ArithmeticTests
             ParameterExpression parameter = Expression.Parameter(typeof(int));
             Expression<Func<int, int>> exp = Expression.Lambda<Func<int, int>>(Expression.Increment(parameter), parameter);
             var f = Compile(exp, CompilerOptions.All);
-            Assert.AreEqual(1, f(0));
-            Assert.AreEqual(2, f(1));
-            Assert.AreEqual(0, f(-1));
-            Assert.AreEqual(int.MinValue, f(int.MaxValue));
+            ClassicAssert.AreEqual(1, f(0));
+            ClassicAssert.AreEqual(2, f(1));
+            ClassicAssert.AreEqual(0, f(-1));
+            ClassicAssert.AreEqual(int.MinValue, f(int.MaxValue));
         }
 
         [Test]
@@ -25,11 +26,11 @@ namespace GrobExp.Compiler.Tests.ArithmeticTests
             ParameterExpression parameter = Expression.Parameter(typeof(int?));
             Expression<Func<int?, int?>> exp = Expression.Lambda<Func<int?, int?>>(Expression.Increment(parameter), parameter);
             var f = Compile(exp, CompilerOptions.All);
-            Assert.AreEqual(1, f(0));
-            Assert.AreEqual(2, f(1));
-            Assert.AreEqual(0, f(-1));
-            Assert.AreEqual(int.MinValue, f(int.MaxValue));
-            Assert.IsNull(f(null));
+            ClassicAssert.AreEqual(1, f(0));
+            ClassicAssert.AreEqual(2, f(1));
+            ClassicAssert.AreEqual(0, f(-1));
+            ClassicAssert.AreEqual(int.MinValue, f(int.MaxValue));
+            ClassicAssert.IsNull(f(null));
         }
 
         [Test]
@@ -38,10 +39,10 @@ namespace GrobExp.Compiler.Tests.ArithmeticTests
             ParameterExpression parameter = Expression.Parameter(typeof(long));
             Expression<Func<long, long>> exp = Expression.Lambda<Func<long, long>>(Expression.Increment(parameter), parameter);
             var f = Compile(exp, CompilerOptions.All);
-            Assert.AreEqual(1, f(0));
-            Assert.AreEqual(2, f(1));
-            Assert.AreEqual(0, f(-1));
-            Assert.AreEqual(long.MinValue, f(long.MaxValue));
+            ClassicAssert.AreEqual(1, f(0));
+            ClassicAssert.AreEqual(2, f(1));
+            ClassicAssert.AreEqual(0, f(-1));
+            ClassicAssert.AreEqual(long.MinValue, f(long.MaxValue));
         }
 
         [Test]
@@ -50,11 +51,11 @@ namespace GrobExp.Compiler.Tests.ArithmeticTests
             ParameterExpression parameter = Expression.Parameter(typeof(long?));
             Expression<Func<long?, long?>> exp = Expression.Lambda<Func<long?, long?>>(Expression.Increment(parameter), parameter);
             var f = Compile(exp, CompilerOptions.All);
-            Assert.AreEqual(1, f(0));
-            Assert.AreEqual(2, f(1));
-            Assert.AreEqual(0, f(-1));
-            Assert.AreEqual(long.MinValue, f(long.MaxValue));
-            Assert.IsNull(f(null));
+            ClassicAssert.AreEqual(1, f(0));
+            ClassicAssert.AreEqual(2, f(1));
+            ClassicAssert.AreEqual(0, f(-1));
+            ClassicAssert.AreEqual(long.MinValue, f(long.MaxValue));
+            ClassicAssert.IsNull(f(null));
         }
 
         [Test]
@@ -63,9 +64,9 @@ namespace GrobExp.Compiler.Tests.ArithmeticTests
             ParameterExpression parameter = Expression.Parameter(typeof(double));
             Expression<Func<double, double>> exp = Expression.Lambda<Func<double, double>>(Expression.Increment(parameter), parameter);
             var f = Compile(exp, CompilerOptions.All);
-            Assert.AreEqual(1.5, f(0.5));
-            Assert.AreEqual(2.125, f(1.125));
-            Assert.AreEqual(0, f(-1));
+            ClassicAssert.AreEqual(1.5, f(0.5));
+            ClassicAssert.AreEqual(2.125, f(1.125));
+            ClassicAssert.AreEqual(0, f(-1));
         }
 
         [Test]
@@ -74,10 +75,10 @@ namespace GrobExp.Compiler.Tests.ArithmeticTests
             ParameterExpression parameter = Expression.Parameter(typeof(double?));
             Expression<Func<double?, double?>> exp = Expression.Lambda<Func<double?, double?>>(Expression.Increment(parameter), parameter);
             var f = Compile(exp, CompilerOptions.All);
-            Assert.AreEqual(1.5, f(0.5));
-            Assert.AreEqual(2.125, f(1.125));
-            Assert.AreEqual(0, f(-1));
-            Assert.IsNull(f(null));
+            ClassicAssert.AreEqual(1.5, f(0.5));
+            ClassicAssert.AreEqual(2.125, f(1.125));
+            ClassicAssert.AreEqual(0, f(-1));
+            ClassicAssert.IsNull(f(null));
         }
     }
 }

@@ -2,6 +2,7 @@
 using System.Linq.Expressions;
 
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 
 namespace GrobExp.Compiler.Tests.AssignTests.PostIncrementAssign
 {
@@ -15,26 +16,26 @@ namespace GrobExp.Compiler.Tests.AssignTests.PostIncrementAssign
             Expression<Func<TestClassA, int>> exp = Expression.Lambda<Func<TestClassA, int>>(Expression.PostIncrementAssign(Expression.ArrayAccess(Expression.MakeMemberAccess(a, typeof(TestClassA).GetProperty("IntArray")), Expression.Constant(0))), a);
             var f = LambdaCompiler.Compile(exp, CompilerOptions.CheckNullReferences);
             var o = new TestClassA {IntArray = new[] {0}};
-            Assert.AreEqual(0, f(o));
-            Assert.AreEqual(1, o.IntArray[0]);
+            ClassicAssert.AreEqual(0, f(o));
+            ClassicAssert.AreEqual(1, o.IntArray[0]);
             o.IntArray[0] = -1;
-            Assert.AreEqual(-1, f(o));
-            Assert.AreEqual(0, o.IntArray[0]);
+            ClassicAssert.AreEqual(-1, f(o));
+            ClassicAssert.AreEqual(0, o.IntArray[0]);
             o.IntArray[0] = int.MaxValue;
-            Assert.AreEqual(int.MaxValue, f(o));
-            Assert.AreEqual(int.MinValue, o.IntArray[0]);
-            Assert.AreEqual(0, f(null));
+            ClassicAssert.AreEqual(int.MaxValue, f(o));
+            ClassicAssert.AreEqual(int.MinValue, o.IntArray[0]);
+            ClassicAssert.AreEqual(0, f(null));
 
             f = LambdaCompiler.Compile(exp, CompilerOptions.None);
             o = new TestClassA {IntArray = new[] {0}};
-            Assert.AreEqual(0, f(o));
-            Assert.AreEqual(1, o.IntArray[0]);
+            ClassicAssert.AreEqual(0, f(o));
+            ClassicAssert.AreEqual(1, o.IntArray[0]);
             o.IntArray[0] = -1;
-            Assert.AreEqual(-1, f(o));
-            Assert.AreEqual(0, o.IntArray[0]);
+            ClassicAssert.AreEqual(-1, f(o));
+            ClassicAssert.AreEqual(0, o.IntArray[0]);
             o.IntArray[0] = int.MaxValue;
-            Assert.AreEqual(int.MaxValue, f(o));
-            Assert.AreEqual(int.MinValue, o.IntArray[0]);
+            ClassicAssert.AreEqual(int.MaxValue, f(o));
+            ClassicAssert.AreEqual(int.MinValue, o.IntArray[0]);
             Assert.Throws<NullReferenceException>(() => f(null));
         }
 
@@ -45,33 +46,33 @@ namespace GrobExp.Compiler.Tests.AssignTests.PostIncrementAssign
             Expression<Func<TestClassA, int?>> exp = Expression.Lambda<Func<TestClassA, int?>>(Expression.PostIncrementAssign(Expression.ArrayAccess(Expression.MakeMemberAccess(a, typeof(TestClassA).GetProperty("NullableIntArray")), Expression.Constant(0))), a);
             var f = LambdaCompiler.Compile(exp, CompilerOptions.CheckNullReferences);
             var o = new TestClassA {NullableIntArray = new int?[] {0}};
-            Assert.AreEqual(0, f(o));
-            Assert.AreEqual(1, o.NullableIntArray[0]);
+            ClassicAssert.AreEqual(0, f(o));
+            ClassicAssert.AreEqual(1, o.NullableIntArray[0]);
             o.NullableIntArray[0] = -1;
-            Assert.AreEqual(-1, f(o));
-            Assert.AreEqual(0, o.NullableIntArray[0]);
+            ClassicAssert.AreEqual(-1, f(o));
+            ClassicAssert.AreEqual(0, o.NullableIntArray[0]);
             o.NullableIntArray[0] = int.MaxValue;
-            Assert.AreEqual(int.MaxValue, f(o));
-            Assert.AreEqual(int.MinValue, o.NullableIntArray[0]);
-            Assert.IsNull(f(null));
+            ClassicAssert.AreEqual(int.MaxValue, f(o));
+            ClassicAssert.AreEqual(int.MinValue, o.NullableIntArray[0]);
+            ClassicAssert.IsNull(f(null));
             o.NullableIntArray[0] = null;
-            Assert.IsNull(f(o));
-            Assert.IsNull(o.NullableIntArray[0]);
+            ClassicAssert.IsNull(f(o));
+            ClassicAssert.IsNull(o.NullableIntArray[0]);
 
             f = LambdaCompiler.Compile(exp, CompilerOptions.None);
             o = new TestClassA {NullableIntArray = new int?[] {0}};
-            Assert.AreEqual(0, f(o));
-            Assert.AreEqual(1, o.NullableIntArray[0]);
+            ClassicAssert.AreEqual(0, f(o));
+            ClassicAssert.AreEqual(1, o.NullableIntArray[0]);
             o.NullableIntArray[0] = -1;
-            Assert.AreEqual(-1, f(o));
-            Assert.AreEqual(0, o.NullableIntArray[0]);
+            ClassicAssert.AreEqual(-1, f(o));
+            ClassicAssert.AreEqual(0, o.NullableIntArray[0]);
             o.NullableIntArray[0] = int.MaxValue;
-            Assert.AreEqual(int.MaxValue, f(o));
-            Assert.AreEqual(int.MinValue, o.NullableIntArray[0]);
+            ClassicAssert.AreEqual(int.MaxValue, f(o));
+            ClassicAssert.AreEqual(int.MinValue, o.NullableIntArray[0]);
             Assert.Throws<NullReferenceException>(() => f(null));
             o.NullableIntArray[0] = null;
-            Assert.IsNull(f(o));
-            Assert.IsNull(o.NullableIntArray[0]);
+            ClassicAssert.IsNull(f(o));
+            ClassicAssert.IsNull(o.NullableIntArray[0]);
         }
 
         [Test]
@@ -81,26 +82,26 @@ namespace GrobExp.Compiler.Tests.AssignTests.PostIncrementAssign
             Expression<Func<TestClassA, double>> exp = Expression.Lambda<Func<TestClassA, double>>(Expression.PostIncrementAssign(Expression.ArrayAccess(Expression.MakeMemberAccess(a, typeof(TestClassA).GetField("DoubleArray")), Expression.Constant(0))), a);
             var f = LambdaCompiler.Compile(exp, CompilerOptions.CheckNullReferences);
             var o = new TestClassA {DoubleArray = new[] {0.0}};
-            Assert.AreEqual(0, f(o));
-            Assert.AreEqual(1, o.DoubleArray[0]);
+            ClassicAssert.AreEqual(0, f(o));
+            ClassicAssert.AreEqual(1, o.DoubleArray[0]);
             o.DoubleArray[0] = -1;
-            Assert.AreEqual(-1, f(o));
-            Assert.AreEqual(0, o.DoubleArray[0]);
+            ClassicAssert.AreEqual(-1, f(o));
+            ClassicAssert.AreEqual(0, o.DoubleArray[0]);
             o.DoubleArray[0] = -0.5;
-            Assert.AreEqual(-0.5, f(o));
-            Assert.AreEqual(0.5, o.DoubleArray[0]);
-            Assert.AreEqual(0, f(null));
+            ClassicAssert.AreEqual(-0.5, f(o));
+            ClassicAssert.AreEqual(0.5, o.DoubleArray[0]);
+            ClassicAssert.AreEqual(0, f(null));
 
             f = LambdaCompiler.Compile(exp, CompilerOptions.None);
             o = new TestClassA {DoubleArray = new[] {0.0}};
-            Assert.AreEqual(0, f(o));
-            Assert.AreEqual(1, o.DoubleArray[0]);
+            ClassicAssert.AreEqual(0, f(o));
+            ClassicAssert.AreEqual(1, o.DoubleArray[0]);
             o.DoubleArray[0] = -1;
-            Assert.AreEqual(-1, f(o));
-            Assert.AreEqual(0, o.DoubleArray[0]);
+            ClassicAssert.AreEqual(-1, f(o));
+            ClassicAssert.AreEqual(0, o.DoubleArray[0]);
             o.DoubleArray[0] = -0.5;
-            Assert.AreEqual(-0.5, f(o));
-            Assert.AreEqual(0.5, o.DoubleArray[0]);
+            ClassicAssert.AreEqual(-0.5, f(o));
+            ClassicAssert.AreEqual(0.5, o.DoubleArray[0]);
             Assert.Throws<NullReferenceException>(() => f(null));
         }
 

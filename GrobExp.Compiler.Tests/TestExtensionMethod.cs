@@ -3,6 +3,7 @@ using System.Linq;
 using System.Linq.Expressions;
 
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 
 namespace GrobExp.Compiler.Tests
 {
@@ -14,8 +15,8 @@ namespace GrobExp.Compiler.Tests
         {
             Expression<Func<Zerg, bool>> exp = zerg => zerg.Flies();
             var f = LambdaCompiler.Compile(exp, CompilerOptions.All);
-            Assert.IsTrue(f(Zerg.Mutalisk));
-            Assert.IsFalse(f(Zerg.Zergling));
+            ClassicAssert.IsTrue(f(Zerg.Mutalisk));
+            ClassicAssert.IsFalse(f(Zerg.Zergling));
         }
 
         [Test]
@@ -23,9 +24,9 @@ namespace GrobExp.Compiler.Tests
         {
             Expression<Func<Zerg?, bool>> exp = zerg => zerg.AttacksAir();
             var f = LambdaCompiler.Compile(exp, CompilerOptions.All);
-            Assert.IsTrue(f(Zerg.Mutalisk));
-            Assert.IsFalse(f(Zerg.Zergling));
-            Assert.IsFalse(f(null));
+            ClassicAssert.IsTrue(f(Zerg.Mutalisk));
+            ClassicAssert.IsFalse(f(Zerg.Zergling));
+            ClassicAssert.IsFalse(f(null));
         }
 
         [Test]
@@ -33,10 +34,10 @@ namespace GrobExp.Compiler.Tests
         {
             Expression<Func<int[], bool>> exp = ints => ints.All(i => i > 0);
             var f = LambdaCompiler.Compile(exp, CompilerOptions.All);
-            Assert.IsTrue(f(null));
-            Assert.IsTrue(f(new int[0]));
-            Assert.IsTrue(f(new[] {1}));
-            Assert.IsFalse(f(new[] {-1}));
+            ClassicAssert.IsTrue(f(null));
+            ClassicAssert.IsTrue(f(new int[0]));
+            ClassicAssert.IsTrue(f(new[] {1}));
+            ClassicAssert.IsFalse(f(new[] {-1}));
         }
 
         [Test]
@@ -44,9 +45,9 @@ namespace GrobExp.Compiler.Tests
         {
             Expression<Func<int[], int>> exp = ints => ints.Select(i => i * i).FirstOrDefault();
             var f = LambdaCompiler.Compile(exp, CompilerOptions.All);
-            Assert.AreEqual(0, f(null));
-            Assert.AreEqual(0, f(new int[0]));
-            Assert.AreEqual(9, f(new[] {3}));
+            ClassicAssert.AreEqual(0, f(null));
+            ClassicAssert.AreEqual(0, f(new int[0]));
+            ClassicAssert.AreEqual(9, f(new[] {3}));
         }
 
         /// <summary>

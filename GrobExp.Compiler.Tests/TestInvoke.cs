@@ -2,6 +2,7 @@
 using System.Linq.Expressions;
 
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 
 namespace GrobExp.Compiler.Tests
 {
@@ -14,7 +15,7 @@ namespace GrobExp.Compiler.Tests
             Func<int, int, int> func = (a, b) => a + b;
             Expression<Func<int, int, int>> exp = (a, b) => func(a, b);
             var f = LambdaCompiler.Compile(exp, CompilerOptions.All);
-            Assert.AreEqual(3, f(1, 2));
+            ClassicAssert.AreEqual(3, f(1, 2));
         }
 
         [Test]
@@ -25,7 +26,7 @@ namespace GrobExp.Compiler.Tests
             ParameterExpression parameterB = Expression.Parameter(typeof(int));
             Expression<Func<int, int, int>> exp = Expression.Lambda<Func<int, int, int>>(Expression.Invoke(lambda, parameterA, parameterB), parameterA, parameterB);
             var f = LambdaCompiler.Compile(exp, CompilerOptions.All);
-            Assert.AreEqual(3, f(1, 2));
+            ClassicAssert.AreEqual(3, f(1, 2));
         }
 
         [Test]
@@ -36,7 +37,7 @@ namespace GrobExp.Compiler.Tests
             Expression<Func<int>> lambda = Expression.Lambda<Func<int>>(body);
             Expression<Func<int>> exp = Expression.Lambda<Func<int>>(Expression.Block(Expression.Invoke(lambda), Expression.Invoke(lambda)));
             var f = LambdaCompiler.Compile(exp, CompilerOptions.All);
-            Assert.AreEqual(1, f());
+            ClassicAssert.AreEqual(1, f());
         }
     }
 }

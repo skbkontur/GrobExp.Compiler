@@ -2,6 +2,7 @@
 using System.Linq.Expressions;
 
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 
 namespace GrobExp.Compiler.Tests
 {
@@ -13,10 +14,10 @@ namespace GrobExp.Compiler.Tests
         {
             Expression<Func<TestClassA, bool?>> exp = o => o.NullableBool;
             Func<TestClassA, bool?> compiledExp = LambdaCompiler.Compile(exp, CompilerOptions.All);
-            Assert.IsNull(compiledExp(null));
-            Assert.IsNull(compiledExp(new TestClassA()));
-            Assert.AreEqual(true, compiledExp(new TestClassA {NullableBool = true}));
-            Assert.AreEqual(false, compiledExp(new TestClassA {NullableBool = false}));
+            ClassicAssert.IsNull(compiledExp(null));
+            ClassicAssert.IsNull(compiledExp(new TestClassA()));
+            ClassicAssert.AreEqual(true, compiledExp(new TestClassA {NullableBool = true}));
+            ClassicAssert.AreEqual(false, compiledExp(new TestClassA {NullableBool = false}));
         }
 
         [Test]
@@ -24,10 +25,10 @@ namespace GrobExp.Compiler.Tests
         {
             Expression<Func<TestClassA, bool?>> exp = o => !o.NullableBool;
             Func<TestClassA, bool?> compiledExp = LambdaCompiler.Compile(exp, CompilerOptions.All);
-            Assert.IsNull(compiledExp(null));
-            Assert.IsNull(compiledExp(new TestClassA()));
-            Assert.AreEqual(false, compiledExp(new TestClassA {NullableBool = true}));
-            Assert.AreEqual(true, compiledExp(new TestClassA {NullableBool = false}));
+            ClassicAssert.IsNull(compiledExp(null));
+            ClassicAssert.IsNull(compiledExp(new TestClassA()));
+            ClassicAssert.AreEqual(false, compiledExp(new TestClassA {NullableBool = true}));
+            ClassicAssert.AreEqual(true, compiledExp(new TestClassA {NullableBool = false}));
         }
 
         [Test]
@@ -35,11 +36,11 @@ namespace GrobExp.Compiler.Tests
         {
             Expression<Func<TestClassA, bool?>> exp = o => o.B.X > 0;
             Func<TestClassA, bool?> compiledExp = LambdaCompiler.Compile(exp, CompilerOptions.All);
-            Assert.IsNull(compiledExp(null));
-            Assert.IsNull(compiledExp(new TestClassA()));
-            Assert.IsNull(compiledExp(new TestClassA {B = new TestClassB()}));
-            Assert.AreEqual(false, compiledExp(new TestClassA {B = new TestClassB {X = -1}}));
-            Assert.AreEqual(true, compiledExp(new TestClassA {B = new TestClassB {X = 1}}));
+            ClassicAssert.IsNull(compiledExp(null));
+            ClassicAssert.IsNull(compiledExp(new TestClassA()));
+            ClassicAssert.IsNull(compiledExp(new TestClassA {B = new TestClassB()}));
+            ClassicAssert.AreEqual(false, compiledExp(new TestClassA {B = new TestClassB {X = -1}}));
+            ClassicAssert.AreEqual(true, compiledExp(new TestClassA {B = new TestClassB {X = 1}}));
         }
 
         [Test]
@@ -47,11 +48,11 @@ namespace GrobExp.Compiler.Tests
         {
             Expression<Func<TestClassA, bool?>> exp = o => !(o.B.X > 0);
             Func<TestClassA, bool?> compiledExp = LambdaCompiler.Compile(exp, CompilerOptions.All);
-            Assert.IsNull(compiledExp(null));
-            Assert.IsNull(compiledExp(new TestClassA()));
-            Assert.IsNull(compiledExp(new TestClassA {B = new TestClassB()}));
-            Assert.AreEqual(true, compiledExp(new TestClassA {B = new TestClassB {X = -1}}));
-            Assert.AreEqual(false, compiledExp(new TestClassA {B = new TestClassB {X = 1}}));
+            ClassicAssert.IsNull(compiledExp(null));
+            ClassicAssert.IsNull(compiledExp(new TestClassA()));
+            ClassicAssert.IsNull(compiledExp(new TestClassA {B = new TestClassB()}));
+            ClassicAssert.AreEqual(true, compiledExp(new TestClassA {B = new TestClassB {X = -1}}));
+            ClassicAssert.AreEqual(false, compiledExp(new TestClassA {B = new TestClassB {X = 1}}));
         }
 
         [Test]
@@ -59,14 +60,14 @@ namespace GrobExp.Compiler.Tests
         {
             Expression<Func<TestClassA, bool?>> exp = o => o.B.X > 0 && o.A.X > 0;
             Func<TestClassA, bool?> compiledExp = LambdaCompiler.Compile(exp, CompilerOptions.All);
-            Assert.IsNull(compiledExp(null));
-            Assert.IsNull(compiledExp(new TestClassA()));
-            Assert.IsNull(compiledExp(new TestClassA {B = new TestClassB()}));
-            Assert.IsNull(compiledExp(new TestClassA {B = new TestClassB {X = 1}}));
-            Assert.AreEqual(false, compiledExp(new TestClassA {B = new TestClassB {X = -1}}));
-            Assert.IsNull(compiledExp(new TestClassA {A = new TestClassA {X = 1}}));
-            Assert.AreEqual(false, compiledExp(new TestClassA {A = new TestClassA {X = -1}}));
-            Assert.AreEqual(true, compiledExp(new TestClassA {A = new TestClassA {X = 1}, B = new TestClassB {X = 1}}));
+            ClassicAssert.IsNull(compiledExp(null));
+            ClassicAssert.IsNull(compiledExp(new TestClassA()));
+            ClassicAssert.IsNull(compiledExp(new TestClassA {B = new TestClassB()}));
+            ClassicAssert.IsNull(compiledExp(new TestClassA {B = new TestClassB {X = 1}}));
+            ClassicAssert.AreEqual(false, compiledExp(new TestClassA {B = new TestClassB {X = -1}}));
+            ClassicAssert.IsNull(compiledExp(new TestClassA {A = new TestClassA {X = 1}}));
+            ClassicAssert.AreEqual(false, compiledExp(new TestClassA {A = new TestClassA {X = -1}}));
+            ClassicAssert.AreEqual(true, compiledExp(new TestClassA {A = new TestClassA {X = 1}, B = new TestClassB {X = 1}}));
         }
 
         [Test]
@@ -74,14 +75,14 @@ namespace GrobExp.Compiler.Tests
         {
             Expression<Func<TestClassA, bool?>> exp = o => o.B.X > 0 || o.A.X > 0;
             Func<TestClassA, bool?> compiledExp = LambdaCompiler.Compile(exp, CompilerOptions.All);
-            Assert.IsNull(compiledExp(null));
-            Assert.IsNull(compiledExp(new TestClassA()));
-            Assert.IsNull(compiledExp(new TestClassA {B = new TestClassB()}));
-            Assert.IsNull(compiledExp(new TestClassA {B = new TestClassB {X = -1}}));
-            Assert.AreEqual(true, compiledExp(new TestClassA {B = new TestClassB {X = 1}}));
-            Assert.IsNull(compiledExp(new TestClassA {A = new TestClassA {X = -1}}));
-            Assert.AreEqual(true, compiledExp(new TestClassA {A = new TestClassA {X = 1}}));
-            Assert.AreEqual(false, compiledExp(new TestClassA {A = new TestClassA {X = -1}, B = new TestClassB {X = -1}}));
+            ClassicAssert.IsNull(compiledExp(null));
+            ClassicAssert.IsNull(compiledExp(new TestClassA()));
+            ClassicAssert.IsNull(compiledExp(new TestClassA {B = new TestClassB()}));
+            ClassicAssert.IsNull(compiledExp(new TestClassA {B = new TestClassB {X = -1}}));
+            ClassicAssert.AreEqual(true, compiledExp(new TestClassA {B = new TestClassB {X = 1}}));
+            ClassicAssert.IsNull(compiledExp(new TestClassA {A = new TestClassA {X = -1}}));
+            ClassicAssert.AreEqual(true, compiledExp(new TestClassA {A = new TestClassA {X = 1}}));
+            ClassicAssert.AreEqual(false, compiledExp(new TestClassA {A = new TestClassA {X = -1}, B = new TestClassB {X = -1}}));
         }
 
         [Test]
@@ -89,14 +90,14 @@ namespace GrobExp.Compiler.Tests
         {
             Expression<Func<TestClassA, bool>> exp = o => o.B.X > 0 || o.A.X > 0;
             Func<TestClassA, bool> compiledExp = LambdaCompiler.Compile(exp, CompilerOptions.All);
-            Assert.IsFalse(compiledExp(null));
-            Assert.IsFalse(compiledExp(new TestClassA()));
-            Assert.IsFalse(compiledExp(new TestClassA {B = new TestClassB()}));
-            Assert.IsFalse(compiledExp(new TestClassA {B = new TestClassB {X = -1}}));
-            Assert.AreEqual(true, compiledExp(new TestClassA {B = new TestClassB {X = 1}}));
-            Assert.IsFalse(compiledExp(new TestClassA {A = new TestClassA {X = -1}}));
-            Assert.AreEqual(true, compiledExp(new TestClassA {A = new TestClassA {X = 1}}));
-            Assert.AreEqual(false, compiledExp(new TestClassA {A = new TestClassA {X = -1}, B = new TestClassB {X = -1}}));
+            ClassicAssert.IsFalse(compiledExp(null));
+            ClassicAssert.IsFalse(compiledExp(new TestClassA()));
+            ClassicAssert.IsFalse(compiledExp(new TestClassA {B = new TestClassB()}));
+            ClassicAssert.IsFalse(compiledExp(new TestClassA {B = new TestClassB {X = -1}}));
+            ClassicAssert.AreEqual(true, compiledExp(new TestClassA {B = new TestClassB {X = 1}}));
+            ClassicAssert.IsFalse(compiledExp(new TestClassA {A = new TestClassA {X = -1}}));
+            ClassicAssert.AreEqual(true, compiledExp(new TestClassA {A = new TestClassA {X = 1}}));
+            ClassicAssert.AreEqual(false, compiledExp(new TestClassA {A = new TestClassA {X = -1}, B = new TestClassB {X = -1}}));
         }
 
         [Test]
@@ -104,14 +105,14 @@ namespace GrobExp.Compiler.Tests
         {
             Expression<Func<TestClassA, int>> exp = o => o.B.X > 0 || o.A.X > 0 ? 1 : 0;
             Func<TestClassA, int> compiledExp = LambdaCompiler.Compile(exp, CompilerOptions.All);
-            Assert.AreEqual(0, compiledExp(null));
-            Assert.AreEqual(0, compiledExp(new TestClassA()));
-            Assert.AreEqual(0, compiledExp(new TestClassA {B = new TestClassB()}));
-            Assert.AreEqual(0, compiledExp(new TestClassA {B = new TestClassB {X = -1}}));
-            Assert.AreEqual(1, compiledExp(new TestClassA {B = new TestClassB {X = 1}}));
-            Assert.AreEqual(0, compiledExp(new TestClassA {A = new TestClassA {X = -1}}));
-            Assert.AreEqual(1, compiledExp(new TestClassA {A = new TestClassA {X = 1}}));
-            Assert.AreEqual(0, compiledExp(new TestClassA {A = new TestClassA {X = -1}, B = new TestClassB {X = -1}}));
+            ClassicAssert.AreEqual(0, compiledExp(null));
+            ClassicAssert.AreEqual(0, compiledExp(new TestClassA()));
+            ClassicAssert.AreEqual(0, compiledExp(new TestClassA {B = new TestClassB()}));
+            ClassicAssert.AreEqual(0, compiledExp(new TestClassA {B = new TestClassB {X = -1}}));
+            ClassicAssert.AreEqual(1, compiledExp(new TestClassA {B = new TestClassB {X = 1}}));
+            ClassicAssert.AreEqual(0, compiledExp(new TestClassA {A = new TestClassA {X = -1}}));
+            ClassicAssert.AreEqual(1, compiledExp(new TestClassA {A = new TestClassA {X = 1}}));
+            ClassicAssert.AreEqual(0, compiledExp(new TestClassA {A = new TestClassA {X = -1}, B = new TestClassB {X = -1}}));
         }
 
         [Test]
@@ -119,14 +120,14 @@ namespace GrobExp.Compiler.Tests
         {
             Expression<Func<TestClassA, int>> exp = o => o.F(o.B.X > 0 || o.A.X > 0);
             Func<TestClassA, int> compiledExp = LambdaCompiler.Compile(exp, CompilerOptions.All);
-            Assert.AreEqual(0, compiledExp(null));
-            Assert.AreEqual(0, compiledExp(new TestClassA()));
-            Assert.AreEqual(0, compiledExp(new TestClassA {B = new TestClassB()}));
-            Assert.AreEqual(0, compiledExp(new TestClassA {B = new TestClassB {X = -1}}));
-            Assert.AreEqual(1, compiledExp(new TestClassA {B = new TestClassB {X = 1}}));
-            Assert.AreEqual(0, compiledExp(new TestClassA {A = new TestClassA {X = -1}}));
-            Assert.AreEqual(1, compiledExp(new TestClassA {A = new TestClassA {X = 1}}));
-            Assert.AreEqual(0, compiledExp(new TestClassA {A = new TestClassA {X = -1}, B = new TestClassB {X = -1}}));
+            ClassicAssert.AreEqual(0, compiledExp(null));
+            ClassicAssert.AreEqual(0, compiledExp(new TestClassA()));
+            ClassicAssert.AreEqual(0, compiledExp(new TestClassA {B = new TestClassB()}));
+            ClassicAssert.AreEqual(0, compiledExp(new TestClassA {B = new TestClassB {X = -1}}));
+            ClassicAssert.AreEqual(1, compiledExp(new TestClassA {B = new TestClassB {X = 1}}));
+            ClassicAssert.AreEqual(0, compiledExp(new TestClassA {A = new TestClassA {X = -1}}));
+            ClassicAssert.AreEqual(1, compiledExp(new TestClassA {A = new TestClassA {X = 1}}));
+            ClassicAssert.AreEqual(0, compiledExp(new TestClassA {A = new TestClassA {X = -1}, B = new TestClassB {X = -1}}));
         }
 
         [Test]
@@ -136,14 +137,14 @@ namespace GrobExp.Compiler.Tests
             ParameterExpression var = Expression.Variable(typeof(bool));
             var body = Expression.Block(typeof(bool), new[] {var}, Expression.Assign(var, Expression.Convert(exp.Body, typeof(bool))), var);
             Func<TestClassA, bool> compiledExp = LambdaCompiler.Compile(Expression.Lambda<Func<TestClassA, bool>>(body, exp.Parameters), CompilerOptions.All);
-            Assert.IsFalse(compiledExp(null));
-            Assert.IsFalse(compiledExp(new TestClassA()));
-            Assert.IsFalse(compiledExp(new TestClassA {B = new TestClassB()}));
-            Assert.IsFalse(compiledExp(new TestClassA {B = new TestClassB {X = -1}}));
-            Assert.AreEqual(true, compiledExp(new TestClassA {B = new TestClassB {X = 1}}));
-            Assert.IsFalse(compiledExp(new TestClassA {A = new TestClassA {X = -1}}));
-            Assert.AreEqual(true, compiledExp(new TestClassA {A = new TestClassA {X = 1}}));
-            Assert.AreEqual(false, compiledExp(new TestClassA {A = new TestClassA {X = -1}, B = new TestClassB {X = -1}}));
+            ClassicAssert.IsFalse(compiledExp(null));
+            ClassicAssert.IsFalse(compiledExp(new TestClassA()));
+            ClassicAssert.IsFalse(compiledExp(new TestClassA {B = new TestClassB()}));
+            ClassicAssert.IsFalse(compiledExp(new TestClassA {B = new TestClassB {X = -1}}));
+            ClassicAssert.AreEqual(true, compiledExp(new TestClassA {B = new TestClassB {X = 1}}));
+            ClassicAssert.IsFalse(compiledExp(new TestClassA {A = new TestClassA {X = -1}}));
+            ClassicAssert.AreEqual(true, compiledExp(new TestClassA {A = new TestClassA {X = 1}}));
+            ClassicAssert.AreEqual(false, compiledExp(new TestClassA {A = new TestClassA {X = -1}, B = new TestClassB {X = -1}}));
         }
 
         [Test]
@@ -151,14 +152,14 @@ namespace GrobExp.Compiler.Tests
         {
             Expression<Func<TestClassA, bool?>> exp = o => o.B.Y > 0 && o.A.X > 0;
             Func<TestClassA, bool?> compiledExp = LambdaCompiler.Compile(exp, CompilerOptions.All);
-            Assert.AreEqual(false, compiledExp(null));
-            Assert.AreEqual(false, compiledExp(new TestClassA()));
-            Assert.AreEqual(false, compiledExp(new TestClassA {B = new TestClassB()}));
-            Assert.IsNull(compiledExp(new TestClassA {B = new TestClassB {Y = 1}}));
-            Assert.AreEqual(false, compiledExp(new TestClassA {B = new TestClassB {Y = -1}}));
-            Assert.AreEqual(false, compiledExp(new TestClassA {A = new TestClassA {X = 1}}));
-            Assert.AreEqual(false, compiledExp(new TestClassA {A = new TestClassA {X = -1}}));
-            Assert.AreEqual(true, compiledExp(new TestClassA {A = new TestClassA {X = 1}, B = new TestClassB {Y = 1}}));
+            ClassicAssert.AreEqual(false, compiledExp(null));
+            ClassicAssert.AreEqual(false, compiledExp(new TestClassA()));
+            ClassicAssert.AreEqual(false, compiledExp(new TestClassA {B = new TestClassB()}));
+            ClassicAssert.IsNull(compiledExp(new TestClassA {B = new TestClassB {Y = 1}}));
+            ClassicAssert.AreEqual(false, compiledExp(new TestClassA {B = new TestClassB {Y = -1}}));
+            ClassicAssert.AreEqual(false, compiledExp(new TestClassA {A = new TestClassA {X = 1}}));
+            ClassicAssert.AreEqual(false, compiledExp(new TestClassA {A = new TestClassA {X = -1}}));
+            ClassicAssert.AreEqual(true, compiledExp(new TestClassA {A = new TestClassA {X = 1}, B = new TestClassB {Y = 1}}));
         }
 
         [Test]
@@ -166,14 +167,14 @@ namespace GrobExp.Compiler.Tests
         {
             Expression<Func<TestClassA, bool?>> exp = o => o.B.Y > 0 || o.A.X > 0;
             Func<TestClassA, bool?> compiledExp = LambdaCompiler.Compile(exp, CompilerOptions.All);
-            Assert.IsNull(compiledExp(null));
-            Assert.IsNull(compiledExp(new TestClassA()));
-            Assert.IsNull(compiledExp(new TestClassA {B = new TestClassB()}));
-            Assert.AreEqual(true, compiledExp(new TestClassA {B = new TestClassB {Y = 1}}));
-            Assert.IsNull(compiledExp(new TestClassA {B = new TestClassB {Y = -1}}));
-            Assert.AreEqual(true, compiledExp(new TestClassA {A = new TestClassA {X = 1}}));
-            Assert.AreEqual(false, compiledExp(new TestClassA {A = new TestClassA {X = -1}}));
-            Assert.AreEqual(true, compiledExp(new TestClassA {A = new TestClassA {X = 1}, B = new TestClassB {Y = 1}}));
+            ClassicAssert.IsNull(compiledExp(null));
+            ClassicAssert.IsNull(compiledExp(new TestClassA()));
+            ClassicAssert.IsNull(compiledExp(new TestClassA {B = new TestClassB()}));
+            ClassicAssert.AreEqual(true, compiledExp(new TestClassA {B = new TestClassB {Y = 1}}));
+            ClassicAssert.IsNull(compiledExp(new TestClassA {B = new TestClassB {Y = -1}}));
+            ClassicAssert.AreEqual(true, compiledExp(new TestClassA {A = new TestClassA {X = 1}}));
+            ClassicAssert.AreEqual(false, compiledExp(new TestClassA {A = new TestClassA {X = -1}}));
+            ClassicAssert.AreEqual(true, compiledExp(new TestClassA {A = new TestClassA {X = 1}, B = new TestClassB {Y = 1}}));
         }
 
         [Test]
@@ -181,14 +182,14 @@ namespace GrobExp.Compiler.Tests
         {
             Expression<Func<TestClassA, bool?>> exp = o => o.A.X > 0 && o.B.Y > 0;
             Func<TestClassA, bool?> compiledExp = LambdaCompiler.Compile(exp, CompilerOptions.All);
-            Assert.AreEqual(false, compiledExp(null));
-            Assert.AreEqual(false, compiledExp(new TestClassA()));
-            Assert.AreEqual(false, compiledExp(new TestClassA {B = new TestClassB()}));
-            Assert.IsNull(compiledExp(new TestClassA {B = new TestClassB {Y = 1}}));
-            Assert.AreEqual(false, compiledExp(new TestClassA {B = new TestClassB {Y = -1}}));
-            Assert.AreEqual(false, compiledExp(new TestClassA {A = new TestClassA {X = 1}}));
-            Assert.AreEqual(false, compiledExp(new TestClassA {A = new TestClassA {X = -1}}));
-            Assert.AreEqual(true, compiledExp(new TestClassA {A = new TestClassA {X = 1}, B = new TestClassB {Y = 1}}));
+            ClassicAssert.AreEqual(false, compiledExp(null));
+            ClassicAssert.AreEqual(false, compiledExp(new TestClassA()));
+            ClassicAssert.AreEqual(false, compiledExp(new TestClassA {B = new TestClassB()}));
+            ClassicAssert.IsNull(compiledExp(new TestClassA {B = new TestClassB {Y = 1}}));
+            ClassicAssert.AreEqual(false, compiledExp(new TestClassA {B = new TestClassB {Y = -1}}));
+            ClassicAssert.AreEqual(false, compiledExp(new TestClassA {A = new TestClassA {X = 1}}));
+            ClassicAssert.AreEqual(false, compiledExp(new TestClassA {A = new TestClassA {X = -1}}));
+            ClassicAssert.AreEqual(true, compiledExp(new TestClassA {A = new TestClassA {X = 1}, B = new TestClassB {Y = 1}}));
         }
 
         [Test]
@@ -196,14 +197,14 @@ namespace GrobExp.Compiler.Tests
         {
             Expression<Func<TestClassA, bool?>> exp = o => o.A.X > 0 || o.B.Y > 0;
             Func<TestClassA, bool?> compiledExp = LambdaCompiler.Compile(exp, CompilerOptions.All);
-            Assert.IsNull(compiledExp(null));
-            Assert.IsNull(compiledExp(new TestClassA()));
-            Assert.IsNull(compiledExp(new TestClassA {B = new TestClassB()}));
-            Assert.AreEqual(true, compiledExp(new TestClassA {B = new TestClassB {Y = 1}}));
-            Assert.IsNull(compiledExp(new TestClassA {B = new TestClassB {Y = -1}}));
-            Assert.AreEqual(true, compiledExp(new TestClassA {A = new TestClassA {X = 1}}));
-            Assert.AreEqual(false, compiledExp(new TestClassA {A = new TestClassA {X = -1}}));
-            Assert.AreEqual(true, compiledExp(new TestClassA {A = new TestClassA {X = 1}, B = new TestClassB {Y = 1}}));
+            ClassicAssert.IsNull(compiledExp(null));
+            ClassicAssert.IsNull(compiledExp(new TestClassA()));
+            ClassicAssert.IsNull(compiledExp(new TestClassA {B = new TestClassB()}));
+            ClassicAssert.AreEqual(true, compiledExp(new TestClassA {B = new TestClassB {Y = 1}}));
+            ClassicAssert.IsNull(compiledExp(new TestClassA {B = new TestClassB {Y = -1}}));
+            ClassicAssert.AreEqual(true, compiledExp(new TestClassA {A = new TestClassA {X = 1}}));
+            ClassicAssert.AreEqual(false, compiledExp(new TestClassA {A = new TestClassA {X = -1}}));
+            ClassicAssert.AreEqual(true, compiledExp(new TestClassA {A = new TestClassA {X = 1}, B = new TestClassB {Y = 1}}));
         }
 
         [Test]
@@ -211,11 +212,11 @@ namespace GrobExp.Compiler.Tests
         {
             Expression<Func<TestClassA, bool?>> exp = o => !(o.B.Y > 0);
             Func<TestClassA, bool?> compiledExp = LambdaCompiler.Compile(exp, CompilerOptions.All);
-            Assert.AreEqual(true, compiledExp(null));
-            Assert.AreEqual(true, compiledExp(new TestClassA()));
-            Assert.AreEqual(true, compiledExp(new TestClassA {B = new TestClassB()}));
-            Assert.AreEqual(true, compiledExp(new TestClassA {B = new TestClassB {Y = -1}}));
-            Assert.AreEqual(false, compiledExp(new TestClassA {B = new TestClassB {Y = 1}}));
+            ClassicAssert.AreEqual(true, compiledExp(null));
+            ClassicAssert.AreEqual(true, compiledExp(new TestClassA()));
+            ClassicAssert.AreEqual(true, compiledExp(new TestClassA {B = new TestClassB()}));
+            ClassicAssert.AreEqual(true, compiledExp(new TestClassA {B = new TestClassB {Y = -1}}));
+            ClassicAssert.AreEqual(false, compiledExp(new TestClassA {B = new TestClassB {Y = 1}}));
         }
 
         [Test]
@@ -223,10 +224,10 @@ namespace GrobExp.Compiler.Tests
         {
             Expression<Func<TestClassA, string>> exp = o => ((bool?)(o.X > 0)).ToString();
             Func<TestClassA, string> compiledExp = LambdaCompiler.Compile(exp, CompilerOptions.All);
-            Assert.AreEqual(null, compiledExp(null));
-            Assert.AreEqual(null, compiledExp(new TestClassA()));
-            Assert.AreEqual("False", compiledExp(new TestClassA {X = -2}));
-            Assert.AreEqual("True", compiledExp(new TestClassA {X = 1}));
+            ClassicAssert.AreEqual(null, compiledExp(null));
+            ClassicAssert.AreEqual(null, compiledExp(new TestClassA()));
+            ClassicAssert.AreEqual("False", compiledExp(new TestClassA {X = -2}));
+            ClassicAssert.AreEqual("True", compiledExp(new TestClassA {X = 1}));
         }
 
         public struct TestStructA

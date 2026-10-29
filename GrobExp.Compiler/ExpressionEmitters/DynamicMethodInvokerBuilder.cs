@@ -2,7 +2,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Linq.Expressions;
 using System.Reflection;
 using System.Reflection.Emit;
 using System.Runtime.CompilerServices;
@@ -22,7 +21,7 @@ namespace GrobExp.Compiler.ExpressionEmitters
                 type = MonoSucks.Get(constantTypes, resultType, parameterTypes);
             else
             {
-                module = module ?? LambdaCompiler.Module;
+                module = module ?? LambdaCompiler.Module.Value;
                 var key = GetKey(module, constantTypes, resultType, parameterTypes);
                 type = (Type)types[key];
                 if (type == null)
@@ -144,7 +143,11 @@ namespace GrobExp.Compiler.ExpressionEmitters
                         return handle.GetFunctionPointer();
                     };
             }
-            var method = new DynamicMethod("DynamicMethodPointerExtractor", typeof(IntPtr), new[] {typeof(DynamicMethod)}, typeof(LambdaExpressionEmitter).Module, true);
+            var method = new DynamicMethod(name : "DynamicMethodPointerExtractor",
+                                           returnType : typeof(IntPtr),
+                                           parameterTypes : new[] {typeof(DynamicMethod)},
+                                           m : typeof(LambdaExpressionEmitter).Module,
+                                           skipVisibility : true);
             using (var il = new GroboIL(method))
             {
                 il.Ldarg(0); // stack: [dynamicMethod]
@@ -170,8 +173,6 @@ namespace GrobExp.Compiler.ExpressionEmitters
         }
 
         public static readonly Func<DynamicMethod, IntPtr> DynamicMethodPointerExtractor = EmitDynamicMethodPointerExtractor();
-
-        private static readonly MethodInfo gcKeepAliveMethod = ((MethodCallExpression)((Expression<Action>)(() => GC.KeepAlive(null))).Body).Method;
 
         private static readonly Hashtable types = new Hashtable();
         private static readonly object typesLock = new object();

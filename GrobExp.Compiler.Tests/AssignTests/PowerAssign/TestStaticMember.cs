@@ -2,6 +2,7 @@
 using System.Linq.Expressions;
 
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 
 namespace GrobExp.Compiler.Tests.AssignTests.PowerAssign
 {
@@ -15,17 +16,17 @@ namespace GrobExp.Compiler.Tests.AssignTests.PowerAssign
             Expression<Func<double, double>> exp = Expression.Lambda<Func<double, double>>(Expression.PowerAssign(Expression.MakeMemberAccess(null, typeof(TestClassA).GetField("DoubleField")), b), b);
             var f = LambdaCompiler.Compile(exp, CompilerOptions.CheckNullReferences);
             TestClassA.DoubleField = 0;
-            Assert.AreEqual(1, f(0));
-            Assert.AreEqual(1, TestClassA.DoubleField);
+            ClassicAssert.AreEqual(1, f(0));
+            ClassicAssert.AreEqual(1, TestClassA.DoubleField);
             TestClassA.DoubleField = 1;
-            Assert.AreEqual(1, f(2));
-            Assert.AreEqual(1, TestClassA.DoubleField);
+            ClassicAssert.AreEqual(1, f(2));
+            ClassicAssert.AreEqual(1, TestClassA.DoubleField);
             TestClassA.DoubleField = 2;
-            Assert.AreEqual(16, f(4));
-            Assert.AreEqual(16, TestClassA.DoubleField);
+            ClassicAssert.AreEqual(16, f(4));
+            ClassicAssert.AreEqual(16, TestClassA.DoubleField);
             TestClassA.DoubleField = -1;
-            Assert.AreEqual(1, f(2));
-            Assert.AreEqual(1, TestClassA.DoubleField);
+            ClassicAssert.AreEqual(1, f(2));
+            ClassicAssert.AreEqual(1, TestClassA.DoubleField);
         }
 
         [Test]
@@ -35,25 +36,25 @@ namespace GrobExp.Compiler.Tests.AssignTests.PowerAssign
             Expression<Func<double?, double?>> exp = Expression.Lambda<Func<double?, double?>>(Expression.PowerAssign(Expression.MakeMemberAccess(null, typeof(TestClassA).GetProperty("NullableDoubleProp")), b), b);
             var f = LambdaCompiler.Compile(exp, CompilerOptions.All);
             TestClassA.NullableDoubleProp = 0;
-            Assert.AreEqual(1, f(0));
-            Assert.AreEqual(1, TestClassA.NullableDoubleProp);
+            ClassicAssert.AreEqual(1, f(0));
+            ClassicAssert.AreEqual(1, TestClassA.NullableDoubleProp);
             TestClassA.NullableDoubleProp = 1;
-            Assert.AreEqual(1, f(2));
-            Assert.AreEqual(1, TestClassA.NullableDoubleProp);
+            ClassicAssert.AreEqual(1, f(2));
+            ClassicAssert.AreEqual(1, TestClassA.NullableDoubleProp);
             TestClassA.NullableDoubleProp = 2;
-            Assert.AreEqual(16, f(4));
-            Assert.AreEqual(16, TestClassA.NullableDoubleProp);
+            ClassicAssert.AreEqual(16, f(4));
+            ClassicAssert.AreEqual(16, TestClassA.NullableDoubleProp);
             TestClassA.NullableDoubleProp = -1;
-            Assert.AreEqual(1, f(2));
-            Assert.AreEqual(1, TestClassA.NullableDoubleProp);
+            ClassicAssert.AreEqual(1, f(2));
+            ClassicAssert.AreEqual(1, TestClassA.NullableDoubleProp);
             TestClassA.NullableDoubleProp = null;
-            Assert.IsNull(f(2));
-            Assert.IsNull(TestClassA.NullableDoubleProp);
+            ClassicAssert.IsNull(f(2));
+            ClassicAssert.IsNull(TestClassA.NullableDoubleProp);
             TestClassA.NullableDoubleProp = 1;
-            Assert.IsNull(f(null));
-            Assert.IsNull(TestClassA.NullableDoubleProp);
-            Assert.IsNull(f(null));
-            Assert.IsNull(TestClassA.NullableDoubleProp);
+            ClassicAssert.IsNull(f(null));
+            ClassicAssert.IsNull(TestClassA.NullableDoubleProp);
+            ClassicAssert.IsNull(f(null));
+            ClassicAssert.IsNull(TestClassA.NullableDoubleProp);
         }
 
         public class TestClassA

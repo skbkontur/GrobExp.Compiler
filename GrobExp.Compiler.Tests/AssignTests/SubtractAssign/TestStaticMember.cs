@@ -2,6 +2,7 @@
 using System.Linq.Expressions;
 
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 
 namespace GrobExp.Compiler.Tests.AssignTests.SubtractAssign
 {
@@ -15,19 +16,19 @@ namespace GrobExp.Compiler.Tests.AssignTests.SubtractAssign
             Expression<Func<int, int>> exp = Expression.Lambda<Func<int, int>>(Expression.SubtractAssign(Expression.MakeMemberAccess(null, typeof(TestClassA).GetProperty("IntProp")), b), b);
             var f = LambdaCompiler.Compile(exp, CompilerOptions.CheckNullReferences);
             TestClassA.IntProp = 0;
-            Assert.AreEqual(0, f(0));
-            Assert.AreEqual(0, TestClassA.IntProp);
+            ClassicAssert.AreEqual(0, f(0));
+            ClassicAssert.AreEqual(0, TestClassA.IntProp);
             TestClassA.IntProp = 1;
-            Assert.AreEqual(-1, f(2));
-            Assert.AreEqual(-1, TestClassA.IntProp);
+            ClassicAssert.AreEqual(-1, f(2));
+            ClassicAssert.AreEqual(-1, TestClassA.IntProp);
             TestClassA.IntProp = -1;
-            Assert.AreEqual(1, f(-2));
-            Assert.AreEqual(1, TestClassA.IntProp);
+            ClassicAssert.AreEqual(1, f(-2));
+            ClassicAssert.AreEqual(1, TestClassA.IntProp);
             TestClassA.IntProp = 2000000000;
             unchecked
             {
-                Assert.AreEqual(2000000000 - -2000000000, f(-2000000000));
-                Assert.AreEqual(2000000000 - -2000000000, TestClassA.IntProp);
+                ClassicAssert.AreEqual(2000000000 - -2000000000, f(-2000000000));
+                ClassicAssert.AreEqual(2000000000 - -2000000000, TestClassA.IntProp);
             }
         }
 
@@ -38,19 +39,19 @@ namespace GrobExp.Compiler.Tests.AssignTests.SubtractAssign
             Expression<Func<int, int>> exp = Expression.Lambda<Func<int, int>>(Expression.SubtractAssign(Expression.MakeMemberAccess(null, typeof(TestClassA).GetField("IntField")), b), b);
             var f = LambdaCompiler.Compile(exp, CompilerOptions.CheckNullReferences);
             TestClassA.IntField = 0;
-            Assert.AreEqual(0, f(0));
-            Assert.AreEqual(0, TestClassA.IntField);
+            ClassicAssert.AreEqual(0, f(0));
+            ClassicAssert.AreEqual(0, TestClassA.IntField);
             TestClassA.IntField = 1;
-            Assert.AreEqual(-1, f(2));
-            Assert.AreEqual(-1, TestClassA.IntField);
+            ClassicAssert.AreEqual(-1, f(2));
+            ClassicAssert.AreEqual(-1, TestClassA.IntField);
             TestClassA.IntField = -1;
-            Assert.AreEqual(1, f(-2));
-            Assert.AreEqual(1, TestClassA.IntField);
+            ClassicAssert.AreEqual(1, f(-2));
+            ClassicAssert.AreEqual(1, TestClassA.IntField);
             TestClassA.IntField = 2000000000;
             unchecked
             {
-                Assert.AreEqual(2000000000 - -2000000000, f(-2000000000));
-                Assert.AreEqual(2000000000 - -2000000000, TestClassA.IntField);
+                ClassicAssert.AreEqual(2000000000 - -2000000000, f(-2000000000));
+                ClassicAssert.AreEqual(2000000000 - -2000000000, TestClassA.IntField);
             }
         }
 
@@ -61,28 +62,28 @@ namespace GrobExp.Compiler.Tests.AssignTests.SubtractAssign
             Expression<Func<int?, int?>> exp = Expression.Lambda<Func<int?, int?>>(Expression.SubtractAssign(Expression.MakeMemberAccess(null, typeof(TestClassA).GetProperty("NullableIntProp")), b), b);
             var f = LambdaCompiler.Compile(exp, CompilerOptions.All);
             TestClassA.NullableIntProp = 0;
-            Assert.AreEqual(0, f(0));
-            Assert.AreEqual(0, TestClassA.NullableIntProp);
+            ClassicAssert.AreEqual(0, f(0));
+            ClassicAssert.AreEqual(0, TestClassA.NullableIntProp);
             TestClassA.NullableIntProp = 1;
-            Assert.AreEqual(-1, f(2));
-            Assert.AreEqual(-1, TestClassA.NullableIntProp);
+            ClassicAssert.AreEqual(-1, f(2));
+            ClassicAssert.AreEqual(-1, TestClassA.NullableIntProp);
             TestClassA.NullableIntProp = -1;
-            Assert.AreEqual(1, f(-2));
-            Assert.AreEqual(1, TestClassA.NullableIntProp);
+            ClassicAssert.AreEqual(1, f(-2));
+            ClassicAssert.AreEqual(1, TestClassA.NullableIntProp);
             TestClassA.NullableIntProp = 2000000000;
             unchecked
             {
-                Assert.AreEqual(2000000000 - -2000000000, f(-2000000000));
-                Assert.AreEqual(2000000000 - -2000000000, TestClassA.NullableIntProp);
+                ClassicAssert.AreEqual(2000000000 - -2000000000, f(-2000000000));
+                ClassicAssert.AreEqual(2000000000 - -2000000000, TestClassA.NullableIntProp);
             }
             TestClassA.NullableIntProp = null;
-            Assert.IsNull(f(2));
-            Assert.IsNull(TestClassA.NullableIntProp);
+            ClassicAssert.IsNull(f(2));
+            ClassicAssert.IsNull(TestClassA.NullableIntProp);
             TestClassA.NullableIntProp = 1;
-            Assert.IsNull(f(null));
-            Assert.IsNull(TestClassA.NullableIntProp);
-            Assert.IsNull(f(null));
-            Assert.IsNull(TestClassA.NullableIntProp);
+            ClassicAssert.IsNull(f(null));
+            ClassicAssert.IsNull(TestClassA.NullableIntProp);
+            ClassicAssert.IsNull(f(null));
+            ClassicAssert.IsNull(TestClassA.NullableIntProp);
         }
 
         [Test]
@@ -92,14 +93,14 @@ namespace GrobExp.Compiler.Tests.AssignTests.SubtractAssign
             Expression<Func<int, int>> exp = Expression.Lambda<Func<int, int>>(Expression.SubtractAssignChecked(Expression.MakeMemberAccess(null, typeof(TestClassA).GetProperty("IntProp")), b), b);
             var f = LambdaCompiler.Compile(exp, CompilerOptions.CheckNullReferences);
             TestClassA.IntProp = 0;
-            Assert.AreEqual(0, f(0));
-            Assert.AreEqual(0, TestClassA.IntProp);
+            ClassicAssert.AreEqual(0, f(0));
+            ClassicAssert.AreEqual(0, TestClassA.IntProp);
             TestClassA.IntProp = 1;
-            Assert.AreEqual(-1, f(2));
-            Assert.AreEqual(-1, TestClassA.IntProp);
+            ClassicAssert.AreEqual(-1, f(2));
+            ClassicAssert.AreEqual(-1, TestClassA.IntProp);
             TestClassA.IntProp = -1;
-            Assert.AreEqual(1, f(-2));
-            Assert.AreEqual(1, TestClassA.IntProp);
+            ClassicAssert.AreEqual(1, f(-2));
+            ClassicAssert.AreEqual(1, TestClassA.IntProp);
             TestClassA.IntProp = 2000000000;
             Assert.Throws<OverflowException>(() => f(-2000000000));
         }
@@ -111,24 +112,24 @@ namespace GrobExp.Compiler.Tests.AssignTests.SubtractAssign
             Expression<Func<int?, int?>> exp = Expression.Lambda<Func<int?, int?>>(Expression.SubtractAssignChecked(Expression.MakeMemberAccess(null, typeof(TestClassA).GetProperty("NullableIntProp")), b), b);
             var f = LambdaCompiler.Compile(exp, CompilerOptions.All);
             TestClassA.NullableIntProp = 0;
-            Assert.AreEqual(0, f(0));
-            Assert.AreEqual(0, TestClassA.NullableIntProp);
+            ClassicAssert.AreEqual(0, f(0));
+            ClassicAssert.AreEqual(0, TestClassA.NullableIntProp);
             TestClassA.NullableIntProp = 1;
-            Assert.AreEqual(-1, f(2));
-            Assert.AreEqual(-1, TestClassA.NullableIntProp);
+            ClassicAssert.AreEqual(-1, f(2));
+            ClassicAssert.AreEqual(-1, TestClassA.NullableIntProp);
             TestClassA.NullableIntProp = -1;
-            Assert.AreEqual(1, f(-2));
-            Assert.AreEqual(1, TestClassA.NullableIntProp);
+            ClassicAssert.AreEqual(1, f(-2));
+            ClassicAssert.AreEqual(1, TestClassA.NullableIntProp);
             TestClassA.NullableIntProp = 2000000000;
             Assert.Throws<OverflowException>(() => f(-2000000000));
             TestClassA.NullableIntProp = null;
-            Assert.IsNull(f(2));
-            Assert.IsNull(TestClassA.NullableIntProp);
+            ClassicAssert.IsNull(f(2));
+            ClassicAssert.IsNull(TestClassA.NullableIntProp);
             TestClassA.NullableIntProp = 1;
-            Assert.IsNull(f(null));
-            Assert.IsNull(TestClassA.NullableIntProp);
-            Assert.IsNull(f(null));
-            Assert.IsNull(TestClassA.NullableIntProp);
+            ClassicAssert.IsNull(f(null));
+            ClassicAssert.IsNull(TestClassA.NullableIntProp);
+            ClassicAssert.IsNull(f(null));
+            ClassicAssert.IsNull(TestClassA.NullableIntProp);
         }
 
         [Test]
@@ -138,11 +139,11 @@ namespace GrobExp.Compiler.Tests.AssignTests.SubtractAssign
             Expression<Func<uint, uint>> exp = Expression.Lambda<Func<uint, uint>>(Expression.SubtractAssignChecked(Expression.MakeMemberAccess(null, typeof(TestClassA).GetField("UIntField")), b), b);
             var f = LambdaCompiler.Compile(exp, CompilerOptions.CheckNullReferences);
             TestClassA.UIntField = 0;
-            Assert.AreEqual(0, f(0));
-            Assert.AreEqual(0, TestClassA.UIntField);
+            ClassicAssert.AreEqual(0, f(0));
+            ClassicAssert.AreEqual(0, TestClassA.UIntField);
             TestClassA.UIntField = 4000000000;
-            Assert.AreEqual(3000000000, f(1000000000));
-            Assert.AreEqual(3000000000, TestClassA.UIntField);
+            ClassicAssert.AreEqual(3000000000, f(1000000000));
+            ClassicAssert.AreEqual(3000000000, TestClassA.UIntField);
             TestClassA.UIntField = 1;
             Assert.Throws<OverflowException>(() => f(2));
         }
@@ -154,21 +155,21 @@ namespace GrobExp.Compiler.Tests.AssignTests.SubtractAssign
             Expression<Func<uint?, uint?>> exp = Expression.Lambda<Func<uint?, uint?>>(Expression.SubtractAssignChecked(Expression.MakeMemberAccess(null, typeof(TestClassA).GetField("NullableUIntField")), b), b);
             var f = LambdaCompiler.Compile(exp, CompilerOptions.All);
             TestClassA.NullableUIntField = 0;
-            Assert.AreEqual(0, f(0));
-            Assert.AreEqual(0, TestClassA.NullableUIntField);
+            ClassicAssert.AreEqual(0, f(0));
+            ClassicAssert.AreEqual(0, TestClassA.NullableUIntField);
             TestClassA.NullableUIntField = 4000000000;
-            Assert.AreEqual(3000000000, f(1000000000));
-            Assert.AreEqual(3000000000, TestClassA.NullableUIntField);
+            ClassicAssert.AreEqual(3000000000, f(1000000000));
+            ClassicAssert.AreEqual(3000000000, TestClassA.NullableUIntField);
             TestClassA.NullableUIntField = 1;
             Assert.Throws<OverflowException>(() => f(2));
             TestClassA.NullableUIntField = null;
-            Assert.IsNull(f(2));
-            Assert.IsNull(TestClassA.NullableUIntField);
+            ClassicAssert.IsNull(f(2));
+            ClassicAssert.IsNull(TestClassA.NullableUIntField);
             TestClassA.NullableUIntField = 1;
-            Assert.IsNull(f(null));
-            Assert.IsNull(TestClassA.NullableUIntField);
-            Assert.IsNull(f(null));
-            Assert.IsNull(TestClassA.NullableUIntField);
+            ClassicAssert.IsNull(f(null));
+            ClassicAssert.IsNull(TestClassA.NullableUIntField);
+            ClassicAssert.IsNull(f(null));
+            ClassicAssert.IsNull(TestClassA.NullableUIntField);
         }
 
         public class TestClassA

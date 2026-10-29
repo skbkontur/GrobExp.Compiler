@@ -310,9 +310,9 @@ namespace GrobExp.Compiler.Tests
                 {
                     // x86
                     /*
-                 * xor eax, eax // 0x31, 0xC0
-                 * ret 8 // 0xC2, 0x08, 0x00
-                 */
+                     * xor eax, eax // 0x31, 0xC0
+                     * ret 8 // 0xC2, 0x08, 0x00
+                     */
                     body = new byte[]
                         {
                             0x31, 0xC0, // xor eax, eax
@@ -593,7 +593,6 @@ namespace GrobExp.Compiler.Tests
 
         [Test]
         [Category("LongRunning")]
-        [Category("FailingOnNetCore")]
         public void TestSwitch2()
         {
             Console.WriteLine("Sharp");
@@ -999,13 +998,13 @@ namespace GrobExp.Compiler.Tests
                 bool ok = true;
                 foreach (var s in values)
                 {
-                    var hash = s.GetHashCode();
-                    if (exist[hash % x])
+                    var i = GetIndex(s, x);
+                    if (exist[i])
                     {
                         ok = false;
                         break;
                     }
-                    exist[hash % x] = true;
+                    exist[i] = true;
                 }
                 if (ok)
                 {
@@ -1014,13 +1013,20 @@ namespace GrobExp.Compiler.Tests
                     for (int index = 0; index < values.Length; index++)
                     {
                         var s = values[index];
-                        var i = s.GetHashCode() % x;
+                        var i = GetIndex(s, x);
                         testValues2[i] = s;
                         indexes2[i] = index;
                     }
                     return;
                 }
             }
+        }
+
+        // Must compute the same index as the IL emitted in BuildSwitch4 (GetHashCode, then unsigned rem.un).
+        // Signed % gives a negative index for negative hash codes, and string hash codes are randomized on .NET Core.
+        private static int GetIndex(string s, int length)
+        {
+            return (int)((uint)s.GetHashCode() % (uint)length);
         }
 
         private Func<string, string> BuildSwitch4()

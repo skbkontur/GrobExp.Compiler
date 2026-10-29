@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq.Expressions;
 
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 
 namespace GrobExp.Compiler.Tests
 {
@@ -16,10 +17,10 @@ namespace GrobExp.Compiler.Tests
             Expression<Func<List<int>>> exp = () => new List<int> {1, 2};
             var f = LambdaCompiler.Compile(exp, CompilerOptions.All);
             var list = f();
-            Assert.IsNotNull(list);
-            Assert.AreEqual(2, list.Count);
-            Assert.AreEqual(1, list[0]);
-            Assert.AreEqual(2, list[1]);
+            ClassicAssert.IsNotNull(list);
+            ClassicAssert.AreEqual(2, list.Count);
+            ClassicAssert.AreEqual(1, list[0]);
+            ClassicAssert.AreEqual(2, list[1]);
         }
 
         [Test]
@@ -28,10 +29,10 @@ namespace GrobExp.Compiler.Tests
             Expression<Func<Dictionary<int, string>>> exp = () => new Dictionary<int, string> {{1, "zzz"}, {2, "qxx"}};
             var f = LambdaCompiler.Compile(exp, CompilerOptions.All);
             var dict = f();
-            Assert.IsNotNull(dict);
-            Assert.AreEqual(2, dict.Count);
-            Assert.AreEqual("zzz", dict[1]);
-            Assert.AreEqual("qxx", dict[2]);
+            ClassicAssert.IsNotNull(dict);
+            ClassicAssert.AreEqual(2, dict.Count);
+            ClassicAssert.AreEqual("zzz", dict[1]);
+            ClassicAssert.AreEqual("qxx", dict[2]);
         }
 
         [Test]
@@ -40,10 +41,10 @@ namespace GrobExp.Compiler.Tests
             Expression<Func<TestStructA>> exp = () => new TestStructA(3) {1, 2};
             var f = LambdaCompiler.Compile(exp, CompilerOptions.All);
             var list = f();
-            Assert.IsNotNull(list);
-            Assert.AreEqual(2, list.Count);
-            Assert.AreEqual(1, list[0]);
-            Assert.AreEqual(2, list[1]);
+            ClassicAssert.IsNotNull(list);
+            ClassicAssert.AreEqual(2, list.Count);
+            ClassicAssert.AreEqual(1, list[0]);
+            ClassicAssert.AreEqual(2, list[1]);
         }
 
         public struct TestStructA : IEnumerable<int>

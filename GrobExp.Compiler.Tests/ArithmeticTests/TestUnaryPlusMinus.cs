@@ -2,6 +2,7 @@
 using System.Linq.Expressions;
 
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 
 namespace GrobExp.Compiler.Tests.ArithmeticTests
 {
@@ -12,10 +13,10 @@ namespace GrobExp.Compiler.Tests.ArithmeticTests
         {
             Expression<Func<int, int>> exp = x => -x;
             var f = Compile(exp, CompilerOptions.All);
-            Assert.AreEqual(0, f(0));
-            Assert.AreEqual(-1, f(1));
-            Assert.AreEqual(1, f(-1));
-            Assert.AreEqual(int.MinValue, f(int.MinValue));
+            ClassicAssert.AreEqual(0, f(0));
+            ClassicAssert.AreEqual(-1, f(1));
+            ClassicAssert.AreEqual(1, f(-1));
+            ClassicAssert.AreEqual(int.MinValue, f(int.MinValue));
         }
 
         [Test]
@@ -23,11 +24,11 @@ namespace GrobExp.Compiler.Tests.ArithmeticTests
         {
             Expression<Func<int?, int?>> exp = x => -x;
             var f = Compile(exp, CompilerOptions.All);
-            Assert.AreEqual(0, f(0));
-            Assert.AreEqual(-1, f(1));
-            Assert.AreEqual(1, f(-1));
-            Assert.IsNull(f(null));
-            Assert.AreEqual(int.MinValue, f(int.MinValue));
+            ClassicAssert.AreEqual(0, f(0));
+            ClassicAssert.AreEqual(-1, f(1));
+            ClassicAssert.AreEqual(1, f(-1));
+            ClassicAssert.IsNull(f(null));
+            ClassicAssert.AreEqual(int.MinValue, f(int.MinValue));
         }
 
         [Test]
@@ -36,9 +37,9 @@ namespace GrobExp.Compiler.Tests.ArithmeticTests
             ParameterExpression parameter = Expression.Parameter(typeof(int));
             Expression<Func<int, int>> exp = Expression.Lambda<Func<int, int>>(Expression.NegateChecked(parameter), parameter);
             var f = Compile(exp, CompilerOptions.All);
-            Assert.AreEqual(0, f(0));
-            Assert.AreEqual(-1, f(1));
-            Assert.AreEqual(1, f(-1));
+            ClassicAssert.AreEqual(0, f(0));
+            ClassicAssert.AreEqual(-1, f(1));
+            ClassicAssert.AreEqual(1, f(-1));
             Assert.Throws<OverflowException>(() => f(int.MinValue));
         }
 
@@ -48,10 +49,10 @@ namespace GrobExp.Compiler.Tests.ArithmeticTests
             ParameterExpression parameter = Expression.Parameter(typeof(int?));
             Expression<Func<int?, int?>> exp = Expression.Lambda<Func<int?, int?>>(Expression.NegateChecked(parameter), parameter);
             var f = Compile(exp, CompilerOptions.All);
-            Assert.AreEqual(0, f(0));
-            Assert.AreEqual(-1, f(1));
-            Assert.AreEqual(1, f(-1));
-            Assert.IsNull(f(null));
+            ClassicAssert.AreEqual(0, f(0));
+            ClassicAssert.AreEqual(-1, f(1));
+            ClassicAssert.AreEqual(1, f(-1));
+            ClassicAssert.IsNull(f(null));
             Assert.Throws<OverflowException>(() => f(int.MinValue));
         }
 
@@ -61,10 +62,10 @@ namespace GrobExp.Compiler.Tests.ArithmeticTests
             ParameterExpression parameter = Expression.Parameter(typeof(int));
             Expression<Func<int, int>> exp = Expression.Lambda<Func<int, int>>(Expression.UnaryPlus(parameter), parameter);
             var f = Compile(exp, CompilerOptions.All);
-            Assert.AreEqual(0, f(0));
-            Assert.AreEqual(1, f(1));
-            Assert.AreEqual(-1, f(-1));
-            Assert.AreEqual(int.MinValue, f(int.MinValue));
+            ClassicAssert.AreEqual(0, f(0));
+            ClassicAssert.AreEqual(1, f(1));
+            ClassicAssert.AreEqual(-1, f(-1));
+            ClassicAssert.AreEqual(int.MinValue, f(int.MinValue));
         }
 
         [Test]
@@ -73,11 +74,11 @@ namespace GrobExp.Compiler.Tests.ArithmeticTests
             ParameterExpression parameter = Expression.Parameter(typeof(int?));
             Expression<Func<int?, int?>> exp = Expression.Lambda<Func<int?, int?>>(Expression.UnaryPlus(parameter), parameter);
             var f = Compile(exp, CompilerOptions.All);
-            Assert.AreEqual(0, f(0));
-            Assert.AreEqual(1, f(1));
-            Assert.AreEqual(-1, f(-1));
-            Assert.IsNull(f(null));
-            Assert.AreEqual(int.MinValue, f(int.MinValue));
+            ClassicAssert.AreEqual(0, f(0));
+            ClassicAssert.AreEqual(1, f(1));
+            ClassicAssert.AreEqual(-1, f(-1));
+            ClassicAssert.IsNull(f(null));
+            ClassicAssert.AreEqual(int.MinValue, f(int.MinValue));
         }
     }
 }

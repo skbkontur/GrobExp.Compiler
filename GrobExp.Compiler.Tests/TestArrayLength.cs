@@ -2,6 +2,7 @@
 using System.Linq.Expressions;
 
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 
 namespace GrobExp.Compiler.Tests
 {
@@ -13,9 +14,9 @@ namespace GrobExp.Compiler.Tests
         {
             Expression<Func<TestClassA, int>> exp = a => a.ArrayB.Length;
             var f = LambdaCompiler.Compile(exp, CompilerOptions.All);
-            Assert.AreEqual(0, f(null));
-            Assert.AreEqual(0, f(new TestClassA()));
-            Assert.AreEqual(1, f(new TestClassA {ArrayB = new TestClassB[1]}));
+            ClassicAssert.AreEqual(0, f(null));
+            ClassicAssert.AreEqual(0, f(new TestClassA()));
+            ClassicAssert.AreEqual(1, f(new TestClassA {ArrayB = new TestClassB[1]}));
         }
 
         public class TestClassA

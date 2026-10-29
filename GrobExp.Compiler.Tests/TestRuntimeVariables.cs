@@ -3,6 +3,7 @@ using System.Linq.Expressions;
 using System.Runtime.CompilerServices;
 
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 
 namespace GrobExp.Compiler.Tests
 {
@@ -20,8 +21,8 @@ namespace GrobExp.Compiler.Tests
                         Expression.RuntimeVariables(a, b)
                     ), a, b);
             var f = Compile(exp, CompilerOptions.All);
-            Assert.AreEqual(3, f(1, 2)[0]);
-            Assert.AreEqual(2, f(1, 2)[1]);
+            ClassicAssert.AreEqual(3, f(1, 2)[0]);
+            ClassicAssert.AreEqual(2, f(1, 2)[1]);
         }
     }
 }

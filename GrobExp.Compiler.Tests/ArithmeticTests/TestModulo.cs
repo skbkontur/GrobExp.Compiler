@@ -2,6 +2,7 @@
 using System.Linq.Expressions;
 
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 
 namespace GrobExp.Compiler.Tests.ArithmeticTests
 {
@@ -12,9 +13,9 @@ namespace GrobExp.Compiler.Tests.ArithmeticTests
         {
             Expression<Func<int, int, int>> exp = (a, b) => a % b;
             var f = Compile(exp, CompilerOptions.All);
-            Assert.AreEqual(1, f(1, 2));
-            Assert.AreEqual(2, f(5, 3));
-            Assert.AreEqual(-1, f(-3, 2));
+            ClassicAssert.AreEqual(1, f(1, 2));
+            ClassicAssert.AreEqual(2, f(5, 3));
+            ClassicAssert.AreEqual(-1, f(-3, 2));
         }
 
         [Test]
@@ -22,12 +23,12 @@ namespace GrobExp.Compiler.Tests.ArithmeticTests
         {
             Expression<Func<int?, int?, int?>> exp = (a, b) => a % b;
             var f = Compile(exp, CompilerOptions.All);
-            Assert.AreEqual(1, f(1, 2));
-            Assert.AreEqual(2, f(5, 3));
-            Assert.AreEqual(-1, f(-3, 2));
-            Assert.IsNull(f(null, 2));
-            Assert.IsNull(f(1, null));
-            Assert.IsNull(f(null, null));
+            ClassicAssert.AreEqual(1, f(1, 2));
+            ClassicAssert.AreEqual(2, f(5, 3));
+            ClassicAssert.AreEqual(-1, f(-3, 2));
+            ClassicAssert.IsNull(f(null, 2));
+            ClassicAssert.IsNull(f(1, null));
+            ClassicAssert.IsNull(f(null, null));
         }
 
         [Test]
@@ -35,13 +36,13 @@ namespace GrobExp.Compiler.Tests.ArithmeticTests
         {
             Expression<Func<int?, long?, long?>> exp = (a, b) => a % b;
             var f = Compile(exp, CompilerOptions.All);
-            Assert.AreEqual(1, f(1, 2));
-            Assert.AreEqual(2, f(5, 3));
-            Assert.AreEqual(-1, f(-3, 2));
-            Assert.AreEqual(2000000000, f(2000000000, 20000000000));
-            Assert.IsNull(f(null, 2));
-            Assert.IsNull(f(1, null));
-            Assert.IsNull(f(null, null));
+            ClassicAssert.AreEqual(1, f(1, 2));
+            ClassicAssert.AreEqual(2, f(5, 3));
+            ClassicAssert.AreEqual(-1, f(-3, 2));
+            ClassicAssert.AreEqual(2000000000, f(2000000000, 20000000000));
+            ClassicAssert.IsNull(f(null, 2));
+            ClassicAssert.IsNull(f(1, null));
+            ClassicAssert.IsNull(f(null, null));
         }
 
         [Test]
@@ -49,9 +50,9 @@ namespace GrobExp.Compiler.Tests.ArithmeticTests
         {
             Expression<Func<uint, uint, uint>> exp = (a, b) => a % b;
             var f = Compile(exp, CompilerOptions.All);
-            Assert.AreEqual(1, f(1, 2));
-            Assert.AreEqual(2, f(5, 3));
-            Assert.AreEqual(1, f(uint.MaxValue - 3 + 1, 2));
+            ClassicAssert.AreEqual(1, f(1, 2));
+            ClassicAssert.AreEqual(2, f(5, 3));
+            ClassicAssert.AreEqual(1, f(uint.MaxValue - 3 + 1, 2));
         }
 
         [Test]
@@ -59,10 +60,10 @@ namespace GrobExp.Compiler.Tests.ArithmeticTests
         {
             Expression<Func<int?, int, int?>> exp = (a, b) => a % b;
             var f = Compile(exp, CompilerOptions.All);
-            Assert.AreEqual(1, f(1, 2));
-            Assert.AreEqual(2, f(5, 3));
-            Assert.AreEqual(-1, f(-3, 2));
-            Assert.IsNull(f(null, 2));
+            ClassicAssert.AreEqual(1, f(1, 2));
+            ClassicAssert.AreEqual(2, f(5, 3));
+            ClassicAssert.AreEqual(-1, f(-3, 2));
+            ClassicAssert.IsNull(f(null, 2));
         }
     }
 }

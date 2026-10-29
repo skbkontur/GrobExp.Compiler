@@ -2,6 +2,7 @@
 using System.Linq.Expressions;
 
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 
 namespace GrobExp.Compiler.Tests.ExtensionTests
 {
@@ -29,19 +30,19 @@ namespace GrobExp.Compiler.Tests.ExtensionTests
             Expression<Func<int[], int>> exp = Expression.Lambda<Func<int[], int>>(block, array);
 
             Func<int[], int> f = LambdaCompiler.Compile(exp, CompilerOptions.All);
-            Assert.AreEqual(6, f(new[] {1, -1, 2, -2, 3, -3}));
-            Assert.AreEqual(6, f(new[] {1, 2, 3}));
-            Assert.AreEqual(0, f(new[] {-1, -2, -3}));
+            ClassicAssert.AreEqual(6, f(new[] {1, -1, 2, -2, 3, -3}));
+            ClassicAssert.AreEqual(6, f(new[] {1, 2, 3}));
+            ClassicAssert.AreEqual(0, f(new[] {-1, -2, -3}));
 
             f = LambdaCompiler.Compile(exp, CompilerOptions.None);
-            Assert.AreEqual(6, f(new[] {1, -1, 2, -2, 3, -3}));
-            Assert.AreEqual(6, f(new[] {1, 2, 3}));
-            Assert.AreEqual(0, f(new[] {-1, -2, -3}));
+            ClassicAssert.AreEqual(6, f(new[] {1, -1, 2, -2, 3, -3}));
+            ClassicAssert.AreEqual(6, f(new[] {1, 2, 3}));
+            ClassicAssert.AreEqual(0, f(new[] {-1, -2, -3}));
 
             f = exp.Compile();
-            Assert.AreEqual(6, f(new[] {1, -1, 2, -2, 3, -3}));
-            Assert.AreEqual(6, f(new[] {1, 2, 3}));
-            Assert.AreEqual(0, f(new[] {-1, -2, -3}));
+            ClassicAssert.AreEqual(6, f(new[] {1, -1, 2, -2, 3, -3}));
+            ClassicAssert.AreEqual(6, f(new[] {1, 2, 3}));
+            ClassicAssert.AreEqual(0, f(new[] {-1, -2, -3}));
         }
 
         public static ForEachExpression ForEach(Expression enumerable, Type elementType, LambdaExpression body)

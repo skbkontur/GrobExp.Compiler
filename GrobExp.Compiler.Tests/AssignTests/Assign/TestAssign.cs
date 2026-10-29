@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq.Expressions;
 
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 
 namespace GrobExp.Compiler.Tests.AssignTests.Assign
 {
@@ -16,7 +17,7 @@ namespace GrobExp.Compiler.Tests.AssignTests.Assign
             var assign = Expression.Assign(parameter, Expression.Constant(-1));
             var exp = Expression.Lambda<Func<int, int>>(assign, parameter);
             var f = LambdaCompiler.Compile(exp, CompilerOptions.All);
-            Assert.AreEqual(-1, f(1));
+            ClassicAssert.AreEqual(-1, f(1));
         }
 
         [Test]
@@ -28,7 +29,7 @@ namespace GrobExp.Compiler.Tests.AssignTests.Assign
             var body = Expression.Block(typeof(int), new[] {variable}, assign);
             var exp = Expression.Lambda<Func<int, int>>(body, parameter);
             var f = LambdaCompiler.Compile(exp, CompilerOptions.All);
-            Assert.AreEqual(1, f(1));
+            ClassicAssert.AreEqual(1, f(1));
         }
 
         [Test]
@@ -41,10 +42,10 @@ namespace GrobExp.Compiler.Tests.AssignTests.Assign
             var f = LambdaCompiler.Compile(exp, CompilerOptions.All);
             var o = new TestClassA();
             f(o);
-            Assert.AreEqual(false, o.Bool);
+            ClassicAssert.AreEqual(false, o.Bool);
             o.X = 1;
             f(o);
-            Assert.AreEqual(true, o.Bool);
+            ClassicAssert.AreEqual(true, o.Bool);
         }
 
         [Test]
@@ -57,17 +58,17 @@ namespace GrobExp.Compiler.Tests.AssignTests.Assign
             var f = LambdaCompiler.Compile(exp, CompilerOptions.All);
             var o = new TestClassA();
             f(o);
-            Assert.AreEqual(0, o.Y);
+            ClassicAssert.AreEqual(0, o.Y);
             o.B = new TestClassB();
             f(o);
-            Assert.AreEqual(0, o.Y);
+            ClassicAssert.AreEqual(0, o.Y);
             o.B.Y = 12;
             f(o);
-            Assert.AreEqual(12, o.Y);
+            ClassicAssert.AreEqual(12, o.Y);
             f = LambdaCompiler.Compile(exp, CompilerOptions.None);
             o.B.Y = 123;
             f(o);
-            Assert.AreEqual(123, o.Y);
+            ClassicAssert.AreEqual(123, o.Y);
         }
 
         [Test]
@@ -77,8 +78,8 @@ namespace GrobExp.Compiler.Tests.AssignTests.Assign
             ParameterExpression parameter = Expression.Parameter(typeof(int));
             Expression<Func<int, int>> exp = Expression.Lambda<Func<int, int>>(Expression.Assign(path.Body, parameter), parameter);
             var f = LambdaCompiler.Compile(exp, CompilerOptions.All);
-            Assert.AreEqual(-123, f(-123));
-            Assert.AreEqual(-123, x);
+            ClassicAssert.AreEqual(-123, f(-123));
+            ClassicAssert.AreEqual(-123, x);
         }
 
         [Test]
@@ -88,8 +89,8 @@ namespace GrobExp.Compiler.Tests.AssignTests.Assign
             ParameterExpression parameter = Expression.Parameter(typeof(string));
             Expression<Func<string, string>> exp = Expression.Lambda<Func<string, string>>(Expression.Assign(path.Body, parameter), parameter);
             var f = LambdaCompiler.Compile(exp, CompilerOptions.All);
-            Assert.AreEqual("zzz", f("zzz"));
-            Assert.AreEqual("zzz", S);
+            ClassicAssert.AreEqual("zzz", f("zzz"));
+            ClassicAssert.AreEqual("zzz", S);
         }
 
         [Test]
@@ -99,14 +100,14 @@ namespace GrobExp.Compiler.Tests.AssignTests.Assign
             Expression<Func<TestClassA, bool>> condition = a => a.X > 0;
             Expression<Func<TestClassA, bool>> exp = Expression.Lambda<Func<TestClassA, bool>>(Expression.Assign(path.Body, condition.Body), condition.Parameters);
             var f = LambdaCompiler.Compile(exp, CompilerOptions.All);
-            Assert.AreEqual(false, f(null));
-            Assert.AreEqual(false, b);
-            Assert.AreEqual(false, f(new TestClassA()));
-            Assert.AreEqual(false, b);
-            Assert.AreEqual(false, f(new TestClassA {X = -1}));
-            Assert.AreEqual(false, b);
-            Assert.AreEqual(true, f(new TestClassA {X = 1}));
-            Assert.AreEqual(true, b);
+            ClassicAssert.AreEqual(false, f(null));
+            ClassicAssert.AreEqual(false, b);
+            ClassicAssert.AreEqual(false, f(new TestClassA()));
+            ClassicAssert.AreEqual(false, b);
+            ClassicAssert.AreEqual(false, f(new TestClassA {X = -1}));
+            ClassicAssert.AreEqual(false, b);
+            ClassicAssert.AreEqual(true, f(new TestClassA {X = 1}));
+            ClassicAssert.AreEqual(true, b);
         }
 
         [Test]
@@ -116,12 +117,12 @@ namespace GrobExp.Compiler.Tests.AssignTests.Assign
             Expression<Func<TestClassA, int>> condition = a => a.Y;
             Expression<Func<TestClassA, int>> exp = Expression.Lambda<Func<TestClassA, int>>(Expression.Assign(path.Body, condition.Body), condition.Parameters);
             var f = LambdaCompiler.Compile(exp, CompilerOptions.All);
-            Assert.AreEqual(0, f(null));
-            Assert.AreEqual(0, x);
-            Assert.AreEqual(0, f(new TestClassA()));
-            Assert.AreEqual(0, x);
-            Assert.AreEqual(-1, f(new TestClassA {Y = -1}));
-            Assert.AreEqual(-1, x);
+            ClassicAssert.AreEqual(0, f(null));
+            ClassicAssert.AreEqual(0, x);
+            ClassicAssert.AreEqual(0, f(new TestClassA()));
+            ClassicAssert.AreEqual(0, x);
+            ClassicAssert.AreEqual(-1, f(new TestClassA {Y = -1}));
+            ClassicAssert.AreEqual(-1, x);
         }
 
         [Test]
@@ -131,9 +132,9 @@ namespace GrobExp.Compiler.Tests.AssignTests.Assign
             Expression<Func<TestClassA, string>> exp2 = Expression.Lambda<Func<TestClassA, string>>(Expression.Assign(exp.Body, Expression.Constant("zzz")), exp.Parameters);
             var f = LambdaCompiler.Compile(exp2, CompilerOptions.All);
             var o = new TestClassA();
-            Assert.AreEqual("zzz", f(o));
-            Assert.IsNotNull(o.B);
-            Assert.AreEqual("zzz", o.B.S);
+            ClassicAssert.AreEqual("zzz", f(o));
+            ClassicAssert.IsNotNull(o.B);
+            ClassicAssert.AreEqual("zzz", o.B.S);
         }
 
         [Test]
@@ -143,8 +144,8 @@ namespace GrobExp.Compiler.Tests.AssignTests.Assign
             Expression<Func<TestClassA, string>> exp2 = Expression.Lambda<Func<TestClassA, string>>(Expression.Assign(exp.Body, Expression.Constant("zzz")), exp.Parameters);
             var f = LambdaCompiler.Compile(exp2, CompilerOptions.All);
             var o = new TestClassA();
-            Assert.AreEqual("zzz", f(o));
-            Assert.AreEqual("zzz", o.structA.b.S);
+            ClassicAssert.AreEqual("zzz", f(o));
+            ClassicAssert.AreEqual("zzz", o.structA.b.S);
         }
 
         [Test]
@@ -156,11 +157,11 @@ namespace GrobExp.Compiler.Tests.AssignTests.Assign
             Expression<Func<TestClassA, string>> exp = Expression.Lambda<Func<TestClassA, string>>(body, path1.Parameters);
             var f = LambdaCompiler.Compile(exp, CompilerOptions.All);
             var o = new TestClassA();
-            Assert.AreEqual("qxx", f(o));
-            Assert.IsNotNull(o.B);
-            Assert.AreEqual("zzz", o.B.S);
-            Assert.IsNotNull(o.B.C);
-            Assert.AreEqual("qxx", o.B.C.S);
+            ClassicAssert.AreEqual("qxx", f(o));
+            ClassicAssert.IsNotNull(o.B);
+            ClassicAssert.AreEqual("zzz", o.B.S);
+            ClassicAssert.IsNotNull(o.B.C);
+            ClassicAssert.AreEqual("qxx", o.B.C.S);
         }
 
         [Test]
@@ -173,10 +174,10 @@ namespace GrobExp.Compiler.Tests.AssignTests.Assign
             var f = LambdaCompiler.Compile(exp, CompilerOptions.All);
             var o = new TestClassA();
             f(o);
-            Assert.IsNotNull(o.B);
-            Assert.AreEqual("zzz", o.B.S);
-            Assert.IsNotNull(o.B.C);
-            Assert.AreEqual("qxx", o.B.C.S);
+            ClassicAssert.IsNotNull(o.B);
+            ClassicAssert.AreEqual("zzz", o.B.S);
+            ClassicAssert.IsNotNull(o.B.C);
+            ClassicAssert.AreEqual("qxx", o.B.C.S);
         }
 
         [Test]
@@ -188,9 +189,9 @@ namespace GrobExp.Compiler.Tests.AssignTests.Assign
             Expression<Func<TestClassA, string>> exp = Expression.Lambda<Func<TestClassA, string>>(body, parameter);
             var f = LambdaCompiler.Compile(exp, CompilerOptions.All);
             var o = new TestClassA();
-            Assert.AreEqual("zzz", f(o));
-            Assert.IsNotNull(o.B);
-            Assert.AreEqual("zzz", o.B.S);
+            ClassicAssert.AreEqual("zzz", f(o));
+            ClassicAssert.IsNotNull(o.B);
+            ClassicAssert.AreEqual("zzz", o.B.S);
         }
 
         [Test]
@@ -201,8 +202,8 @@ namespace GrobExp.Compiler.Tests.AssignTests.Assign
             var f = LambdaCompiler.Compile(exp, CompilerOptions.All);
             var a = new TestClassA();
             a["zzz", 1] = "qxx";
-            Assert.AreEqual("qzz", f(a));
-            Assert.AreEqual("qzz", a["zzz", 1]);
+            ClassicAssert.AreEqual("qzz", f(a));
+            ClassicAssert.AreEqual("qzz", a["zzz", 1]);
         }
 
         [Test]
@@ -212,11 +213,11 @@ namespace GrobExp.Compiler.Tests.AssignTests.Assign
             var exp = Expression.Lambda<Func<TestClassA, string>>(Expression.Assign(Expression.Property(Expression.MakeIndex(Expression.Property(parameter, "Dict"), typeof(Dictionary<string, TestClassB>).GetProperty("Item"), new[] {Expression.Constant("zzz")}), "S"), Expression.Constant("2")), parameter);
             var f = LambdaCompiler.Compile(exp, CompilerOptions.All);
             var a = new TestClassA {Dict = new Dictionary<string, TestClassB> {{"zzz", new TestClassB {S = "1"}}}};
-            Assert.AreEqual("2", f(a));
-            Assert.AreEqual("2", a.Dict["zzz"].S);
+            ClassicAssert.AreEqual("2", f(a));
+            ClassicAssert.AreEqual("2", a.Dict["zzz"].S);
             a = new TestClassA();
-            Assert.AreEqual("2", f(a));
-            Assert.AreEqual("2", a.Dict["zzz"].S);
+            ClassicAssert.AreEqual("2", f(a));
+            ClassicAssert.AreEqual("2", a.Dict["zzz"].S);
         }
 
         [Test]
@@ -226,11 +227,11 @@ namespace GrobExp.Compiler.Tests.AssignTests.Assign
             var exp = Expression.Lambda<Func<TestClassA, string>>(Expression.Assign(Expression.Property(Expression.Call(Expression.Property(parameter, "Dict"), typeof(Dictionary<string, TestClassB>).GetProperty("Item").GetGetMethod(), new[] {Expression.Constant("zzz")}), "S"), Expression.Constant("2")), parameter);
             var f = LambdaCompiler.Compile(exp, CompilerOptions.All);
             var a = new TestClassA {Dict = new Dictionary<string, TestClassB> {{"zzz", new TestClassB {S = "1"}}}};
-            Assert.AreEqual("2", f(a));
-            Assert.AreEqual("2", a.Dict["zzz"].S);
+            ClassicAssert.AreEqual("2", f(a));
+            ClassicAssert.AreEqual("2", a.Dict["zzz"].S);
             a = new TestClassA();
-            Assert.AreEqual("2", f(a));
-            Assert.AreEqual("2", a.Dict["zzz"].S);
+            ClassicAssert.AreEqual("2", f(a));
+            ClassicAssert.AreEqual("2", a.Dict["zzz"].S);
         }
 
         [Test]
@@ -241,10 +242,10 @@ namespace GrobExp.Compiler.Tests.AssignTests.Assign
             var exp = Expression.Lambda<Func<TestClassA, string>>(Expression.Assign(Expression.MakeIndex(Expression.Property(parameter, "List"), typeof(List<string>).GetProperty("Item"), new[] {Expression.Constant(1)}), Expression.Constant("zzz")), parameter);
             var f = LambdaCompiler.Compile(exp, CompilerOptions.All);
             var o = new TestClassA();
-            Assert.AreEqual("zzz", f(o));
-            Assert.IsNotNull(o.List);
-            Assert.AreEqual(2, o.List.Count);
-            Assert.AreEqual("zzz", o.List[1]);
+            ClassicAssert.AreEqual("zzz", f(o));
+            ClassicAssert.IsNotNull(o.List);
+            ClassicAssert.AreEqual(2, o.List.Count);
+            ClassicAssert.AreEqual("zzz", o.List[1]);
         }
 
         public static string S { get; set; }

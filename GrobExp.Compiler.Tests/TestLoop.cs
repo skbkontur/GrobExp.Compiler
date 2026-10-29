@@ -2,6 +2,7 @@
 using System.Linq.Expressions;
 
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 
 namespace GrobExp.Compiler.Tests
 {
@@ -30,16 +31,16 @@ namespace GrobExp.Compiler.Tests
             Expression<Func<int, int>> exp = Expression.Lambda<Func<int, int>>(block, value);
 
             Func<int, int> f = LambdaCompiler.Compile(exp, CompilerOptions.All);
-            Assert.AreEqual(1, f(0));
-            Assert.AreEqual(120, f(5));
+            ClassicAssert.AreEqual(1, f(0));
+            ClassicAssert.AreEqual(120, f(5));
 
             f = LambdaCompiler.Compile(exp, CompilerOptions.None);
-            Assert.AreEqual(1, f(0));
-            Assert.AreEqual(120, f(5));
+            ClassicAssert.AreEqual(1, f(0));
+            ClassicAssert.AreEqual(120, f(5));
 
             f = exp.Compile();
-            Assert.AreEqual(1, f(0));
-            Assert.AreEqual(120, f(5));
+            ClassicAssert.AreEqual(1, f(0));
+            ClassicAssert.AreEqual(120, f(5));
         }
 
         [Test]
@@ -67,16 +68,16 @@ namespace GrobExp.Compiler.Tests
             Expression<Func<int, string>> exp = Expression.Lambda<Func<int, string>>(Expression.Call(block, "ToString", Type.EmptyTypes), value);
 
             Func<int, string> f = LambdaCompiler.Compile(exp, CompilerOptions.All);
-            Assert.AreEqual("1", f(0));
-            Assert.AreEqual("120", f(5));
+            ClassicAssert.AreEqual("1", f(0));
+            ClassicAssert.AreEqual("120", f(5));
 
             f = LambdaCompiler.Compile(exp, CompilerOptions.None);
-            Assert.AreEqual("1", f(0));
-            Assert.AreEqual("120", f(5));
+            ClassicAssert.AreEqual("1", f(0));
+            ClassicAssert.AreEqual("120", f(5));
 
             f = exp.Compile();
-            Assert.AreEqual("1", f(0));
-            Assert.AreEqual("120", f(5));
+            ClassicAssert.AreEqual("1", f(0));
+            ClassicAssert.AreEqual("120", f(5));
         }
 
         [Test]
@@ -111,19 +112,19 @@ namespace GrobExp.Compiler.Tests
             Expression<Func<int[], int>> exp = Expression.Lambda<Func<int[], int>>(block, array);
 
             Func<int[], int> f = LambdaCompiler.Compile(exp, CompilerOptions.All);
-            Assert.AreEqual(6, f(new[] {1, -1, 2, -2, 3, -3}));
-            Assert.AreEqual(6, f(new[] {1, 2, 3}));
-            Assert.AreEqual(0, f(new[] {-1, -2, -3}));
+            ClassicAssert.AreEqual(6, f(new[] {1, -1, 2, -2, 3, -3}));
+            ClassicAssert.AreEqual(6, f(new[] {1, 2, 3}));
+            ClassicAssert.AreEqual(0, f(new[] {-1, -2, -3}));
 
             f = LambdaCompiler.Compile(exp, CompilerOptions.None);
-            Assert.AreEqual(6, f(new[] {1, -1, 2, -2, 3, -3}));
-            Assert.AreEqual(6, f(new[] {1, 2, 3}));
-            Assert.AreEqual(0, f(new[] {-1, -2, -3}));
+            ClassicAssert.AreEqual(6, f(new[] {1, -1, 2, -2, 3, -3}));
+            ClassicAssert.AreEqual(6, f(new[] {1, 2, 3}));
+            ClassicAssert.AreEqual(0, f(new[] {-1, -2, -3}));
 
             f = exp.Compile();
-            Assert.AreEqual(6, f(new[] {1, -1, 2, -2, 3, -3}));
-            Assert.AreEqual(6, f(new[] {1, 2, 3}));
-            Assert.AreEqual(0, f(new[] {-1, -2, -3}));
+            ClassicAssert.AreEqual(6, f(new[] {1, -1, 2, -2, 3, -3}));
+            ClassicAssert.AreEqual(6, f(new[] {1, 2, 3}));
+            ClassicAssert.AreEqual(0, f(new[] {-1, -2, -3}));
         }
     }
 }

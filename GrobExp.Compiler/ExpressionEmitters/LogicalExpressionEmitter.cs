@@ -64,16 +64,16 @@ namespace GrobExp.Compiler.ExpressionEmitters
                 case ExpressionType.AndAlso:
                     {
                         /*
-                                         * +-------+-------+-------+-------+
-                                         * |  &&   | null  | false | true  |
-                                         * +-------+-------+-------+-------+
-                                         * | null  | null  | false | null  |
-                                         * +-------+-------+-------+-------+
-                                         * | false | false | false | false |
-                                         * +-------+-------+-------+-------+
-                                         * | true  | null  | false | true  |
-                                         * +-------+-------+-------+-------+
-                                     */
+                         * +-------+-------+-------+-------+
+                         * |  &&   | null  | false | true  |
+                         * +-------+-------+-------+-------+
+                         * | null  | null  | false | null  |
+                         * +-------+-------+-------+-------+
+                         * | false | false | false | false |
+                         * +-------+-------+-------+-------+
+                         * | true  | null  | false | true  |
+                         * +-------+-------+-------+-------+
+                         */
                         using (var localLeft = context.DeclareLocal(typeof(bool?)))
                         {
                             il.Stloc(localLeft); // localLeft = left; stack: []
@@ -134,16 +134,16 @@ namespace GrobExp.Compiler.ExpressionEmitters
                 case ExpressionType.OrElse:
                     {
                         /*
-                                         * +-------+-------+-------+-------+
-                                         * |  ||   | null  | false | true  |
-                                         * +-------+-------+-------+-------+
-                                         * | null  | null  | null  | true  |
-                                         * +-------+-------+-------+-------+
-                                         * | false | null  | false | true  |
-                                         * +-------+-------+-------+-------+
-                                         * | true  | true  | true  | true  |
-                                         * +-------+-------+-------+-------+
-                                     */
+                         * +-------+-------+-------+-------+
+                         * |  ||   | null  | false | true  |
+                         * +-------+-------+-------+-------+
+                         * | null  | null  | null  | true  |
+                         * +-------+-------+-------+-------+
+                         * | false | null  | false | true  |
+                         * +-------+-------+-------+-------+
+                         * | true  | true  | true  | true  |
+                         * +-------+-------+-------+-------+
+                         */
                         using (var localLeft = context.DeclareLocal(typeof(bool?)))
                         {
                             il.Stloc(localLeft); // localLeft = left; stack: []

@@ -2,6 +2,7 @@
 using System.Linq.Expressions;
 
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 
 namespace GrobExp.Compiler.Tests
 {
@@ -14,7 +15,7 @@ namespace GrobExp.Compiler.Tests
             var parameter = Expression.Parameter(typeof(int));
             var exp = Expression.Lambda<Func<int, double?>>(Expression.TypeAs(parameter, typeof(double?)), parameter);
             var f = LambdaCompiler.Compile(exp, CompilerOptions.All);
-            Assert.IsNull(f(5));
+            ClassicAssert.IsNull(f(5));
         }
 
         [Test]
@@ -25,7 +26,7 @@ namespace GrobExp.Compiler.Tests
             var f = LambdaCompiler.Compile(exp, CompilerOptions.All);
             int? x = f(5);
             Console.WriteLine(x.GetType());
-            Assert.AreEqual(5, f(5));
+            ClassicAssert.AreEqual(5, f(5));
         }
 
         [Test]
@@ -35,7 +36,7 @@ namespace GrobExp.Compiler.Tests
             var exp = Expression.Lambda<Func<int, object>>(Expression.TypeAs(parameter, typeof(object)), parameter);
             var f = LambdaCompiler.Compile(exp, CompilerOptions.All);
             object res = f(5);
-            Assert.AreEqual(5, res);
+            ClassicAssert.AreEqual(5, res);
         }
 
         [Test]
@@ -46,7 +47,7 @@ namespace GrobExp.Compiler.Tests
             var f = LambdaCompiler.Compile(exp, CompilerOptions.All);
             var b = new TestClassB();
             TestClassA a = f(b);
-            Assert.AreEqual(b, a);
+            ClassicAssert.AreEqual(b, a);
         }
 
         [Test]
@@ -57,10 +58,10 @@ namespace GrobExp.Compiler.Tests
             var f = LambdaCompiler.Compile(exp, CompilerOptions.All);
             var a = new TestClassA();
             TestClassB b = f(a);
-            Assert.IsNull(b);
+            ClassicAssert.IsNull(b);
             b = new TestClassB();
             var bb = f(b);
-            Assert.AreEqual(b, bb);
+            ClassicAssert.AreEqual(b, bb);
         }
 
         [Test]
@@ -69,8 +70,8 @@ namespace GrobExp.Compiler.Tests
             var parameter = Expression.Parameter(typeof(object));
             var exp = Expression.Lambda<Func<object, int?>>(Expression.TypeAs(parameter, typeof(int?)), parameter);
             var f = LambdaCompiler.Compile(exp, CompilerOptions.All);
-            Assert.AreEqual(5, f(5));
-            Assert.IsNull(f(5.5));
+            ClassicAssert.AreEqual(5, f(5));
+            ClassicAssert.IsNull(f(5.5));
         }
 
         [Test]
@@ -79,8 +80,8 @@ namespace GrobExp.Compiler.Tests
             var parameter = Expression.Parameter(typeof(object));
             var exp = Expression.Lambda<Func<object, TestEnum?>>(Expression.TypeAs(parameter, typeof(TestEnum?)), parameter);
             var f = LambdaCompiler.Compile(exp, CompilerOptions.All);
-            Assert.AreEqual(TestEnum.One, f(TestEnum.One));
-            Assert.IsNull(f(5.5));
+            ClassicAssert.AreEqual(TestEnum.One, f(TestEnum.One));
+            ClassicAssert.IsNull(f(5.5));
         }
 
         [Test]
@@ -90,7 +91,7 @@ namespace GrobExp.Compiler.Tests
             var exp = Expression.Lambda<Func<TestEnum, Enum>>(Expression.TypeAs(parameter, typeof(Enum)), parameter);
             var f = LambdaCompiler.Compile(exp, CompilerOptions.All);
             Enum actual = f(TestEnum.One);
-            Assert.AreEqual(TestEnum.One, actual);
+            ClassicAssert.AreEqual(TestEnum.One, actual);
         }
 
         public enum TestEnum

@@ -4,6 +4,7 @@ using System.Linq.Expressions;
 using Microsoft.CSharp.RuntimeBinder;
 
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 
 namespace GrobExp.Compiler.Tests
 {
@@ -29,13 +30,13 @@ namespace GrobExp.Compiler.Tests
             );
 
             Func<dynamic, dynamic, dynamic> f = LambdaCompiler.Compile(exp, CompilerOptions.All);
-            Assert.AreEqual(3, f(1, 2));
+            ClassicAssert.AreEqual(3, f(1, 2));
 
             f = LambdaCompiler.Compile(exp, CompilerOptions.None);
-            Assert.AreEqual(3, f(1, 2));
+            ClassicAssert.AreEqual(3, f(1, 2));
 
             f = exp.Compile();
-            Assert.AreEqual(3, f(1, 2));
+            ClassicAssert.AreEqual(3, f(1, 2));
         }
     }
 }

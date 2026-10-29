@@ -2,6 +2,7 @@
 using System.Linq.Expressions;
 
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 
 namespace GrobExp.Compiler.Tests.ArithmeticTests
 {
@@ -12,9 +13,9 @@ namespace GrobExp.Compiler.Tests.ArithmeticTests
         {
             Expression<Func<int, int, int>> exp = (a, b) => a & b;
             var f = Compile(exp, CompilerOptions.All);
-            Assert.AreEqual(0, f(0, 123));
-            Assert.AreEqual(1, f(3, 5));
-            Assert.AreEqual(17235476 & 73172563, f(17235476, 73172563));
+            ClassicAssert.AreEqual(0, f(0, 123));
+            ClassicAssert.AreEqual(1, f(3, 5));
+            ClassicAssert.AreEqual(17235476 & 73172563, f(17235476, 73172563));
         }
 
         [Test]
@@ -22,12 +23,12 @@ namespace GrobExp.Compiler.Tests.ArithmeticTests
         {
             Expression<Func<int?, int?, int?>> exp = (a, b) => a & b;
             var f = Compile(exp, CompilerOptions.All);
-            Assert.AreEqual(0, f(0, 123));
-            Assert.AreEqual(1, f(3, 5));
-            Assert.AreEqual(17235476 & 73172563, f(17235476, 73172563));
-            Assert.IsNull(f(null, 1));
-            Assert.IsNull(f(123, null));
-            Assert.IsNull(f(null, null));
+            ClassicAssert.AreEqual(0, f(0, 123));
+            ClassicAssert.AreEqual(1, f(3, 5));
+            ClassicAssert.AreEqual(17235476 & 73172563, f(17235476, 73172563));
+            ClassicAssert.IsNull(f(null, 1));
+            ClassicAssert.IsNull(f(123, null));
+            ClassicAssert.IsNull(f(null, null));
         }
 
         [Test]
@@ -35,10 +36,10 @@ namespace GrobExp.Compiler.Tests.ArithmeticTests
         {
             Expression<Func<int, int?, int?>> exp = (a, b) => a & b;
             var f = Compile(exp, CompilerOptions.All);
-            Assert.AreEqual(0, f(0, 123));
-            Assert.AreEqual(1, f(3, 5));
-            Assert.AreEqual(17235476 & 73172563, f(17235476, 73172563));
-            Assert.IsNull(f(123, null));
+            ClassicAssert.AreEqual(0, f(0, 123));
+            ClassicAssert.AreEqual(1, f(3, 5));
+            ClassicAssert.AreEqual(17235476 & 73172563, f(17235476, 73172563));
+            ClassicAssert.IsNull(f(123, null));
         }
 
         [Test]
@@ -46,9 +47,9 @@ namespace GrobExp.Compiler.Tests.ArithmeticTests
         {
             Expression<Func<long, long, long>> exp = (a, b) => a & b;
             var f = Compile(exp, CompilerOptions.All);
-            Assert.AreEqual(0, f(0, 123));
-            Assert.AreEqual(1, f(3, 5));
-            Assert.AreEqual(172354712312316 & 73123123172563, f(172354712312316, 73123123172563));
+            ClassicAssert.AreEqual(0, f(0, 123));
+            ClassicAssert.AreEqual(1, f(3, 5));
+            ClassicAssert.AreEqual(172354712312316 & 73123123172563, f(172354712312316, 73123123172563));
         }
 
         [Test]
@@ -56,9 +57,9 @@ namespace GrobExp.Compiler.Tests.ArithmeticTests
         {
             Expression<Func<int, int, int>> exp = (a, b) => a | b;
             var f = Compile(exp, CompilerOptions.All);
-            Assert.AreEqual(123, f(0, 123));
-            Assert.AreEqual(7, f(3, 5));
-            Assert.AreEqual(17235476 | 73172563, f(17235476, 73172563));
+            ClassicAssert.AreEqual(123, f(0, 123));
+            ClassicAssert.AreEqual(7, f(3, 5));
+            ClassicAssert.AreEqual(17235476 | 73172563, f(17235476, 73172563));
         }
 
         [Test]
@@ -66,12 +67,12 @@ namespace GrobExp.Compiler.Tests.ArithmeticTests
         {
             Expression<Func<int?, int?, int?>> exp = (a, b) => a | b;
             var f = Compile(exp, CompilerOptions.All);
-            Assert.AreEqual(123, f(0, 123));
-            Assert.AreEqual(7, f(3, 5));
-            Assert.AreEqual(17235476 | 73172563, f(17235476, 73172563));
-            Assert.IsNull(f(null, 1));
-            Assert.IsNull(f(123, null));
-            Assert.IsNull(f(null, null));
+            ClassicAssert.AreEqual(123, f(0, 123));
+            ClassicAssert.AreEqual(7, f(3, 5));
+            ClassicAssert.AreEqual(17235476 | 73172563, f(17235476, 73172563));
+            ClassicAssert.IsNull(f(null, 1));
+            ClassicAssert.IsNull(f(123, null));
+            ClassicAssert.IsNull(f(null, null));
         }
 
         [Test]
@@ -79,10 +80,10 @@ namespace GrobExp.Compiler.Tests.ArithmeticTests
         {
             Expression<Func<int, int?, int?>> exp = (a, b) => a | b;
             var f = Compile(exp, CompilerOptions.All);
-            Assert.AreEqual(123, f(0, 123));
-            Assert.AreEqual(7, f(3, 5));
-            Assert.AreEqual(17235476 | 73172563, f(17235476, 73172563));
-            Assert.IsNull(f(123, null));
+            ClassicAssert.AreEqual(123, f(0, 123));
+            ClassicAssert.AreEqual(7, f(3, 5));
+            ClassicAssert.AreEqual(17235476 | 73172563, f(17235476, 73172563));
+            ClassicAssert.IsNull(f(123, null));
         }
 
         [Test]
@@ -90,9 +91,9 @@ namespace GrobExp.Compiler.Tests.ArithmeticTests
         {
             Expression<Func<long, long, long>> exp = (a, b) => a | b;
             var f = Compile(exp, CompilerOptions.All);
-            Assert.AreEqual(123, f(0, 123));
-            Assert.AreEqual(7, f(3, 5));
-            Assert.AreEqual(172354712312316 | 73123123172563, f(172354712312316, 73123123172563));
+            ClassicAssert.AreEqual(123, f(0, 123));
+            ClassicAssert.AreEqual(7, f(3, 5));
+            ClassicAssert.AreEqual(172354712312316 | 73123123172563, f(172354712312316, 73123123172563));
         }
 
         [Test]
@@ -100,9 +101,9 @@ namespace GrobExp.Compiler.Tests.ArithmeticTests
         {
             Expression<Func<int, int, int>> exp = (a, b) => a ^ b;
             var f = Compile(exp, CompilerOptions.All);
-            Assert.AreEqual(123, f(0, 123));
-            Assert.AreEqual(6, f(3, 5));
-            Assert.AreEqual(17235476 ^ 73172563, f(17235476, 73172563));
+            ClassicAssert.AreEqual(123, f(0, 123));
+            ClassicAssert.AreEqual(6, f(3, 5));
+            ClassicAssert.AreEqual(17235476 ^ 73172563, f(17235476, 73172563));
         }
 
         [Test]
@@ -110,12 +111,12 @@ namespace GrobExp.Compiler.Tests.ArithmeticTests
         {
             Expression<Func<int?, int?, int?>> exp = (a, b) => a ^ b;
             var f = Compile(exp, CompilerOptions.All);
-            Assert.AreEqual(123, f(0, 123));
-            Assert.AreEqual(6, f(3, 5));
-            Assert.AreEqual(17235476 ^ 73172563, f(17235476, 73172563));
-            Assert.IsNull(f(null, 1));
-            Assert.IsNull(f(123, null));
-            Assert.IsNull(f(null, null));
+            ClassicAssert.AreEqual(123, f(0, 123));
+            ClassicAssert.AreEqual(6, f(3, 5));
+            ClassicAssert.AreEqual(17235476 ^ 73172563, f(17235476, 73172563));
+            ClassicAssert.IsNull(f(null, 1));
+            ClassicAssert.IsNull(f(123, null));
+            ClassicAssert.IsNull(f(null, null));
         }
 
         [Test]
@@ -123,10 +124,10 @@ namespace GrobExp.Compiler.Tests.ArithmeticTests
         {
             Expression<Func<int, int?, int?>> exp = (a, b) => a ^ b;
             var f = Compile(exp, CompilerOptions.All);
-            Assert.AreEqual(123, f(0, 123));
-            Assert.AreEqual(6, f(3, 5));
-            Assert.AreEqual(17235476 ^ 73172563, f(17235476, 73172563));
-            Assert.IsNull(f(123, null));
+            ClassicAssert.AreEqual(123, f(0, 123));
+            ClassicAssert.AreEqual(6, f(3, 5));
+            ClassicAssert.AreEqual(17235476 ^ 73172563, f(17235476, 73172563));
+            ClassicAssert.IsNull(f(123, null));
         }
 
         [Test]
@@ -134,9 +135,9 @@ namespace GrobExp.Compiler.Tests.ArithmeticTests
         {
             Expression<Func<long, long, long>> exp = (a, b) => a ^ b;
             var f = Compile(exp, CompilerOptions.All);
-            Assert.AreEqual(123, f(0, 123));
-            Assert.AreEqual(6, f(3, 5));
-            Assert.AreEqual(172354712312316 ^ 73123123172563, f(172354712312316, 73123123172563));
+            ClassicAssert.AreEqual(123, f(0, 123));
+            ClassicAssert.AreEqual(6, f(3, 5));
+            ClassicAssert.AreEqual(172354712312316 ^ 73123123172563, f(172354712312316, 73123123172563));
         }
 
         [Test]
@@ -144,9 +145,9 @@ namespace GrobExp.Compiler.Tests.ArithmeticTests
         {
             Expression<Func<int, int>> exp = a => ~a;
             var f = Compile(exp, CompilerOptions.All);
-            Assert.AreEqual(-1, f(0));
-            Assert.AreEqual(0, f(-1));
-            Assert.AreEqual(~123456789, f(123456789));
+            ClassicAssert.AreEqual(-1, f(0));
+            ClassicAssert.AreEqual(0, f(-1));
+            ClassicAssert.AreEqual(~123456789, f(123456789));
         }
 
         [Test]
@@ -154,10 +155,10 @@ namespace GrobExp.Compiler.Tests.ArithmeticTests
         {
             Expression<Func<int?, int?>> exp = a => ~a;
             var f = Compile(exp, CompilerOptions.All);
-            Assert.AreEqual(-1, f(0));
-            Assert.AreEqual(0, f(-1));
-            Assert.AreEqual(~123456789, f(123456789));
-            Assert.IsNull(f(null));
+            ClassicAssert.AreEqual(-1, f(0));
+            ClassicAssert.AreEqual(0, f(-1));
+            ClassicAssert.AreEqual(~123456789, f(123456789));
+            ClassicAssert.IsNull(f(null));
         }
 
         [Test]
@@ -166,9 +167,9 @@ namespace GrobExp.Compiler.Tests.ArithmeticTests
             ParameterExpression a = Expression.Parameter(typeof(int), "a");
             Expression<Func<int, int>> exp = Expression.Lambda<Func<int, int>>(Expression.OnesComplement(a), a);
             var f = Compile(exp, CompilerOptions.All);
-            Assert.AreEqual(-1, f(0));
-            Assert.AreEqual(0, f(-1));
-            Assert.AreEqual(~123456789, f(123456789));
+            ClassicAssert.AreEqual(-1, f(0));
+            ClassicAssert.AreEqual(0, f(-1));
+            ClassicAssert.AreEqual(~123456789, f(123456789));
         }
 
         [Test]
@@ -177,10 +178,10 @@ namespace GrobExp.Compiler.Tests.ArithmeticTests
             ParameterExpression a = Expression.Parameter(typeof(int?), "a");
             Expression<Func<int?, int?>> exp = Expression.Lambda<Func<int?, int?>>(Expression.OnesComplement(a), a);
             var f = Compile(exp, CompilerOptions.All);
-            Assert.AreEqual(-1, f(0));
-            Assert.AreEqual(0, f(-1));
-            Assert.AreEqual(~123456789, f(123456789));
-            Assert.IsNull(f(null));
+            ClassicAssert.AreEqual(-1, f(0));
+            ClassicAssert.AreEqual(0, f(-1));
+            ClassicAssert.AreEqual(~123456789, f(123456789));
+            ClassicAssert.IsNull(f(null));
         }
     }
 }
