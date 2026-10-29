@@ -207,12 +207,14 @@ namespace GrobExp.Compiler
                     };
                 CompileInternal(lambda, context);
             }
-            return new CompiledLambda
+            var compiledLambda = new CompiledLambda
                 {
                     Delegate = Extensions.IsMono && internalCall ? method.CreateDelegate(Extensions.GetDelegateType(parameterTypes, returnType))
                                    : method.CreateDelegate(Extensions.GetDelegateType(parsedLambda.ConstantsParameter == null ? parameterTypes : parameterTypes.Skip(1).ToArray(), lambda.ReturnType), parsedLambda.Constants),
                     Method = method
                 };
+            DynamicMethodIlGeneratorCleaner.Clear(method);
+            return compiledLambda;
         }
 
         private static AssemblyBuilder CreateAssembly()
