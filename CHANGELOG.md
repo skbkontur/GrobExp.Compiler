@@ -1,5 +1,11 @@
 # Changelog
 
+## v1.4.10 - 2026.10.29
+- Compile lambdas into a separate collectible dynamic module per thread to avoid SIGSEGV crashes during highly concurrent compilation.
+- Drop the IL generator of compiled `DynamicMethod`s after `CreateDelegate`, which kept IL, labels and fixups in memory for the method's lifetime.
+- Test against net7.0, net9.0 and net10.0.
+- Update GrEmit dependency to v3.6.1.
+
 ## v1.3.23 - 2021.11.30
 - Add net6.0 support.
 - Update GrEmit dependency to v3.4.10.
